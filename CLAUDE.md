@@ -4,36 +4,41 @@
 
 Zest Spec: A lightweight, file-driven development workflow for swappable coding agents.
 
-## Spec-Driven Development (LeanSpec)
+## Development
 
-Specs are stored in `specs/`. Managed via `lean-spec` CLI.
+### Testing Zest Spec CLI
+
+To test the CLI during development:
+
+```bash
+# Run directly with node
+node bin/zest-spec.js status
+node bin/zest-spec.js show 001
+node bin/zest-spec.js create <spec-name>
+node bin/zest-spec.js set-current <spec-id>
+node bin/zest-spec.js unset-current
+```
+
+## Spec-Driven Development by Zest Spec
+
+Specs are stored in `specs/`. Managed via `zest-spec` CLI.
 
 ### Commands
 
-| Command                                      | Purpose               |
-| -------------------------------------------- | --------------------- |
-| `lean-spec board`                            | View project status   |
-| `lean-spec search "query"`                   | Search existing specs |
-| `lean-spec create <name>`                    | Create new spec       |
-| `lean-spec update <spec> --status <status>`  | Update status         |
-| `lean-spec link <spec> --depends-on <other>` | Link dependencies     |
-| `lean-spec view <spec>`                      | View spec content     |
+**Never** manually create spec files or edit frontmatter. Use `zest-spec` CLI to create and manage specs.
 
-### Workflow
+| Command                         | Purpose                    |
+| ------------------------------- | -------------------------- |
+| `zest-spec status`              | View project status        |
+| `zest-spec show <spec-id>`      | View spec content          |
+| `zest-spec create <spec-name>`  | Create new spec            |
+| `zest-spec set-current <id>`    | Set current working spec   |
+| `zest-spec unset-current`       | Unset current working spec |
 
-1. **Before**: `board` → `search` → confirm no duplicates
-2. **During**: Update status to `in-progress`, link dependencies
-3. **After**: Update status to `complete`
+### Spec content rules
 
-### Rules
+- **Prioritize Brevity**: Write only the main flow and design ideas, not detailed implementation code
+- **Easy to Review**: Keep documents concise so others can quickly understand the plan
+- **Pseudocode/Flowcharts**: Use pseudocode or step lists for complex logic, instead of full code
 
-- **Never** manually create spec files or edit frontmatter
-- **Always** run `board` and `search` first to understand current state
-- **Write spec for**: Multi-step features, breaking changes, design decisions
-- **Skip spec for**: Bug fixes, trivial changes, self-explanatory refactors
 
-### Spec 内容规范
-
-- **简洁优先**: 只写大致流程和设计思路，不写详细实现代码
-- **便于 Review**: 控制文档长度，让人能快速理解方案
-- **伪代码/流程图**: 复杂逻辑用伪代码或步骤列表，而非完整代码

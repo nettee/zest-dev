@@ -1,0 +1,31 @@
+{
+  "name": "zest-spec",
+  "version": "0.1.0",
+  "description": "A lightweight, file-driven development workflow for swappable coding agents",
+  "main": "index.js",
+  "bin": {
+    "zest-spec": "./bin/zest-spec.js"
+  },
+  "files": [
+    "bin/",
+    "lib/",
+    "index.js",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "spec",
+    "workflow",
+    "development",
+    "cli"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^12.0.0",
+    "js-yaml": "^4.1.0"
+  }
+}
