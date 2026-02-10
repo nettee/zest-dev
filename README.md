@@ -1,0 +1,106 @@
+# Zest Spec
+
+A lightweight, file-driven development workflow for swappable coding agents.
+
+## Installation
+
+```bash
+npm install -g zest-spec
+```
+
+## Usage
+
+### Check Project Status
+
+```bash
+zest-spec status
+```
+
+Output:
+```yaml
+specs_count: 3
+current: "001"
+```
+
+### Show Spec Details
+
+```bash
+# Show specific spec
+zest-spec show 001
+
+# Show current spec
+zest-spec show current
+```
+
+Output:
+```yaml
+id: "001"
+name: "Init Project"
+path: "specs/001-init-project/spec.md"
+current: false
+status: "planned"
+```
+
+### Create New Spec
+
+```bash
+zest-spec create feature-name
+```
+
+Output:
+```yaml
+ok: true
+spec:
+  id: "002"
+  name: "Feature Name"
+  path: "specs/002-feature-name/spec.md"
+  current: false
+  status: "planned"
+```
+
+### Set Current Spec
+
+```bash
+zest-spec set-current 001
+```
+
+Output:
+```yaml
+ok: true
+current: "001"
+```
+
+### Unset Current Spec
+
+```bash
+zest-spec unset-current
+```
+
+Output:
+```yaml
+ok: true
+current: null
+```
+
+## Project Structure
+
+```
+project/
+├── specs/
+│   ├── 001-init-project/
+│   │   └── spec.md
+│   ├── 002-feature-name/
+│   │   └── spec.md
+│   └── current -> 002-feature-name (symlink)
+└── .zest-spec/
+    └── template/
+        └── spec.md
+```
+
+## Spec Template
+
+Create a custom spec template at `.zest-spec/template/spec.md`.
+
+## License
+
+MIT
