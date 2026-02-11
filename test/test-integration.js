@@ -19,6 +19,7 @@ const CLI_COMMAND = process.env.ZEST_CLI_PATH
   : `node ${path.join(__dirname, '../bin/zest-spec.js')}`;
 
 const TEST_DIR = path.join(__dirname, '../test-project-temp');
+const CREATE_TEST_DIR = path.join(__dirname, '../test-project-create-temp');
 const EXPECTED_COMMANDS = [
   'zest-spec-new.md',
   'zest-spec-research.md',
@@ -27,31 +28,39 @@ const EXPECTED_COMMANDS = [
   'zest-spec-summarize.md'
 ];
 
-function cleanup() {
-  if (fs.existsSync(TEST_DIR)) {
-    fs.rmSync(TEST_DIR, { recursive: true, force: true });
+function cleanup(testDir = TEST_DIR) {
+  if (fs.existsSync(testDir)) {
+    fs.rmSync(testDir, { recursive: true, force: true });
   }
 }
 
-function setup() {
-  cleanup();
-  fs.mkdirSync(TEST_DIR, { recursive: true });
+function setup(testDir = TEST_DIR) {
+  cleanup(testDir);
+  fs.mkdirSync(testDir, { recursive: true });
 }
 
-function runInit() {
+function runCommand(command, cwd = TEST_DIR) {
   try {
-    return execSync(`${CLI_COMMAND} init`, {
-      cwd: TEST_DIR,
+    return execSync(`${CLI_COMMAND} ${command}`, {
+      cwd,
       encoding: 'utf-8'
     });
   } catch (error) {
     const details = [error.message, error.stdout, error.stderr].filter(Boolean).join('\n');
-    throw new Error(`zest-spec init failed:\n${details}`);
+    throw new Error(`zest-spec ${command} failed:\n${details}`);
   }
 }
 
-function readCommand(target, filename) {
-  return fs.readFileSync(path.join(TEST_DIR, target, 'commands', filename), 'utf-8');
+function runInit(cwd = TEST_DIR) {
+  return runCommand('init', cwd);
+}
+
+function runCreate(slug, cwd = TEST_DIR) {
+  return runCommand(`create ${slug}`, cwd);
+}
+
+function readCommand(target, filename, testDir = TEST_DIR) {
+  return fs.readFileSync(path.join(testDir, target, 'commands', filename), 'utf-8');
 }
 
 function extractFrontmatter(content, filename) {
@@ -164,5 +173,74 @@ test('zest-spec init integration', async (t) => {
     });
   } finally {
     cleanup();
+  }
+});
+
+test('zest-spec create integration', async (t) => {
+  setup(CREATE_TEST_DIR);
+
+  try {
+    await t.test('default template fallback', () => {
+      const output = runCreate('default-template', CREATE_TEST_DIR);
+      const result = yaml.load(output);
+      assert.equal(result.ok, true, 'create command should succeed');
+
+      const specPath = path.join(CREATE_TEST_DIR, 'specs/001-default-template/spec.md');
+      assert.ok(fs.existsSync(specPath), 'spec file should exist');
+
+      const content = fs.readFileSync(specPath, 'utf-8');
+      const frontmatter = extractFrontmatter(content, 'specs/001-default-template/spec.md');
+
+      assert.equal(frontmatter.id, '001');
+      assert.equal(frontmatter.name, 'Default Template');
+      assert.equal(frontmatter.status, 'new');
+      assert.equal(typeof frontmatter.created, 'string');
+      assert.ok(content.includes('## Overview'), 'should use packaged default template');
+      assert.equal(content.includes('{id}'), false);
+      assert.equal(content.includes('{name}'), false);
+      assert.equal(content.includes('{date}'), false);
+    });
+
+    await t.test('custom template override', () => {
+      const customTemplatePath = path.join(CREATE_TEST_DIR, '.zest-spec/template/spec.md');
+      fs.mkdirSync(path.dirname(customTemplatePath), { recursive: true });
+      fs.writeFileSync(
+        customTemplatePath,
+        `---
+id: "{id}"
+name: "{name}"
+status: custom
+created: "{date}"
+---
+
+# Custom Spec
+
+Token: {id}|{name}|{date}
+`,
+        'utf-8'
+      );
+
+      const output = runCreate('custom-template', CREATE_TEST_DIR);
+      const result = yaml.load(output);
+      assert.equal(result.ok, true, 'create command should succeed with custom template');
+
+      const specPath = path.join(CREATE_TEST_DIR, 'specs/002-custom-template/spec.md');
+      assert.ok(fs.existsSync(specPath), 'spec file should exist');
+
+      const content = fs.readFileSync(specPath, 'utf-8');
+      const frontmatter = extractFrontmatter(content, 'specs/002-custom-template/spec.md');
+
+      assert.equal(frontmatter.id, '002');
+      assert.equal(frontmatter.name, 'Custom Template');
+      assert.equal(frontmatter.status, 'custom');
+      assert.ok(content.includes('# Custom Spec'), 'should use custom template file');
+      assert.equal(content.includes('## Overview'), false);
+      assert.equal(content.includes('{id}'), false);
+      assert.equal(content.includes('{name}'), false);
+      assert.equal(content.includes('{date}'), false);
+      assert.ok(content.includes('Token: 002|Custom Template|'));
+    });
+  } finally {
+    cleanup(CREATE_TEST_DIR);
   }
 });
