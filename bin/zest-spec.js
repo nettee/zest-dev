@@ -12,6 +12,7 @@ const {
   unsetCurrentSpec
 } = require('../lib/spec-manager');
 const { deployPlugin } = require('../lib/plugin-deployer');
+const { generatePrompt } = require('../lib/prompt-generator');
 
 const program = new Command();
 
@@ -98,6 +99,22 @@ program
     try {
       const result = deployPlugin();
       console.log(yaml.dump(result));
+    } catch (error) {
+      console.error('Error:', error.message);
+      process.exit(1);
+    }
+  });
+
+// zest-spec prompt <command> [args...]
+program
+  .command('prompt <command> [args...]')
+  .description('Generate prompt for Codex editor (e.g., codex $(zest-spec prompt new "task description"))')
+  .action((command, args) => {
+    try {
+      // Join args array into a single string for commands that take arguments
+      const argsString = args ? args.join(' ') : '';
+      const prompt = generatePrompt(command, argsString);
+      console.log(prompt);
     } catch (error) {
       console.error('Error:', error.message);
       process.exit(1);

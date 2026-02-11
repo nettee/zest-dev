@@ -3,9 +3,12 @@ name: CI
 on:
   pull_request:
     branches: [main, master]
+  push:
+    branches: [main, master]
 
 jobs:
-  test:
+  test-local:
+    name: Integration Test (Local)
     runs-on: ubuntu-latest
 
     steps:
@@ -25,8 +28,42 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Link CLI globally
-        run: pnpm link --global
-
       - name: Run integration tests
-        run: pnpm test:integration
+        run: pnpm test:local
+
+  test-package:
+    name: Integration Test (Packaged)
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup package environment and run tests
+        run: pnpm test:package
+
+      - name: List package contents on failure
+        if: failure()
+        run: |
+          if [ -f zest-spec-*.tgz ]; then
+            echo "📦 Package contents:"
+            tar -tzf zest-spec-*.tgz
+          fi
+          if [ -d test-package-env/node_modules/zest-spec ]; then
+            echo ""
+            echo "📁 Installed package structure:"
+            ls -la test-package-env/node_modules/zest-spec/
+          fi
