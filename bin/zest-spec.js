@@ -11,6 +11,7 @@ const {
   setCurrentSpec,
   unsetCurrentSpec
 } = require('../lib/spec-manager');
+const { deployPlugin } = require('../lib/plugin-deployer');
 
 const program = new Command();
 
@@ -82,6 +83,20 @@ program
   .action(() => {
     try {
       const result = unsetCurrentSpec();
+      console.log(yaml.dump(result));
+    } catch (error) {
+      console.error('Error:', error.message);
+      process.exit(1);
+    }
+  });
+
+// zest-spec init
+program
+  .command('init')
+  .description('Initialize plugin deployment to .cursor and .opencode directories')
+  .action(() => {
+    try {
+      const result = deployPlugin();
       console.log(yaml.dump(result));
     } catch (error) {
       console.error('Error:', error.message);

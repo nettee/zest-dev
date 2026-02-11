@@ -100,6 +100,16 @@ Use the commit title as the PR title and the previously generated PR body. Run t
 gh pr create --base <main_branch_name> --title "PR title" --body "PR body"
 ```
 
-### 9. Show the Pull Request link
+### 9. Wait for PR checks to pass
+
+Run the following command to monitor PR checks (excluding coderabbit):
+
+```bash
+gh pr checks --watch --fail-fast --required
+```
+
+Note: Wait until all required checks pass (coderabbit check can be ignored).
+
+### 10. Show the Pull Request link
 
 Finally, inform the user of the created PR link so the user can click and access it directly.

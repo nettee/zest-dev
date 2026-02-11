@@ -1,0 +1,13 @@
+# Local settings
+.claude/*.local.md
+
+# Node modules (if any scripts use npm)
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

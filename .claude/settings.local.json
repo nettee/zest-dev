@@ -3,7 +3,11 @@
     "allow": [
       "Bash(npm install:*)",
       "Bash(chmod:*)",
-      "Bash(node bin/zest-spec.js:*)"
+      "Bash(node bin/zest-spec.js:*)",
+      "Bash(du:*)"
     ]
+  },
+  "enabledPlugins": {
+    "plugin-dev@claude-plugins-official": true
   }
 }
