@@ -82,6 +82,29 @@ ok: true
 current: null
 ```
 
+### Generate Prompts for Codex Editor
+
+The `prompt` command generates formatted prompts for editors like Codex that don't support project-level commands:
+
+```bash
+# Create a new spec
+codex $(zest-spec prompt new "add user authentication system")
+
+# Work on research phase
+codex $(zest-spec prompt research)
+
+# Work on design phase
+codex $(zest-spec prompt design)
+
+# Work on implementation phase
+codex $(zest-spec prompt implement)
+
+# Summarize a coding session
+codex $(zest-spec prompt summarize)
+```
+
+This allows you to launch Codex with the appropriate initial prompt for each spec workflow phase.
+
 ## Project Structure
 
 ```
