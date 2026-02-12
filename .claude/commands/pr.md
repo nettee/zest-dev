@@ -102,10 +102,10 @@ gh pr create --base <main_branch_name> --title "PR title" --body "PR body"
 
 ### 9. Wait for PR checks to pass
 
-Run the following command to monitor PR checks (excluding coderabbit):
+Run the following command to monitor PR checks:
 
 ```bash
-gh pr checks --watch --fail-fast --required
+gh pr checks --watch --fail-fast
 ```
 
 Note: Wait until all required checks pass (coderabbit check can be ignored).

@@ -52,9 +52,9 @@ Edit the spec file to add/update the Research section with:
 - Focus on "why": Document rationale for recommendations
 
 **Step 5: Update Spec Status**
-Edit the spec frontmatter to update:
-- `status: researched`
-- `updated: <current-timestamp>`
+Execute: `zest-spec update <current-spec-id> researched`
+
+This updates the spec status using the CLI (do not edit frontmatter manually).
 
 **Step 6: Confirm Completion**
 Inform the user:

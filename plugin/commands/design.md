@@ -56,9 +56,9 @@ Edit the spec file to add/update the Design section.
 - Flowcharts: For complex processes with branches
 
 **Step 5: Update Spec Status**
-Edit the spec frontmatter to update:
-- `status: designed`
-- `updated: <current-timestamp>`
+Execute: `zest-spec update <current-spec-id> designed`
+
+This updates the spec status using the CLI (do not edit frontmatter manually).
 
 **Step 6: Confirm Completion**
 Inform the user:

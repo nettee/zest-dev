@@ -11,7 +11,7 @@ Execute: `zest-spec status`
 Confirm there is a current spec set and status is "designed". If:
 - No current spec: Guide user to set one
 - Status is "new" or "researched": Suggest completing previous phases first
-- Status is "implemented" or "delivered": Confirm if user wants to update existing plan
+- Status is "implemented": Confirm if user wants to update existing plan
 
 **Step 2: Read Current Spec**
 Execute: `zest-spec show <current-spec-id>` to get the spec file path.
@@ -56,9 +56,9 @@ Edit the spec file to add/update the Implementation section.
 - Testing included: Verification is part of implementation
 
 **Step 5: Update Spec Status**
-Edit the spec frontmatter to update:
-- `status: implemented`
-- `updated: <current-timestamp>`
+Execute: `zest-spec update <current-spec-id> implemented`
+
+This updates the spec status using the CLI (do not edit frontmatter manually).
 
 **Step 6: Confirm Completion**
 Inform the user:

@@ -19,7 +19,11 @@ zest-spec status
 Output:
 ```yaml
 specs_count: 3
-current: "001"
+current:
+  id: "001"
+  name: "Init Project"
+  path: "specs/001-init-project/spec.md"
+  status: "new"
 ```
 
 ### Show Spec Details
@@ -38,7 +42,7 @@ id: "001"
 name: "Init Project"
 path: "specs/001-init-project/spec.md"
 current: false
-status: "planned"
+status: "new"
 ```
 
 ### Create New Spec
@@ -55,7 +59,7 @@ spec:
   name: "Feature Name"
   path: "specs/002-feature-name/spec.md"
   current: false
-  status: "planned"
+  status: "new"
 ```
 
 ### Set Current Spec
@@ -82,25 +86,49 @@ ok: true
 current: null
 ```
 
+### Update Spec Status
+
+```bash
+zest-spec update 003 researched
+```
+
+Output:
+```yaml
+ok: true
+spec:
+  id: "003"
+  status: "researched"
+status:
+  from: "new"
+  to: "researched"
+  changed: true
+```
+
+Rules:
+- Valid status values: `new`, `researched`, `designed`, `implemented`
+- Forward-only transitions (skip allowed): e.g. `new -> designed` is valid
+- Backward transitions fail: e.g. `implemented -> designed`
+- No-op updates fail: setting the same status again returns an error
+
 ### Generate Prompts for Codex Editor
 
 The `prompt` command generates formatted prompts for editors like Codex that don't support project-level commands:
 
 ```bash
 # Create a new spec
-codex $(zest-spec prompt new "add user authentication system")
+codex "$(zest-spec prompt new 'some description')"
 
 # Work on research phase
-codex $(zest-spec prompt research)
+codex "$(zest-spec prompt research)"
 
 # Work on design phase
-codex $(zest-spec prompt design)
+codex "$(zest-spec prompt design)"
 
 # Work on implementation phase
-codex $(zest-spec prompt implement)
+codex "$(zest-spec prompt implement)"
 
 # Summarize a coding session
-codex $(zest-spec prompt summarize)
+codex "$(zest-spec prompt summarize)"
 ```
 
 This allows you to launch Codex with the appropriate initial prompt for each spec workflow phase.

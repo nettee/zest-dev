@@ -83,9 +83,11 @@ Add an **Implementation Summary** subsection under Plan:
 
 **Step 5: Update Spec Status**
 
-Edit the spec frontmatter to set:
-- `status: <inferred-phase>` (new/researched/designed/implemented)
-- Keep the auto-generated `created` timestamp
+Use `zest-spec update` for status transitions (do not edit frontmatter manually):
+- If inferred phase is `new`: skip status update (new spec is already `new`)
+- If inferred phase is `researched`: execute `zest-spec update <spec-id> researched`
+- If inferred phase is `designed`: execute `zest-spec update <spec-id> designed`
+- If inferred phase is `implemented`: execute `zest-spec update <spec-id> implemented`
 
 **Step 6: Add Notes Section**
 

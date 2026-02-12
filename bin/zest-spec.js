@@ -9,12 +9,28 @@ const {
   getSpec,
   createSpec,
   setCurrentSpec,
-  unsetCurrentSpec
+  unsetCurrentSpec,
+  updateSpecStatus
 } = require('../lib/spec-manager');
 const { deployPlugin } = require('../lib/plugin-deployer');
 const { generatePrompt } = require('../lib/prompt-generator');
 
 const program = new Command();
+const DEPLOYED_COMMAND_DIRS = [
+  path.join(process.cwd(), '.cursor/commands'),
+  path.join(process.cwd(), '.opencode/commands')
+];
+
+function hasDeployedCommandMarkdowns() {
+  return DEPLOYED_COMMAND_DIRS.some(dirPath => {
+    if (!fs.existsSync(dirPath)) {
+      return false;
+    }
+
+    const files = fs.readdirSync(dirPath);
+    return files.some(file => /^zest-spec-.*\.md$/.test(file));
+  });
+}
 
 program
   .name('zest-spec')
@@ -28,6 +44,12 @@ program
   .action(() => {
     try {
       const status = getSpecsStatus();
+      if (hasDeployedCommandMarkdowns()) {
+        status.agent_hints = [
+          'Run `zest-spec init` to update deployed command markdown files.'
+        ];
+      }
+
       console.log(yaml.dump(status));
     } catch (error) {
       console.error('Error:', error.message);
@@ -91,6 +113,20 @@ program
     }
   });
 
+// zest-spec update <spec_number|current> <status>
+program
+  .command('update <spec> <status>')
+  .description('Update spec status')
+  .action((spec, status) => {
+    try {
+      const result = updateSpecStatus(spec, status);
+      console.log(yaml.dump(result));
+    } catch (error) {
+      console.error('Error:', error.message);
+      process.exit(1);
+    }
+  });
+
 // zest-spec init
 program
   .command('init')
@@ -108,7 +144,7 @@ program
 // zest-spec prompt <command> [args...]
 program
   .command('prompt <command> [args...]')
-  .description('Generate prompt for Codex editor (e.g., codex $(zest-spec prompt new "task description"))')
+  .description('Generate prompt for Codex editor (e.g., codex "$(zest-spec prompt new \'task description\')")')
   .action((command, args) => {
     try {
       // Join args array into a single string for commands that take arguments

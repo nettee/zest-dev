@@ -59,6 +59,10 @@ function runCreate(slug, cwd = TEST_DIR) {
   return runCommand(`create ${slug}`, cwd);
 }
 
+function runUpdate(spec, status, cwd = TEST_DIR) {
+  return runCommand(`update ${spec} ${status}`, cwd);
+}
+
 function readCommand(target, filename, testDir = TEST_DIR) {
   return fs.readFileSync(path.join(testDir, target, 'commands', filename), 'utf-8');
 }
@@ -242,5 +246,114 @@ Token: {id}|{name}|{date}
     });
   } finally {
     cleanup(CREATE_TEST_DIR);
+  }
+});
+
+test('zest-spec status integration', async (t) => {
+  setup();
+
+  try {
+    runCreate('first-spec');
+    runCreate('second-spec');
+
+    await t.test('current is null when not set', () => {
+      const status = yaml.load(runCommand('status'));
+      assert.equal(status.specs_count, 2);
+      assert.equal(status.current, null);
+      assert.equal(status.agent_hints, undefined);
+    });
+
+    await t.test('current is an object when set', () => {
+      runCommand('set-current 002');
+      const status = yaml.load(runCommand('status'));
+
+      assert.equal(status.specs_count, 2);
+      assert.equal(typeof status.current, 'object');
+      assert.equal(status.current.id, '002');
+      assert.equal(status.current.name, 'Second Spec');
+      assert.equal(status.current.path, path.join('specs', '002-second-spec', 'spec.md'));
+      assert.equal(status.current.status, 'new');
+      assert.equal(status.agent_hints, undefined);
+    });
+
+    await t.test('agent hint appears when deployed zest command markdown exists', () => {
+      const cursorCommandsDir = path.join(TEST_DIR, '.cursor', 'commands');
+      fs.mkdirSync(cursorCommandsDir, { recursive: true });
+      fs.writeFileSync(path.join(cursorCommandsDir, 'zest-spec-new.md'), '# test', 'utf-8');
+
+      const status = yaml.load(runCommand('status'));
+      assert.deepEqual(status.agent_hints, [
+        'Run `zest-spec init` to update deployed command markdown files.'
+      ]);
+    });
+
+    await t.test('agent hint is not shown for non-zest markdown files', () => {
+      const otherCommandsDir = path.join(TEST_DIR, '.opencode', 'commands');
+      fs.mkdirSync(otherCommandsDir, { recursive: true });
+      fs.writeFileSync(path.join(otherCommandsDir, 'pr.md'), '# unrelated', 'utf-8');
+
+      // Ensure no deployed zest command files exist for this subtest.
+      const cursorZestFile = path.join(TEST_DIR, '.cursor', 'commands', 'zest-spec-new.md');
+      if (fs.existsSync(cursorZestFile)) {
+        fs.unlinkSync(cursorZestFile);
+      }
+
+      const status = yaml.load(runCommand('status'));
+      assert.equal(status.agent_hints, undefined);
+    });
+  } finally {
+    cleanup();
+  }
+});
+
+test('zest-spec update integration', async (t) => {
+  setup();
+
+  try {
+    runCreate('first-spec');
+
+    await t.test('allows forward update', () => {
+      const result = yaml.load(runUpdate('001', 'researched'));
+      assert.equal(result.ok, true);
+      assert.equal(result.spec.id, '001');
+      assert.equal(result.spec.status, 'researched');
+      assert.equal(result.status.from, 'new');
+      assert.equal(result.status.to, 'researched');
+      assert.equal(result.status.changed, true);
+
+      const spec = yaml.load(runCommand('show 001'));
+      assert.equal(spec.status, 'researched');
+    });
+
+    await t.test('allows forward skip update', () => {
+      const result = yaml.load(runUpdate('001', 'implemented'));
+      assert.equal(result.ok, true);
+      assert.equal(result.spec.status, 'implemented');
+      assert.equal(result.status.from, 'researched');
+      assert.equal(result.status.to, 'implemented');
+    });
+
+    await t.test('fails on no-op update', () => {
+      assert.throws(
+        () => runUpdate('001', 'implemented'),
+        /Status is already "implemented" for spec 001/
+      );
+    });
+
+    await t.test('fails on backward update', () => {
+      assert.throws(
+        () => runUpdate('001', 'designed'),
+        /Invalid transition implemented -> designed/
+      );
+    });
+
+    await t.test('fails on invalid target status', () => {
+      assert.throws(
+        () => runUpdate('001', 'planned'),
+        /Invalid status "planned"\. Valid: new, researched, designed, implemented/
+      );
+    });
+  } finally {
+    cleanup();
   }
 });
