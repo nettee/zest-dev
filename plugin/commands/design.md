@@ -1,9 +1,15 @@
 ---
-description: Fill design section and advance spec to designed phase
-allowed-tools: Read, Edit, Bash(zest-spec:*)
+description: Clarify requirements and design architecture
+allowed-tools: Read, Edit, Bash(zest-spec:*), Task, AskUserQuestion, TodoWrite
 ---
 
-Create the design plan for the current spec and update the Design section.
+# Design: Clarify Requirements & Design Architecture
+
+Resolve ambiguities and design implementation approaches with trade-offs before coding.
+
+## Clarifying Questions
+
+**CRITICAL**: This is one of the most important steps. DO NOT SKIP.
 
 **Step 1: Verify Current Spec**
 Execute: `zest-spec status`
@@ -21,26 +27,75 @@ Read the spec file to understand:
 - Research findings and recommendations
 - Any existing design content
 
-**Step 3: Create Design Plan**
-Based on the research findings, create a clear implementation plan:
+**Step 3: Create Task List**
+Use TodoWrite to create a task list tracking:
+- Identify and ask clarifying questions
+- Launch architecture design agents
+- Present options to user
+- Document chosen design
+- Update spec status
 
-**Design should include:**
+**Step 4: Identify Underspecified Aspects**
+Review the codebase findings and original feature request to identify:
+- **Edge cases**: How to handle errors, empty states, invalid input
+- **Integration points**: How components interact, API contracts
+- **Scope boundaries**: What's in scope vs out of scope
+- **Design preferences**: UI/UX choices, naming conventions, patterns to follow
+- **Backward compatibility**: Breaking changes, migration needs
+- **Performance needs**: Scalability requirements, optimization priorities
+- **Testing strategy**: What needs tests, testing approach
+
+**Step 5: Ask Clarifying Questions**
+**Present all questions to the user in a clear, organized list** using AskUserQuestion when multiple choice, or direct questions for open-ended queries.
+
+**Wait for answers before proceeding to architecture design.**
+
+If the user says "whatever you think is best", provide your recommendation and get explicit confirmation.
+
+## Architecture Design
+
+**Step 6: Launch Architect Agents**
+Launch 2-3 code-architect agents **in parallel** using the Task tool with different focuses:
+- **Minimal changes**: Smallest change, maximum reuse of existing code
+- **Clean architecture**: Maintainability, elegant abstractions, long-term quality
+- **Pragmatic balance**: Speed + quality, practical trade-offs
+
+Each agent should provide:
+- Architecture overview with components
+- Implementation approach
+- Trade-offs (pros/cons)
+- Files to create or modify
+
+**Step 7: Review Approaches & Form Opinion**
+Review all approaches and form your opinion on which fits best for this specific task.
+
+Consider:
+- Is this a small fix or large feature?
+- Urgency vs quality trade-offs
+- Team context and existing patterns
+- Complexity and maintenance burden
+
+**Step 8: Present Options to User**
+Present to user:
+- **Brief summary of each approach** (2-3 sentences)
+- **Trade-offs comparison** (use table format)
+- **Your recommendation with reasoning**
+- **Concrete implementation differences**
+
+**Ask user which approach they prefer.**
+
+Wait for user decision before documenting the design.
+
+**Step 9: Document Design**
+Edit the spec file to add/update the Design section based on chosen approach.
+
+**Include:**
 - **Architecture overview**: Components, data flow, system structure
 - **Implementation steps**: Ordered sequence of what to build
 - **Pseudocode**: Logic for non-trivial algorithms or processes
 - **File structure**: Files to create or modify
 - **Interfaces/APIs**: Contracts between components
 - **Edge cases**: How to handle errors and unusual scenarios
-
-Guide the user through design by:
-- Proposing architecture based on research
-- Breaking down implementation into logical steps
-- Creating pseudocode for complex logic
-- Identifying all files that need changes
-- Discussing edge cases and error handling
-
-**Step 4: Fill Design Section**
-Edit the spec file to add/update the Design section.
 
 **Format guidelines:**
 - Use visual diagrams (ASCII art, flowcharts) for architecture
@@ -55,56 +110,15 @@ Edit the spec file to add/update the Design section.
 - Use pseudocode: Show logic, not language syntax
 - Flowcharts: For complex processes with branches
 
-**Step 5: Update Spec Status**
+**Step 10: Update Spec Status**
 Execute: `zest-spec update <current-spec-id> designed`
 
 This updates the spec status using the CLI (do not edit frontmatter manually).
 
-**Step 6: Confirm Completion**
-Inform the user:
+**Step 11: Confirm Completion**
+Mark todo items complete and inform user:
 - Design section has been completed
 - Spec status updated to "designed"
-- Guide them to use `/implement` command to create implementation plan
-
-**Example Design Section Structure:**
-```markdown
-## Design
-
-### Architecture
-```
-[Component A] → [Component B] → [Component C]
-     ↓              ↓              ↓
-[Database]     [Cache]        [API]
-```
-
-### Implementation Steps
-1. **[Step 1 name]** - [Brief description]
-2. **[Step 2 name]** - [Brief description]
-3. **[Step 3 name]** - [Brief description]
-
-### Pseudocode: [Key Algorithm]
-```
-Function name(params):
-  Initialize state
-  For each item:
-    If condition:
-      Process item
-    Else:
-      Skip item
-  Return result
-```
-
-### Files to Modify
-- `path/to/file1.ext` - [What changes]
-- `path/to/file2.ext` - [What changes]
-
-### Edge Cases
-- [Case 1]: [How to handle]
-- [Case 2]: [How to handle]
-```
-
-**Important:**
-- Use pseudocode, not production code
-- Show structure and flow, not implementation details
-- Keep it scannable with clear headers and bullets
-- Focus on main path, note edge cases separately
+- Clarifying questions resolved
+- Architecture approach documented
+- Guide them to use `/implement` command to build the feature
