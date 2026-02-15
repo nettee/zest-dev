@@ -1,10 +1,10 @@
 {
   "name": "zest-spec",
   "version": "0.1.0",
-  "description": "A lightweight, file-driven development workflow plugin for spec-driven development with sequential phases",
+  "description": "Guided feature development workflow: research codebase, design architecture, implement features",
   "author": {
     "name": "nettee",
     "email": "nettee.liu@gmail.com"
   },
-  "keywords": ["workflow", "spec-driven", "development", "planning"]
+  "keywords": ["feature-dev", "workflow", "spec-driven", "development", "planning"]
 }

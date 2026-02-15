@@ -1,9 +1,15 @@
 ---
-description: Fill research section and advance spec to researched phase
-allowed-tools: Read, Edit, Bash(zest-spec:*)
+description: Research feature requirements and explore codebase patterns
+allowed-tools: Read, Edit, Bash(zest-spec:*), Task, Glob, Grep, TodoWrite
 ---
 
-Conduct research phase for the current spec and update the Research section.
+# Research: Understand Requirements & Explore Codebase
+
+Understand the feature requirements deeply and explore existing codebase patterns before design.
+
+---
+
+## Discovery & Verification
 
 **Step 1: Verify Current Spec**
 Execute: `zest-spec status`
@@ -20,70 +26,116 @@ Read the spec file to understand:
 - Current status (should be "new")
 - Any existing content
 
-**Step 3: Conduct Research**
-Guide the user through research by investigating:
-- **Existing systems**: Code, patterns, or infrastructure to understand
-- **Technical options**: Libraries, frameworks, approaches to evaluate
-- **Key decisions**: Choices that need to be made with trade-offs
-- **Constraints**: Technical limitations or requirements
-- **Dependencies**: What needs to exist or be modified
+**Step 3: Clarify Requirements**
+If the feature description is unclear or vague, ask user for:
+- What problem are they solving?
+- What should the feature do?
+- Any constraints or requirements?
+- What's in scope vs out of scope?
 
-Ask clarifying questions if needed to understand the problem space.
+Summarize your understanding and confirm with user before proceeding.
 
-**Step 4: Fill Research Section**
-Edit the spec file to add/update the Research section with:
+**Step 4: Create Task List**
+Use TodoWrite to create a task list tracking:
+- Clarify requirements
+- Launch codebase exploration
+- Read identified files
+- Document research findings
+- Update spec status
+
+---
+
+## Codebase Exploration
+
+**Step 5: Launch Explorer Agents
+Launch 2-3 code-explorer agents **in parallel** using the Task tool. Each agent should:
+- Trace through the code comprehensively and focus on getting a comprehensive understanding of abstractions, architecture and flow of control
+- Target a different aspect of the codebase
+- Include a list of 5-10 key files to read
+
+**Example agent prompts**:
+- "Find features similar to [feature] and trace through their implementation comprehensively"
+- "Map the architecture and abstractions for [feature area], tracing through the code comprehensively"
+- "Analyze the current implementation of [existing feature/area], tracing through the code comprehensively"
+- "Identify UI patterns, testing approaches, or extension points relevant to [feature]"
+
+**Step 6: Read Identified Files**
+**IMPORTANT**: Once the agents return, read all files identified by agents to build deep understanding. Do NOT proceed to design without reading these files.
+
+**Step 7: Document Research Findings**
+Edit the spec file to add/update the Research section.
+
+**Research documents FACTS, not decisions.** Leave evaluation, comparison, and selection to the design phase.
 
 **Include:**
-- Existing code or systems relevant to the task
-- Technical options evaluated (2-3 alternatives max)
-- Key findings that inform design decisions
-- Recommended approach with brief rationale
-- Critical questions answered
+- **Existing System**: Current code, patterns, and infrastructure relevant to the task
+- **Available Approaches**: Technical options discovered (list them, do NOT rank or recommend)
+- **Constraints & Dependencies**: Hard requirements, compatibility needs, existing conventions
+- **Key References**: Important files discovered (use `file:line` format)
+
+**Do NOT include:**
+- Pros/cons comparisons or trade-off tables (that's design)
+- Recommendations or verdicts (that's design)
+- "Why" one approach is better than another (that's design)
+- Refactoring suggestions or improvement ideas
 
 **Format:**
-- Use bullet points and tables for comparisons
+- Use bullet points for lists
 - Keep descriptions concise (1-2 sentences per item)
-- Focus on actionable findings, not exhaustive documentation
-- Highlight the recommended approach
+- Focus on what exists and what's possible, not what should be chosen
+- State facts objectively
 
 **Content principles:**
 - Prioritize brevity: Main findings only, not exhaustive research
-- Easy to review: Use tables for comparisons, bullets for lists
-- Focus on "why": Document rationale for recommendations
+- Facts only: Document what IS, not what SHOULD BE
+- Enumerate choices: List available approaches without evaluating them
+- Reference code: Point to concrete files and patterns
 
-**Step 5: Update Spec Status**
-Execute: `zest-spec update <current-spec-id> researched`
-
-This updates the spec status using the CLI (do not edit frontmatter manually).
-
-**Step 6: Confirm Completion**
-Inform the user:
-- Research section has been completed
-- Spec status updated to "researched"
-- Guide them to use `/design` command to continue to design phase
-
-**Example Research Section Structure:**
+**Example Structure:**
 ```markdown
 ## Research
 
 ### Existing System
-- [Brief description of current state]
+- [Brief description of current state and relevant code]
+- Key files: `src/file1.js:45`, `src/file2.js:120`
 
-### Options Evaluated
-1. **Option A** - [Brief description] (recommended)
-2. **Option B** - [Brief description]
-3. **Option C** - [Brief description]
+### Available Approaches
+- **Option A**: [What it is and how it works]
+- **Option B**: [What it is and how it works]
+- **Option C**: [What it is and how it works]
 
-### Recommendation
-[1-2 sentences on recommended approach and why]
+### Constraints
+- [Constraint 1]: [What it means for this feature]
+- [Constraint 2]: [Hard requirement or dependency]
 
-### Key Decisions
-- [Decision 1]: [Rationale]
-- [Decision 2]: [Rationale]
+### Key References
+- `src/file1.js:45` - [What this file does]
+- `src/file2.js:120` - [Relevant pattern found here]
 ```
 
-**Important:**
-- Keep research focused and scannable
-- Don't include implementation code
-- Document "why" for key recommendations
-- Use comparison tables when evaluating alternatives
+**Step 8: Update Spec Status**
+Execute: `zest-spec update <current-spec-id> researched`
+
+This updates the spec status using the CLI (do not edit frontmatter manually).
+
+**Step 9: Present Summary & Next Steps**
+Present summary including:
+- What was explored
+- Key patterns and systems discovered
+- Available approaches identified (without recommending one)
+- Important files and references
+
+Mark todo items complete and inform user:
+- Research phase is complete
+- Spec status updated to "researched"
+- Guide them to use `/design` command to continue to design phase
+
+---
+
+## Important Notes
+
+- **Read files identified by agents**: This is CRITICAL. Do not skip reading files.
+- **Ask clarifying questions early**: Better to ask than assume.
+- **Keep research focused**: Document findings, not exhaustive code dumps.
+- **Facts, not opinions**: Research discovers what exists and what's possible. Design evaluates and decides.
+- **Include file references**: Help future readers find relevant code.

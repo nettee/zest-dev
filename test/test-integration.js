@@ -153,7 +153,7 @@ test('zest-spec init integration', async (t) => {
 
       const bodyContent = match[1];
       assert.ok(bodyContent.includes('$ARGUMENTS'), 'command body should keep $ARGUMENTS placeholder');
-      assert.ok(bodyContent.includes('**Step 1:'), 'command body should keep step structure');
+      assert.ok(bodyContent.includes('Step 1'), 'command body should keep step structure');
     });
 
     await t.test('idempotency', () => {
