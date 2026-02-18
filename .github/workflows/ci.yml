@@ -58,12 +58,12 @@ jobs:
       - name: List package contents on failure
         if: failure()
         run: |
-          if [ -f zest-spec-*.tgz ]; then
+          if [ -f zest-dev-*.tgz ]; then
             echo "📦 Package contents:"
-            tar -tzf zest-spec-*.tgz
+            tar -tzf zest-dev-*.tgz
           fi
-          if [ -d test-package-env/node_modules/zest-spec ]; then
+          if [ -d test-package-env/node_modules/zest-dev ]; then
             echo ""
             echo "📁 Installed package structure:"
-            ls -la test-package-env/node_modules/zest-spec/
+            ls -la test-package-env/node_modules/zest-dev/
           fi

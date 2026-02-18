@@ -8,7 +8,7 @@ allowed-tools: Read, Edit, Write, Bash, Task, Glob, Grep, TodoWrite
 Implement the feature following the design and document what was built.
 
 **Step 1: Verify Current Spec**
-Execute: `zest-spec status`
+Execute: `zest-dev status`
 
 Confirm there is a current spec set and status is "designed". If:
 - No current spec: Guide user to set one
@@ -16,7 +16,7 @@ Confirm there is a current spec set and status is "designed". If:
 - Status is "implemented": Confirm if user wants to continue/update implementation
 
 **Step 2: Read Current Spec**
-Execute: `zest-spec show <current-spec-id>` to get the spec file path.
+Execute: `zest-dev show <current-spec-id>` to get the spec file path.
 
 **IMPORTANT**: Read all research and design content before coding.
 
@@ -59,7 +59,7 @@ Edit the spec file to add/update the Implementation section with:
 - **Design deviations**: Any changes from original design with rationale
 
 **Step 6: Update Spec Status**
-Execute: `zest-spec update <current-spec-id> implemented`
+Execute: `zest-dev update <current-spec-id> implemented`
 
 This updates the spec status using the CLI (do not edit frontmatter manually).
 

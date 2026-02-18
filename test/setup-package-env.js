@@ -53,7 +53,7 @@ function setup() {
     log('Packing CLI...');
     execSync('npm pack', withNpmEnv({ cwd: rootDir, stdio: 'pipe' }));
 
-    const tarball = fs.readdirSync(rootDir).find(f => f.startsWith('zest-spec-') && f.endsWith('.tgz'));
+    const tarball = fs.readdirSync(rootDir).find(f => f.startsWith('zest-dev-') && f.endsWith('.tgz'));
     if (!tarball) {
       throw new Error('Package tarball not found');
     }
@@ -71,14 +71,14 @@ function setup() {
 
     // Verify CLI is executable
     log('Verifying CLI...');
-    const versionOutput = execSync('npx zest-spec --version', withNpmEnv({
+    const versionOutput = execSync('npx zest-dev --version', withNpmEnv({
       cwd: testEnvDir,
       encoding: 'utf-8'
     })).trim();
     info(`CLI version: ${versionOutput}`);
 
     // Create symlink for easy access
-    const cliPath = path.join(testEnvDir, 'node_modules', '.bin', 'zest-spec');
+    const cliPath = path.join(testEnvDir, 'node_modules', '.bin', 'zest-dev');
     if (fs.existsSync(cliPath)) {
       log('CLI is ready to use');
     }
@@ -88,7 +88,7 @@ function setup() {
 
     log('Package environment setup complete');
     info(`Test environment: ${testEnvDir}`);
-    info(`Next: Integration tests will use packaged CLI from ${testEnvDir}`);
+    info(`Next: Set ZEST_DEV_CLI_PATH=${testEnvDir} and run integration tests`);
 
   } catch (error) {
     console.error(`Error: ${error.message}`);

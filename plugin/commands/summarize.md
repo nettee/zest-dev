@@ -1,7 +1,7 @@
 ---
 description: Capture conversation into a spec (for post-hoc documentation)
 argument-hint: [optional spec-slug]
-allowed-tools: Read, Write, Edit, Bash(zest-spec:*), AskUserQuestion
+allowed-tools: Read, Write, Edit, Bash(zest-dev:*), AskUserQuestion
 ---
 
 # Summarize Conversation into Spec
@@ -44,7 +44,7 @@ Based on the conversation, determine the spec status:
 Infer a kebab-case slug from the task name
 Example: "Plugin deployment script" → "plugin-deployment-script"
 
-Execute: `zest-spec create <spec-slug>`
+Execute: `zest-dev create <spec-slug>`
 
 This will:
 - Create the spec file in `specs/` directory
@@ -94,11 +94,11 @@ Fill sections based on the status:
 
 **Step 5: Update Spec Status**
 
-Use `zest-spec update` for status transitions (do not edit frontmatter manually):
+Use `zest-dev update` for status transitions (do not edit frontmatter manually):
 - If inferred status is `new`: skip status update (new spec is already `new`)
-- If inferred status is `researched`: execute `zest-spec update <spec-id> researched`
-- If inferred status is `designed`: execute `zest-spec update <spec-id> designed`
-- If inferred status is `implemented`: execute `zest-spec update <spec-id> implemented`
+- If inferred status is `researched`: execute `zest-dev update <spec-id> researched`
+- If inferred status is `designed`: execute `zest-dev update <spec-id> designed`
+- If inferred status is `implemented`: execute `zest-dev update <spec-id> implemented`
 
 **Step 6: Add Notes Section**
 
@@ -111,7 +111,7 @@ Add relevant notes:
 
 **Step 7: Confirm and Show Result**
 
-Execute: `zest-spec show <spec-id>`
+Execute: `zest-dev show <spec-id>`
 
 Inform the user:
 - Spec has been created with ID and name
@@ -133,7 +133,7 @@ Inform the user:
 
 User has been coding a deployment script:
 1. Analyzed conversation → Status: "implemented" (code was written and tested)
-2. Created spec: `zest-spec create plugin-deployment-script`
+2. Created spec: `zest-dev create plugin-deployment-script`
 3. Filled all sections from Overview through Implementation
 4. Marked implementation tasks as `[x]` completed
 5. Added Implementation Summary with file changes and test results

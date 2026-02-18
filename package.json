@@ -1,22 +1,23 @@
 {
-  "name": "zest-spec",
+  "name": "zest-dev",
   "version": "0.1.0",
-  "description": "A lightweight, file-driven development workflow for swappable coding agents",
+  "description": "A lightweight, human-interactive development workflow for AI-assisted coding",
   "author": {
     "name": "nettee",
     "email": "nettee.liu@gmail.com"
   },
-  "repository": "https://github.com/nettee/zest-spec",
+  "repository": "https://github.com/nettee/zest-dev",
   "license": "MIT",
   "keywords": [
-    "spec",
     "workflow",
     "development",
-    "cli"
+    "cli",
+    "ai",
+    "spec"
   ],
   "main": "index.js",
   "bin": {
-    "zest-spec": "./bin/zest-spec.js"
+    "zest-dev": "./bin/zest-dev.js"
   },
   "files": [
     "bin/",
@@ -29,7 +30,7 @@
   "scripts": {
     "test": "node --test test/test-integration.js",
     "test:local": "node --test test/test-integration.js",
-    "test:package": "node test/setup-package-env.js setup && ZEST_CLI_PATH=$(pwd)/test-package-env node --test test/test-integration.js; STATUS=$?; node test/setup-package-env.js cleanup; exit $STATUS"
+    "test:package": "node test/setup-package-env.js setup && ZEST_DEV_CLI_PATH=$(pwd)/test-package-env node --test test/test-integration.js; STATUS=$?; node test/setup-package-env.js cleanup; exit $STATUS"
   },
   "dependencies": {
     "commander": "^12.0.0",
