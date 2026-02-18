@@ -5,27 +5,28 @@ const { test } = require('node:test');
 const { execSync } = require('child_process');
 const yaml = require('js-yaml');
 
-const PACKAGE_CLI_BIN = process.env.ZEST_CLI_PATH
+const PACKAGE_CLI_BIN = process.env.ZEST_DEV_CLI_PATH
   ? path.join(
-      process.env.ZEST_CLI_PATH,
+      process.env.ZEST_DEV_CLI_PATH,
       'node_modules',
       '.bin',
-      process.platform === 'win32' ? 'zest-spec.cmd' : 'zest-spec'
+      process.platform === 'win32' ? 'zest-dev.cmd' : 'zest-dev'
     )
   : null;
 
-const CLI_COMMAND = process.env.ZEST_CLI_PATH
+const CLI_COMMAND = process.env.ZEST_DEV_CLI_PATH
   ? `"${PACKAGE_CLI_BIN}"`
-  : `node ${path.join(__dirname, '../bin/zest-spec.js')}`;
+  : `node ${path.join(__dirname, '../bin/zest-dev.js')}`;
 
 const TEST_DIR = path.join(__dirname, '../test-project-temp');
 const CREATE_TEST_DIR = path.join(__dirname, '../test-project-create-temp');
 const EXPECTED_COMMANDS = [
-  'zest-spec-new.md',
-  'zest-spec-research.md',
-  'zest-spec-design.md',
-  'zest-spec-implement.md',
-  'zest-spec-summarize.md'
+  'zest-dev-design.md',
+  'zest-dev-implement.md',
+  'zest-dev-new.md',
+  'zest-dev-research.md',
+  'zest-dev-summarize.md',
+  'zest-dev-zest-dev.md'
 ];
 
 function cleanup(testDir = TEST_DIR) {
@@ -47,7 +48,7 @@ function runCommand(command, cwd = TEST_DIR) {
     });
   } catch (error) {
     const details = [error.message, error.stdout, error.stderr].filter(Boolean).join('\n');
-    throw new Error(`zest-spec ${command} failed:\n${details}`);
+    throw new Error(`zest-dev ${command} failed:\n${details}`);
   }
 }
 
@@ -75,7 +76,7 @@ function extractFrontmatter(content, filename) {
   return frontmatter;
 }
 
-test('zest-spec init integration', async (t) => {
+test('zest-dev init integration', async (t) => {
   setup();
 
   try {
@@ -114,8 +115,8 @@ test('zest-spec init integration', async (t) => {
     });
 
     await t.test('skills deployment', () => {
-      const cursorSkillPath = path.join(TEST_DIR, '.cursor/skills/zest-spec/SKILL.md');
-      const opencodeSkillPath = path.join(TEST_DIR, '.opencode/skills/zest-spec/SKILL.md');
+      const cursorSkillPath = path.join(TEST_DIR, '.cursor/skills/zest-dev/SKILL.md');
+      const opencodeSkillPath = path.join(TEST_DIR, '.opencode/skills/zest-dev/SKILL.md');
 
       assert.ok(fs.existsSync(cursorSkillPath), 'Cursor skill file should exist');
       assert.ok(fs.existsSync(opencodeSkillPath), 'OpenCode skill file should exist');
@@ -123,8 +124,8 @@ test('zest-spec init integration', async (t) => {
 
     await t.test('frontmatter transformation', () => {
       for (const target of ['.cursor', '.opencode']) {
-        const fileLabel = `${target}/commands/zest-spec-new.md`;
-        const content = readCommand(target, 'zest-spec-new.md');
+        const fileLabel = `${target}/commands/zest-dev-new.md`;
+        const content = readCommand(target, 'zest-dev-new.md');
         const frontmatter = extractFrontmatter(content, fileLabel);
 
         assert.ok(frontmatter.description, `${fileLabel} should include description`);
@@ -147,7 +148,7 @@ test('zest-spec init integration', async (t) => {
     });
 
     await t.test('content preservation', () => {
-      const content = readCommand('.cursor', 'zest-spec-new.md');
+      const content = readCommand('.cursor', 'zest-dev-new.md');
       const match = content.match(/^---\n[\s\S]*?\n---\n\n([\s\S]*)/);
       assert.ok(match, 'should be able to extract command body');
 
@@ -180,7 +181,7 @@ test('zest-spec init integration', async (t) => {
   }
 });
 
-test('zest-spec create integration', async (t) => {
+test('zest-dev create integration', async (t) => {
   setup(CREATE_TEST_DIR);
 
   try {
@@ -206,7 +207,7 @@ test('zest-spec create integration', async (t) => {
     });
 
     await t.test('custom template override', () => {
-      const customTemplatePath = path.join(CREATE_TEST_DIR, '.zest-spec/template/spec.md');
+      const customTemplatePath = path.join(CREATE_TEST_DIR, '.zest-dev/template/spec.md');
       fs.mkdirSync(path.dirname(customTemplatePath), { recursive: true });
       fs.writeFileSync(
         customTemplatePath,
@@ -249,7 +250,7 @@ Token: {id}|{name}|{date}
   }
 });
 
-test('zest-spec status integration', async (t) => {
+test('zest-dev status integration', async (t) => {
   setup();
 
   try {
@@ -279,11 +280,11 @@ test('zest-spec status integration', async (t) => {
     await t.test('agent hint appears when deployed zest command markdown exists', () => {
       const cursorCommandsDir = path.join(TEST_DIR, '.cursor', 'commands');
       fs.mkdirSync(cursorCommandsDir, { recursive: true });
-      fs.writeFileSync(path.join(cursorCommandsDir, 'zest-spec-new.md'), '# test', 'utf-8');
+      fs.writeFileSync(path.join(cursorCommandsDir, 'zest-dev-new.md'), '# test', 'utf-8');
 
       const status = yaml.load(runCommand('status'));
       assert.deepEqual(status.agent_hints, [
-        'Run `zest-spec init` to update deployed command markdown files.'
+        'Run `zest-dev init` to update deployed command markdown files.'
       ]);
     });
 
@@ -293,7 +294,7 @@ test('zest-spec status integration', async (t) => {
       fs.writeFileSync(path.join(otherCommandsDir, 'pr.md'), '# unrelated', 'utf-8');
 
       // Ensure no deployed zest command files exist for this subtest.
-      const cursorZestFile = path.join(TEST_DIR, '.cursor', 'commands', 'zest-spec-new.md');
+      const cursorZestFile = path.join(TEST_DIR, '.cursor', 'commands', 'zest-dev-new.md');
       if (fs.existsSync(cursorZestFile)) {
         fs.unlinkSync(cursorZestFile);
       }
@@ -306,7 +307,7 @@ test('zest-spec status integration', async (t) => {
   }
 });
 
-test('zest-spec update integration', async (t) => {
+test('zest-dev update integration', async (t) => {
   setup();
 
   try {

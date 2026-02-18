@@ -1,17 +1,17 @@
-# Zest Spec Plugin
+# Zest Dev Plugin
 
 A Claude Code plugin for spec-driven development workflow.
 
 ## Overview
 
-This plugin integrates the Zest Spec methodology into Claude Code, providing a structured workflow for managing software specifications through sequential development phases.
+This plugin integrates the Zest Dev methodology into Claude Code, providing a structured workflow for managing software specifications through sequential development phases.
 
 ## Features
 
 - **Spec creation** - Create new specs from natural language descriptions
 - **Phase management** - Guide specs through research → design → implementation phases
 - **Current spec context** - All commands work with the currently active spec
-- **CLI integration** - Seamlessly integrates with the `zest-spec` CLI tool
+- **CLI integration** - Seamlessly integrates with the `zest-dev` CLI tool
 
 ## Commands
 
@@ -24,11 +24,11 @@ This plugin integrates the Zest Spec methodology into Claude Code, providing a s
 
 ## Skills
 
-- **zest-spec** - Comprehensive guide to spec-driven development principles and best practices
+- **zest-dev** - Comprehensive guide to spec-driven development principles and best practices
 
 ## Prerequisites
 
-- `zest-spec` CLI tool must be installed and available in PATH
+- `zest-dev` CLI tool must be installed and available in PATH
 - Project must be initialized with `specs/` directory
 
 ## Installation
@@ -37,7 +37,7 @@ This plugin integrates the Zest Spec methodology into Claude Code, providing a s
 
 ```bash
 # Run Claude Code with this plugin
-cc --plugin-dir /path/to/zest-spec/plugin
+cc --plugin-dir /path/to/zest-dev/plugin
 ```
 
 ## Workflow

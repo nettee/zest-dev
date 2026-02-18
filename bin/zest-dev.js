@@ -28,16 +28,16 @@ function hasDeployedCommandMarkdowns() {
     }
 
     const files = fs.readdirSync(dirPath);
-    return files.some(file => /^zest-spec-.*\.md$/.test(file));
+    return files.some(file => /^zest-dev-.*\.md$/.test(file));
   });
 }
 
 program
-  .name('zest-spec')
-  .description('A lightweight, file-driven development workflow for swappable coding agents')
+  .name('zest-dev')
+  .description('A lightweight, human-interactive development workflow for AI-assisted coding')
   .version('0.1.0');
 
-// zest-spec status
+// zest-dev status
 program
   .command('status')
   .description('Show project status')
@@ -46,7 +46,7 @@ program
       const status = getSpecsStatus();
       if (hasDeployedCommandMarkdowns()) {
         status.agent_hints = [
-          'Run `zest-spec init` to update deployed command markdown files.'
+          'Run `zest-dev init` to update deployed command markdown files.'
         ];
       }
 
@@ -57,7 +57,7 @@ program
     }
   });
 
-// zest-spec show <spec_number|current>
+// zest-dev show <spec_number|current>
 program
   .command('show <spec>')
   .description('Show spec details')
@@ -71,7 +71,7 @@ program
     }
   });
 
-// zest-spec create <spec_slug>
+// zest-dev create <spec_slug>
 program
   .command('create <slug>')
   .description('Create a new spec')
@@ -85,7 +85,7 @@ program
     }
   });
 
-// zest-spec set-current <spec_number>
+// zest-dev set-current <spec_number>
 program
   .command('set-current <spec>')
   .description('Set the current spec')
@@ -99,7 +99,7 @@ program
     }
   });
 
-// zest-spec unset-current
+// zest-dev unset-current
 program
   .command('unset-current')
   .description('Unset the current spec')
@@ -113,7 +113,7 @@ program
     }
   });
 
-// zest-spec update <spec_number|current> <status>
+// zest-dev update <spec_number|current> <status>
 program
   .command('update <spec> <status>')
   .description('Update spec status')
@@ -127,7 +127,7 @@ program
     }
   });
 
-// zest-spec init
+// zest-dev init
 program
   .command('init')
   .description('Initialize plugin deployment to .cursor and .opencode directories')
@@ -141,10 +141,10 @@ program
     }
   });
 
-// zest-spec prompt <command> [args...]
+// zest-dev prompt <command> [args...]
 program
   .command('prompt <command> [args...]')
-  .description('Generate prompt for Codex editor (e.g., codex "$(zest-spec prompt new \'task description\')")')
+  .description('Generate prompt for Codex editor (e.g., codex "$(zest-dev prompt new \'task description\')")')
   .action((command, args) => {
     try {
       // Join args array into a single string for commands that take arguments

@@ -3,7 +3,7 @@
     "allow": [
       "Bash(npm install:*)",
       "Bash(chmod:*)",
-      "Bash(node bin/zest-spec.js:*)",
+      "Bash(node bin/zest-dev.js:*)",
       "Bash(du:*)",
       "Bash(pnpm install:*)"
     ]

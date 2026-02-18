@@ -1,14 +1,14 @@
 ---
-name: Zest Spec
-description: This skill should be used when the user asks to "create a spec", "write a spec", mentions "zest spec", "spec-driven development", workflow phases like "research phase", "design phase", "implement phase", or asks "how do I write a spec", "what's the spec process", "spec methodology", or needs guidance on specification planning and development workflows.
+name: Zest Dev
+description: This skill should be used when the user asks to "create a spec", "write a spec", mentions "zest dev", "zest-dev", "spec-driven development", "human-interactive development", workflow phases like "research phase", "design phase", "implement phase", or asks "how do I write a spec", "what's the spec process", "spec methodology", or needs guidance on specification planning and development workflows.
 version: 0.1.0
 ---
 
-# Zest Spec: Spec-Driven Development
+# Zest Dev: Spec-Driven Development
 
 ## Overview
 
-Zest Spec is a lightweight workflow that emphasizes planning before coding through structured specification documents. The methodology guides development through sequential phases ensuring clarity before implementation.
+Zest Dev is a lightweight, human-interactive workflow that emphasizes planning before coding through structured specification documents. The methodology guides development through sequential phases ensuring clarity before implementation.
 
 **Core principle:** Plan with clarity → Implement with confidence
 
@@ -173,11 +173,11 @@ User Request → Check Cache → Found?
 ### CLI Commands
 
 ```bash
-zest-spec create <spec-slug>     # Create new spec
-zest-spec status                 # View all specs
-zest-spec show <spec-id>         # View specific spec
-zest-spec set-current <spec-id>  # Set current spec
-zest-spec unset-current          # Unset current
+zest-dev create <spec-slug>     # Create new spec
+zest-dev status                 # View all specs
+zest-dev show <spec-id>         # View specific spec
+zest-dev set-current <spec-id>  # Set current spec
+zest-dev unset-current          # Unset current
 ```
 
 **Important:** Never manually create spec files or edit frontmatter. Always use CLI.
@@ -189,7 +189,7 @@ The "current spec" is the active specification. Plugin commands automatically op
 **Workflow:**
 1. Create spec (auto-sets as current)
 2. Work through phases with plugin commands
-3. Switch specs via `zest-spec set-current <id>`
+3. Switch specs via `zest-dev set-current <id>`
 
 ## Best Practices
 

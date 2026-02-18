@@ -142,12 +142,12 @@ npm run test:package
 Inspect package contents:
 ```bash
 npm pack
-tar -tzf zest-spec-*.tgz
+tar -tzf zest-dev-*.tgz
 ```
 
 Check installed package structure:
 ```bash
-ls -la test-package-env/node_modules/zest-spec/
+ls -la test-package-env/node_modules/zest-dev/
 ```
 
 ## Design Principles

@@ -1,8 +1,8 @@
 # Generated plugin deployment directories
-.cursor/**/zest-spec/
-.cursor/**/zest-spec*.md
-.opencode/**/zest-spec/
-.opencode/**/zest-spec*.md
+.cursor/**/zest-dev/
+.cursor/**/zest-dev*.md
+.opencode/**/zest-dev/
+.opencode/**/zest-dev*.md
 
 # Logs
 logs

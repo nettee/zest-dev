@@ -1,6 +1,6 @@
 ---
 description: Clarify requirements and design architecture
-allowed-tools: Read, Edit, Bash(zest-spec:*), Task, AskUserQuestion, TodoWrite
+allowed-tools: Read, Edit, Bash(zest-dev:*), Task, AskUserQuestion, TodoWrite
 ---
 
 # Design: Clarify Requirements & Design Architecture
@@ -12,7 +12,7 @@ Resolve ambiguities and design implementation approaches with trade-offs before 
 **CRITICAL**: This is one of the most important steps. DO NOT SKIP.
 
 **Step 1: Verify Current Spec**
-Execute: `zest-spec status`
+Execute: `zest-dev status`
 
 Confirm there is a current spec set and status is "researched". If:
 - No current spec: Guide user to set one
@@ -20,7 +20,7 @@ Confirm there is a current spec set and status is "researched". If:
 - Status is "designed" or later: Confirm if user wants to update existing design
 
 **Step 2: Read Current Spec**
-Execute: `zest-spec show <current-spec-id>` to get the spec file path.
+Execute: `zest-dev show <current-spec-id>` to get the spec file path.
 
 Read the spec file to understand:
 - Overview and problem statement
@@ -111,7 +111,7 @@ Edit the spec file to add/update the Design section based on chosen approach.
 - Flowcharts: For complex processes with branches
 
 **Step 10: Update Spec Status**
-Execute: `zest-spec update <current-spec-id> designed`
+Execute: `zest-dev update <current-spec-id> designed`
 
 This updates the spec status using the CLI (do not edit frontmatter manually).
 

@@ -2,11 +2,11 @@
 
 ## Project Overview
 
-Zest Spec: A lightweight, file-driven development workflow for swappable coding agents.
+Zest Dev: A lightweight, human-interactive development workflow for AI-assisted coding.
 
 ## Development
 
-### Testing Zest Spec CLI
+### Testing Zest Dev CLI
 
 #### Manual Testing
 
@@ -14,12 +14,12 @@ To manually test the CLI during development:
 
 ```bash
 # Run directly with node
-node bin/zest-spec.js status
-node bin/zest-spec.js show 001
-node bin/zest-spec.js create <spec-name>
-node bin/zest-spec.js set-current <spec-id>
-node bin/zest-spec.js unset-current
-node bin/zest-spec.js update <spec-id> <status>
+node bin/zest-dev.js status
+node bin/zest-dev.js show 001
+node bin/zest-dev.js create <spec-name>
+node bin/zest-dev.js set-current <spec-id>
+node bin/zest-dev.js unset-current
+node bin/zest-dev.js update <spec-id> <status>
 ```
 
 #### Automated Testing
@@ -32,7 +32,7 @@ node bin/zest-spec.js update <spec-id> <status>
 **Running tests:**
 
 ```bash
-# Local development testing (uses bin/zest-spec.js directly)
+# Local development testing (uses bin/zest-dev.js directly)
 pnpm test:local
 
 # Package testing (packs CLI, installs from tarball, runs same tests)
@@ -71,26 +71,25 @@ pnpm test:package
 
 **Common issue:** If package tests fail but local tests pass, check `package.json` `files` array to ensure all required directories are included.
 
-## Spec-Driven Development by Zest Spec
+## Spec-Driven Development by Zest Dev
 
-Specs are stored in `specs/`. Managed via `zest-spec` CLI.
+Specs are stored in `specs/`. Managed via `zest-dev` CLI.
 
 ### Commands
 
-**Never** manually create spec files or edit frontmatter. Use `zest-spec` CLI to create and manage specs.
+**Never** manually create spec files or edit frontmatter. Use `zest-dev` CLI to create and manage specs.
 
 | Command                         | Purpose                    |
 | ------------------------------- | -------------------------- |
-| `zest-spec status`              | View project status        |
-| `zest-spec show <spec-id>`      | View spec content          |
-| `zest-spec create <spec-name>`  | Create new spec            |
-| `zest-spec set-current <id>`    | Set current working spec   |
-| `zest-spec unset-current`       | Unset current working spec |
-| `zest-spec update <id> <status>`| Update spec status         |
+| `zest-dev status`              | View project status        |
+| `zest-dev show <spec-id>`      | View spec content          |
+| `zest-dev create <spec-name>`  | Create new spec            |
+| `zest-dev set-current <id>`    | Set current working spec   |
+| `zest-dev unset-current`       | Unset current working spec |
+| `zest-dev update <id> <status>`| Update spec status         |
 
 ### Spec content rules
 
 - **Prioritize Brevity**: Write only the main flow and design ideas, not detailed implementation code
 - **Easy to Review**: Keep documents concise so others can quickly understand the plan
 - **Pseudocode/Flowcharts**: Use pseudocode or step lists for complex logic, instead of full code
-

@@ -1,6 +1,6 @@
 ---
 description: Research feature requirements and explore codebase patterns
-allowed-tools: Read, Edit, Bash(zest-spec:*), Task, Glob, Grep, TodoWrite
+allowed-tools: Read, Edit, Bash(zest-dev:*), Task, Glob, Grep, TodoWrite
 ---
 
 # Research: Understand Requirements & Explore Codebase
@@ -12,14 +12,14 @@ Understand the feature requirements deeply and explore existing codebase pattern
 ## Discovery & Verification
 
 **Step 1: Verify Current Spec**
-Execute: `zest-spec status`
+Execute: `zest-dev status`
 
 Confirm there is a current spec set. If no current spec:
 - Inform user no spec is currently active
-- Guide them to use `/new` to create a spec or `zest-spec set-current <id>` to select one
+- Guide them to use `/new` to create a spec or `zest-dev set-current <id>` to select one
 
 **Step 2: Read Current Spec**
-Execute: `zest-spec show <current-spec-id>` to get the spec file path.
+Execute: `zest-dev show <current-spec-id>` to get the spec file path.
 
 Read the spec file to understand:
 - The overview and problem statement
@@ -114,7 +114,7 @@ Edit the spec file to add/update the Research section.
 ```
 
 **Step 8: Update Spec Status**
-Execute: `zest-spec update <current-spec-id> researched`
+Execute: `zest-dev update <current-spec-id> researched`
 
 This updates the spec status using the CLI (do not edit frontmatter manually).
 

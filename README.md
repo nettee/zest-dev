@@ -1,11 +1,11 @@
-# Zest Spec
+# Zest Dev
 
-A lightweight, file-driven development workflow for swappable coding agents.
+A lightweight, human-interactive development workflow for AI-assisted coding.
 
 ## Installation
 
 ```bash
-npm install -g zest-spec
+npm install -g zest-dev
 ```
 
 ## Usage
@@ -13,7 +13,7 @@ npm install -g zest-spec
 ### Check Project Status
 
 ```bash
-zest-spec status
+zest-dev status
 ```
 
 Output:
@@ -30,10 +30,10 @@ current:
 
 ```bash
 # Show specific spec
-zest-spec show 001
+zest-dev show 001
 
 # Show current spec
-zest-spec show current
+zest-dev show current
 ```
 
 Output:
@@ -48,7 +48,7 @@ status: "new"
 ### Create New Spec
 
 ```bash
-zest-spec create feature-name
+zest-dev create feature-name
 ```
 
 Output:
@@ -65,7 +65,7 @@ spec:
 ### Set Current Spec
 
 ```bash
-zest-spec set-current 001
+zest-dev set-current 001
 ```
 
 Output:
@@ -77,7 +77,7 @@ current: "001"
 ### Unset Current Spec
 
 ```bash
-zest-spec unset-current
+zest-dev unset-current
 ```
 
 Output:
@@ -89,7 +89,7 @@ current: null
 ### Update Spec Status
 
 ```bash
-zest-spec update 003 researched
+zest-dev update 003 researched
 ```
 
 Output:
@@ -116,19 +116,19 @@ The `prompt` command generates formatted prompts for editors like Codex that don
 
 ```bash
 # Create a new spec
-codex "$(zest-spec prompt new 'some description')"
+codex "$(zest-dev prompt new 'some description')"
 
 # Work on research phase
-codex "$(zest-spec prompt research)"
+codex "$(zest-dev prompt research)"
 
 # Work on design phase
-codex "$(zest-spec prompt design)"
+codex "$(zest-dev prompt design)"
 
 # Work on implementation phase
-codex "$(zest-spec prompt implement)"
+codex "$(zest-dev prompt implement)"
 
 # Summarize a coding session
-codex "$(zest-spec prompt summarize)"
+codex "$(zest-dev prompt summarize)"
 ```
 
 This allows you to launch Codex with the appropriate initial prompt for each spec workflow phase.
@@ -143,14 +143,14 @@ project/
 │   ├── 002-feature-name/
 │   │   └── spec.md
 │   └── current -> 002-feature-name (symlink)
-└── .zest-spec/
+└── .zest-dev/
     └── template/
         └── spec.md
 ```
 
 ## Spec Template
 
-Create a custom spec template at `.zest-spec/template/spec.md`.
+Create a custom spec template at `.zest-dev/template/spec.md`.
 
 ## License
 
