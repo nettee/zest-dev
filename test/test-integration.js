@@ -21,12 +21,13 @@ const CLI_COMMAND = process.env.ZEST_DEV_CLI_PATH
 const TEST_DIR = path.join(__dirname, '../test-project-temp');
 const CREATE_TEST_DIR = path.join(__dirname, '../test-project-create-temp');
 const EXPECTED_COMMANDS = [
+  'zest-dev-compound.md',
   'zest-dev-design.md',
   'zest-dev-implement.md',
   'zest-dev-new.md',
   'zest-dev-research.md',
   'zest-dev-summarize.md',
-  'zest-dev-zest-dev.md'
+  'zest-dev-quick-implement.md'
 ];
 
 function cleanup(testDir = TEST_DIR) {

@@ -110,6 +110,21 @@ Edit the spec file to add/update the Design section based on chosen approach.
 - Use pseudocode: Show logic, not language syntax
 - Flowcharts: For complex processes with branches
 
+**Step 9.5: Assess Implementation Complexity & Fill Plan**
+Assess whether implementation needs to be split into multiple phases:
+
+- **Single phase** (most features): Leave the `### Plan` subsection empty.
+- **Multi-phase** (complex features): Fill `### Plan` with a coarse phase breakdown.
+
+When filling Plan, keep it high-level — name what each phase covers, not individual tasks:
+
+```
+- [ ] Phase 1: [brief description of scope]
+- [ ] Phase 2: [brief description of scope]
+```
+
+2-3 phases maximum. Do not nest sub-tasks under phases. These boxes will be checked off during the Implement stage.
+
 **Step 10: Update Spec Status**
 Execute: `zest-dev update <current-spec-id> designed`
 

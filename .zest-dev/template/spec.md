@@ -19,20 +19,17 @@ created: "{date}"
 
 ## Plan
 
-<!-- Break down implementation and verification into steps -->
-
-- [ ] Phase 1: Implement the first part of the feature
-  - [ ] Task 1
-  - [ ] Task 2
-  - [ ] Task 3
-- [ ] Phase 2: Implement the second part of the feature
-  - [ ] Task 1
-  - [ ] Task 2
-  - [ ] Task 3
-- [ ] Phase 3: Test and verify
-  - [ ] Test criteria 1
-  - [ ] Test criteria 2
+<!-- Optional: Phase breakdown for complex features that need multiple implementation phases.
+     Decided during Design. Checked off during Implement. -->
 
 ## Notes
 
-<!-- Optional: Alternatives considered, open questions, etc. -->
+<!-- Optional sections — add what's relevant. -->
+
+### Implementation
+
+<!-- Files created/modified, decisions made during coding, deviations from design -->
+
+### Verification
+
+<!-- How the feature was verified: tests written, manual testing steps, results -->
