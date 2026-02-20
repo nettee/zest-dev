@@ -49,21 +49,30 @@ Once approved, implement the feature:
 - **Security first**: Avoid introducing vulnerabilities
 - **Test as you go**: Write tests alongside implementation
 
-**Step 5: Document Implementation**
-Edit the spec file to add/update the Implementation section with:
+**Step 5: Update Plan Checkboxes**
+If the spec has a Plan section, mark completed phases as `[x]` as you finish them.
 
-**Include:**
-- **Tasks checklist**: Ordered tasks with completion status `[x]` or `[ ]`
-- **Files modified**: List all created/modified files with descriptions
-- **Testing results**: What tests were written and their status
-- **Design deviations**: Any changes from original design with rationale
+**Step 6: Document in Notes**
+Edit the spec file to fill the `### Implementation` and `### Verification` subsections under Notes.
 
-**Step 6: Update Spec Status**
+**Implementation** — what was actually built:
+- Files created or modified (with one-line description each)
+- Decisions made during coding that weren't in the design
+- Deviations from original design with rationale
+
+**Verification** — how it was validated:
+- Tests written and their results
+- Manual testing steps and outcomes
+- Any known limitations or follow-up items
+
+Keep both sections brief. Use bullet points. Skip a subsection entirely if there's nothing worth noting.
+
+**Step 7: Update Spec Status**
 Execute: `zest-dev update <current-spec-id> implemented`
 
 This updates the spec status using the CLI (do not edit frontmatter manually).
 
-**Step 7: Confirm Completion**
+**Step 8: Confirm Completion**
 Mark todo items complete and inform user:
 - ✅ Implementation complete
 - ✅ Spec status updated to "implemented"

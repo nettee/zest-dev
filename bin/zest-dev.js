@@ -10,7 +10,8 @@ const {
   createSpec,
   setCurrentSpec,
   unsetCurrentSpec,
-  updateSpecStatus
+  updateSpecStatus,
+  createBranchFromCurrentSpec
 } = require('../lib/spec-manager');
 const { deployPlugin } = require('../lib/plugin-deployer');
 const { generatePrompt } = require('../lib/prompt-generator');
@@ -120,6 +121,20 @@ program
   .action((spec, status) => {
     try {
       const result = updateSpecStatus(spec, status);
+      console.log(yaml.dump(result));
+    } catch (error) {
+      console.error('Error:', error.message);
+      process.exit(1);
+    }
+  });
+
+// zest-dev create-branch
+program
+  .command('create-branch')
+  .description('Create and switch to a git branch from the current spec slug')
+  .action(() => {
+    try {
+      const result = createBranchFromCurrentSpec();
       console.log(yaml.dump(result));
     } catch (error) {
       console.error('Error:', error.message);
