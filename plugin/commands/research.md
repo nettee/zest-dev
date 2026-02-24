@@ -16,10 +16,10 @@ Execute: `zest-dev status`
 
 Confirm there is a current spec set. If no current spec:
 - Inform user no spec is currently active
-- Guide them to use `/new` to create a spec or `zest-dev set-current <id>` to select one
+- Guide them to use `/new` to create a spec or `zest-dev set-current <spec-id>` to select one
 
 **Step 2: Read Current Spec**
-Execute: `zest-dev show <current-spec-id>` to get the spec file path.
+Execute: `zest-dev show current` to get the spec file path.
 
 Read the spec file to understand:
 - The overview and problem statement
@@ -114,7 +114,7 @@ Edit the spec file to add/update the Research section.
 ```
 
 **Step 8: Update Spec Status**
-Execute: `zest-dev update <current-spec-id> researched`
+Execute: `zest-dev update current researched`
 
 This updates the spec status using the CLI (do not edit frontmatter manually).
 

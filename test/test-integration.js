@@ -26,7 +26,8 @@ const EXPECTED_COMMANDS = [
   'zest-dev-implement.md',
   'zest-dev-new.md',
   'zest-dev-research.md',
-  'zest-dev-summarize.md',
+  'zest-dev-summarize-chat.md',
+  'zest-dev-summarize-pr.md',
   'zest-dev-quick-implement.md'
 ];
 
@@ -191,18 +192,20 @@ test('zest-dev create integration', async (t) => {
       const result = yaml.load(output);
       assert.equal(result.ok, true, 'create command should succeed');
 
-      const specPath = path.join(CREATE_TEST_DIR, 'specs/001-default-template/spec.md');
+      const specId = result.spec.id;
+      assert.ok(/^\d{8}-default-template$/.test(specId), `spec id should be date-based, got: ${specId}`);
+
+      const specPath = path.join(CREATE_TEST_DIR, `specs/${specId}/spec.md`);
       assert.ok(fs.existsSync(specPath), 'spec file should exist');
 
       const content = fs.readFileSync(specPath, 'utf-8');
-      const frontmatter = extractFrontmatter(content, 'specs/001-default-template/spec.md');
+      const frontmatter = extractFrontmatter(content, `specs/${specId}/spec.md`);
 
-      assert.equal(frontmatter.id, '001');
+      assert.ok(/^\d{8}-default-template$/.test(frontmatter.id), `frontmatter.id should be date-based, got: ${frontmatter.id}`);
       assert.equal(frontmatter.name, 'Default Template');
       assert.equal(frontmatter.status, 'new');
       assert.equal(typeof frontmatter.created, 'string');
       assert.ok(content.includes('## Overview'), 'should use packaged default template');
-      assert.equal(content.includes('{id}'), false);
       assert.equal(content.includes('{name}'), false);
       assert.equal(content.includes('{date}'), false);
     });
@@ -213,7 +216,6 @@ test('zest-dev create integration', async (t) => {
       fs.writeFileSync(
         customTemplatePath,
         `---
-id: "{id}"
 name: "{name}"
 status: custom
 created: "{date}"
@@ -221,7 +223,7 @@ created: "{date}"
 
 # Custom Spec
 
-Token: {id}|{name}|{date}
+Token: {name}|{date}
 `,
         'utf-8'
       );
@@ -230,21 +232,23 @@ Token: {id}|{name}|{date}
       const result = yaml.load(output);
       assert.equal(result.ok, true, 'create command should succeed with custom template');
 
-      const specPath = path.join(CREATE_TEST_DIR, 'specs/002-custom-template/spec.md');
+      const specId = result.spec.id;
+      assert.ok(/^\d{8}-custom-template$/.test(specId), `spec id should be date-based, got: ${specId}`);
+
+      const specPath = path.join(CREATE_TEST_DIR, `specs/${specId}/spec.md`);
       assert.ok(fs.existsSync(specPath), 'spec file should exist');
 
       const content = fs.readFileSync(specPath, 'utf-8');
-      const frontmatter = extractFrontmatter(content, 'specs/002-custom-template/spec.md');
+      const frontmatter = extractFrontmatter(content, `specs/${specId}/spec.md`);
 
-      assert.equal(frontmatter.id, '002');
+      assert.equal(frontmatter.id, undefined);
       assert.equal(frontmatter.name, 'Custom Template');
       assert.equal(frontmatter.status, 'custom');
       assert.ok(content.includes('# Custom Spec'), 'should use custom template file');
       assert.equal(content.includes('## Overview'), false);
-      assert.equal(content.includes('{id}'), false);
       assert.equal(content.includes('{name}'), false);
       assert.equal(content.includes('{date}'), false);
-      assert.ok(content.includes('Token: 002|Custom Template|'));
+      assert.ok(content.includes('Token: Custom Template|'));
     });
   } finally {
     cleanup(CREATE_TEST_DIR);
@@ -266,14 +270,29 @@ test('zest-dev status integration', async (t) => {
     });
 
     await t.test('current is an object when set', () => {
-      runCommand('set-current 002');
+      const secondResult = yaml.load(runCommand('status'));
+      // Get the second spec's id from the spec listing via show
+      // We need to find the id of 'second-spec' — create outputs were not captured, so list all specs
+      // by creating a second spec and capturing its id
+      // Re-run: we already ran runCreate('second-spec') above, so re-query via a fresh create would fail.
+      // Instead, capture from the initial creates by restructuring the test.
+      // Since we can't easily get it here, use show current after set-current on first spec
+      // and derive second spec id from status after the first set-current.
+      // Simplest fix: run status before set-current to find spec ids from paths isn't available.
+      // Use the fact that both specs were created today — find by slug suffix.
+      const specs = fs.readdirSync(path.join(TEST_DIR, 'specs'))
+        .filter(d => /^\d{8}-/.test(d));
+      const secondSpecDir = specs.find(d => d.endsWith('-second-spec'));
+      assert.ok(secondSpecDir, 'second-spec directory should exist');
+
+      runCommand(`set-current ${secondSpecDir}`);
       const status = yaml.load(runCommand('status'));
 
       assert.equal(status.specs_count, 2);
       assert.equal(typeof status.current, 'object');
-      assert.equal(status.current.id, '002');
+      assert.equal(status.current.id, secondSpecDir);
       assert.equal(status.current.name, 'Second Spec');
-      assert.equal(status.current.path, path.join('specs', '002-second-spec', 'spec.md'));
+      assert.equal(status.current.path, path.join('specs', secondSpecDir, 'spec.md'));
       assert.equal(status.current.status, 'new');
       assert.equal(status.agent_hints, undefined);
     });
@@ -312,23 +331,24 @@ test('zest-dev update integration', async (t) => {
   setup();
 
   try {
-    runCreate('first-spec');
+    const firstOutput = yaml.load(runCreate('first-spec'));
+    const firstSpecId = firstOutput.spec.id;
 
     await t.test('allows forward update', () => {
-      const result = yaml.load(runUpdate('001', 'researched'));
+      const result = yaml.load(runUpdate(firstSpecId, 'researched'));
       assert.equal(result.ok, true);
-      assert.equal(result.spec.id, '001');
+      assert.equal(result.spec.id, firstSpecId);
       assert.equal(result.spec.status, 'researched');
       assert.equal(result.status.from, 'new');
       assert.equal(result.status.to, 'researched');
       assert.equal(result.status.changed, true);
 
-      const spec = yaml.load(runCommand('show 001'));
+      const spec = yaml.load(runCommand(`show ${firstSpecId}`));
       assert.equal(spec.status, 'researched');
     });
 
     await t.test('allows forward skip update', () => {
-      const result = yaml.load(runUpdate('001', 'implemented'));
+      const result = yaml.load(runUpdate(firstSpecId, 'implemented'));
       assert.equal(result.ok, true);
       assert.equal(result.spec.status, 'implemented');
       assert.equal(result.status.from, 'researched');
@@ -337,21 +357,21 @@ test('zest-dev update integration', async (t) => {
 
     await t.test('fails on no-op update', () => {
       assert.throws(
-        () => runUpdate('001', 'implemented'),
-        /Status is already "implemented" for spec 001/
+        () => runUpdate(firstSpecId, 'implemented'),
+        /Status is already "implemented" for spec \S+/
       );
     });
 
     await t.test('fails on backward update', () => {
       assert.throws(
-        () => runUpdate('001', 'designed'),
+        () => runUpdate(firstSpecId, 'designed'),
         /Invalid transition implemented -> designed/
       );
     });
 
     await t.test('fails on invalid target status', () => {
       assert.throws(
-        () => runUpdate('001', 'planned'),
+        () => runUpdate(firstSpecId, 'planned'),
         /Invalid status "planned"\. Valid: new, researched, designed, implemented/
       );
     });

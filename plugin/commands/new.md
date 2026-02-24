@@ -23,15 +23,15 @@ Analyze the user's description and determine:
 Execute: `zest-dev create <spec-slug>`
 
 This will:
-- Create the spec file in `specs/` directory
-- Generate unique ID and frontmatter
+- Create the spec file in `specs/` directory with a date-based id (e.g. `20260224-spec-slug`)
+- Generate frontmatter with `name` and `status`
 - Initialize empty sections
 
 **Step 3: Set as Current Spec**
 
 Execute: `zest-dev set-current <spec-id>`
 
-Use the ID from the created spec (check CLI output or run `zest-dev status` to find it).
+Use the `id` from the created spec's CLI output (e.g. `20260224-spec-slug`).
 
 **Step 4: Understand the Feature**
 
@@ -117,8 +117,8 @@ Full (user provided all details):
 **Step 6: Confirm and Guide Next Steps**
 
 Inform the user:
-- ✅ Spec created with ID `<spec-id>` and name `<spec-name>`
-- ✅ Spec file location: `specs/<spec-slug>.md`
+- ✅ Spec id: `<spec-id>` (e.g. `20260224-spec-slug`), name: `<spec-name>`
+- ✅ Spec file location: `specs/<spec-id>/spec.md`
 - ✅ Set as current working spec
 - ✅ Overview section completed
 

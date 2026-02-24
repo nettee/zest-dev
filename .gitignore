@@ -1,3 +1,6 @@
+# Zest dev
+specs/current
+
 # Generated plugin deployment directories
 .cursor/**/zest-dev/
 .cursor/**/zest-dev*.md
@@ -143,3 +146,5 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+.llm-chat-history/

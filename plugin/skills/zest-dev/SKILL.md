@@ -175,7 +175,7 @@ User Request → Check Cache → Found?
 ```bash
 zest-dev create <spec-slug>     # Create new spec
 zest-dev status                 # View all specs
-zest-dev show <spec-id>         # View specific spec
+zest-dev show <spec-id>         # View specific spec (e.g. 20260224-my-feature)
 zest-dev set-current <spec-id>  # Set current spec
 zest-dev unset-current          # Unset current
 ```
@@ -189,7 +189,7 @@ The "current spec" is the active specification. Plugin commands automatically op
 **Workflow:**
 1. Create spec (auto-sets as current)
 2. Work through phases with plugin commands
-3. Switch specs via `zest-dev set-current <id>`
+3. Switch specs via `zest-dev set-current <spec-id>`
 
 ## Best Practices
 
@@ -213,12 +213,9 @@ The "current spec" is the active specification. Plugin commands automatically op
 
 ```markdown
 ---
-id: 001
 name: Spec Name
-slug: spec-slug
 status: new
 created: 2026-02-10
-updated: 2026-02-10
 ---
 
 ## Overview

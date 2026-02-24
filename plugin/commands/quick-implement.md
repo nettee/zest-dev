@@ -46,7 +46,7 @@ Analyze the user's description and determine:
 
 Execute: `zest-dev create <spec-slug>`
 
-Then set it as current: `zest-dev set-current <spec-id>`
+Then set it as current: `zest-dev set-current <spec-id>` (use the `id` from the create output, e.g. `20260224-spec-slug`)
 
 **Step 2: Fill Overview Section**
 
@@ -173,6 +173,7 @@ Implement the feature:
 - Match existing code conventions and patterns
 - Write tests alongside implementation
 - Update todos as you progress
+- **After each phase/task completes, immediately mark the corresponding Plan section item as `[x]`** in the spec file
 
 **Implementation principles:**
 - Simple and minimal — only what's needed for current requirements
@@ -182,8 +183,9 @@ Implement the feature:
 
 **Step 15: Document Implementation**
 
+Before documenting, verify that all completed items in the spec's Plan section are marked `[x]`. Any item left as `[ ]` must either be completed or explicitly noted as skipped with a reason.
+
 Edit the spec file's Implementation section:
-- Tasks checklist with completion status (`[x]` or `[ ]`)
 - Files created or modified with descriptions
 - Testing results
 - Any deviations from the design with rationale

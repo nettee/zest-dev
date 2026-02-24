@@ -15,8 +15,8 @@ To manually test the CLI during development:
 ```bash
 # Run directly with node
 node bin/zest-dev.js status
-node bin/zest-dev.js show 001
-node bin/zest-dev.js create <spec-name>
+node bin/zest-dev.js show 20260224-init-project
+node bin/zest-dev.js create <slug>
 node bin/zest-dev.js set-current <spec-id>
 node bin/zest-dev.js unset-current
 node bin/zest-dev.js update <spec-id> <status>
@@ -82,11 +82,11 @@ Specs are stored in `specs/`. Managed via `zest-dev` CLI.
 | Command                         | Purpose                    |
 | ------------------------------- | -------------------------- |
 | `zest-dev status`              | View project status        |
-| `zest-dev show <spec-id>`      | View spec content          |
-| `zest-dev create <spec-name>`  | Create new spec            |
-| `zest-dev set-current <id>`    | Set current working spec   |
-| `zest-dev unset-current`       | Unset current working spec |
-| `zest-dev update <id> <status>`| Update spec status         |
+| `zest-dev show <spec-id\|current>` | View spec content          |
+| `zest-dev create <slug>`           | Create new spec            |
+| `zest-dev set-current <spec-id>`   | Set current working spec   |
+| `zest-dev unset-current`           | Unset current working spec |
+| `zest-dev update <spec-id\|current> <status>` | Update spec status |
 
 ### Spec content rules
 
