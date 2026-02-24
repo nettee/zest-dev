@@ -69,7 +69,7 @@ The `zest-dev` CLI manages spec files. Use it to inspect and update specs outsid
 |---------|---------|
 | `zest-dev status` | View project status |
 | `zest-dev show <spec-id\|current>` | View spec content |
-| `zest-dev create <spec-name>` | Create new spec |
+| `zest-dev create <slug>` | Create new spec |
 | `zest-dev set-current <spec-id>` | Set current working spec |
 | `zest-dev unset-current` | Unset current working spec |
 | `zest-dev update <spec-id> <status>` | Update spec status |
@@ -100,11 +100,11 @@ codex "$(zest-dev prompt summarize)"
 ```
 project/
 ├── specs/
-│   ├── 001-init-project/
+│   ├── 20260224-init-project/
 │   │   └── spec.md
-│   ├── 002-feature-name/
+│   ├── 20260225-feature-name/
 │   │   └── spec.md
-│   └── current -> 002-feature-name (symlink)
+│   └── current -> 20260225-feature-name (symlink)
 └── .zest-dev/
     └── template/
         └── spec.md

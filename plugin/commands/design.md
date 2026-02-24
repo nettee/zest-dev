@@ -20,7 +20,7 @@ Confirm there is a current spec set and status is "researched". If:
 - Status is "designed" or later: Confirm if user wants to update existing design
 
 **Step 2: Read Current Spec**
-Execute: `zest-dev show <current-spec-id>` to get the spec file path.
+Execute: `zest-dev show current` to get the spec file path.
 
 Read the spec file to understand:
 - Overview and problem statement
@@ -126,7 +126,7 @@ When filling Plan, keep it high-level — name what each phase covers, not indiv
 2-3 phases maximum. Do not nest sub-tasks under phases. These boxes will be checked off during the Implement stage.
 
 **Step 10: Update Spec Status**
-Execute: `zest-dev update <current-spec-id> designed`
+Execute: `zest-dev update current designed`
 
 This updates the spec status using the CLI (do not edit frontmatter manually).
 

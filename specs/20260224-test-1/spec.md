@@ -1,8 +1,7 @@
 ---
-id: "{id}"
-name: "{name}"
+name: "Test 1"
 status: new
-created: "{date}"
+created: "2026-02-24"
 ---
 
 ## Overview

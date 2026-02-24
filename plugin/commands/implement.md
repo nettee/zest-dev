@@ -16,7 +16,7 @@ Confirm there is a current spec set and status is "designed". If:
 - Status is "implemented": Confirm if user wants to continue/update implementation
 
 **Step 2: Read Current Spec**
-Execute: `zest-dev show <current-spec-id>` to get the spec file path.
+Execute: `zest-dev show current` to get the spec file path.
 
 **IMPORTANT**: Read all research and design content before coding.
 
@@ -41,6 +41,7 @@ Once approved, implement the feature:
 - Write clean, well-documented code
 - Follow existing patterns discovered in research
 - Update todos as you progress
+- **After each phase/task completes, immediately mark the corresponding Plan section item as `[x]`** in the spec file
 
 **Implementation principles:**
 - **Simple and elegant**: Prioritize readable, maintainable code
@@ -49,8 +50,8 @@ Once approved, implement the feature:
 - **Security first**: Avoid introducing vulnerabilities
 - **Test as you go**: Write tests alongside implementation
 
-**Step 5: Update Plan Checkboxes**
-If the spec has a Plan section, mark completed phases as `[x]` as you finish them.
+**Step 5: Verify Plan Checkboxes**
+Before moving on, confirm all completed items in the spec's Plan section are marked `[x]`. Any item left as `[ ]` must either be completed or explicitly noted as skipped with a reason.
 
 **Step 6: Document in Notes**
 Edit the spec file to fill the `### Implementation` and `### Verification` subsections under Notes.
@@ -68,7 +69,7 @@ Edit the spec file to fill the `### Implementation` and `### Verification` subse
 Keep both sections brief. Use bullet points. Skip a subsection entirely if there's nothing worth noting.
 
 **Step 7: Update Spec Status**
-Execute: `zest-dev update <current-spec-id> implemented`
+Execute: `zest-dev update current implemented`
 
 This updates the spec status using the CLI (do not edit frontmatter manually).
 

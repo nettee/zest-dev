@@ -1,5 +1,5 @@
 ---
-description: Capture conversation into a spec (for post-hoc documentation)
+description: Capture chat conversation into a spec (for post-hoc documentation)
 argument-hint: [optional spec-slug]
 allowed-tools: Read, Write, Edit, Bash(zest-dev:*), AskUserQuestion
 ---
@@ -96,9 +96,9 @@ Fill sections based on the status:
 
 Use `zest-dev update` for status transitions (do not edit frontmatter manually):
 - If inferred status is `new`: skip status update (new spec is already `new`)
-- If inferred status is `researched`: execute `zest-dev update <spec-id> researched`
-- If inferred status is `designed`: execute `zest-dev update <spec-id> designed`
-- If inferred status is `implemented`: execute `zest-dev update <spec-id> implemented`
+- If inferred status is `researched`: execute `zest-dev update current researched`
+- If inferred status is `designed`: execute `zest-dev update current designed`
+- If inferred status is `implemented`: execute `zest-dev update current implemented`
 
 **Step 6: Add Notes Section**
 
@@ -111,7 +111,7 @@ Add relevant notes:
 
 **Step 7: Confirm and Show Result**
 
-Execute: `zest-dev show <spec-id>`
+Execute: `zest-dev show current`
 
 Inform the user:
 - Spec has been created with ID and name

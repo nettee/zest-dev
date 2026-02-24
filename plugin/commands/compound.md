@@ -37,7 +37,7 @@ Present the user with storage options using AskUserQuestion. Build the options d
 - Current spec folder: `specs/<current-spec-directory>/` — knowledge directly related to the work in progress
 
 **Include if historical specs exist:**
-- A historical spec — let the user type the spec ID directly (e.g. `001`), then resolve the full directory by running `zest-dev show <id>` to find the correct directory
+- A historical spec — let the user type the spec id directly (e.g. `20260224-my-feature`), then resolve details by running `zest-dev show <spec-id>`
 
 ---
 
