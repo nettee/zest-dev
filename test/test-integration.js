@@ -195,11 +195,11 @@ test('zest-dev create integration', async (t) => {
       const specId = result.spec.id;
       assert.ok(/^\d{8}-default-template$/.test(specId), `spec id should be date-based, got: ${specId}`);
 
-      const specPath = path.join(CREATE_TEST_DIR, `specs/${specId}/spec.md`);
+      const specPath = path.join(CREATE_TEST_DIR, `specs/change/${specId}/spec.md`);
       assert.ok(fs.existsSync(specPath), 'spec file should exist');
 
       const content = fs.readFileSync(specPath, 'utf-8');
-      const frontmatter = extractFrontmatter(content, `specs/${specId}/spec.md`);
+      const frontmatter = extractFrontmatter(content, `specs/change/${specId}/spec.md`);
 
       assert.ok(/^\d{8}-default-template$/.test(frontmatter.id), `frontmatter.id should be date-based, got: ${frontmatter.id}`);
       assert.equal(frontmatter.name, 'Default Template');
@@ -235,11 +235,11 @@ Token: {name}|{date}
       const specId = result.spec.id;
       assert.ok(/^\d{8}-custom-template$/.test(specId), `spec id should be date-based, got: ${specId}`);
 
-      const specPath = path.join(CREATE_TEST_DIR, `specs/${specId}/spec.md`);
+      const specPath = path.join(CREATE_TEST_DIR, `specs/change/${specId}/spec.md`);
       assert.ok(fs.existsSync(specPath), 'spec file should exist');
 
       const content = fs.readFileSync(specPath, 'utf-8');
-      const frontmatter = extractFrontmatter(content, `specs/${specId}/spec.md`);
+      const frontmatter = extractFrontmatter(content, `specs/change/${specId}/spec.md`);
 
       assert.equal(frontmatter.id, undefined);
       assert.equal(frontmatter.name, 'Custom Template');

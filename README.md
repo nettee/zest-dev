@@ -100,11 +100,12 @@ codex "$(zest-dev prompt summarize)"
 ```
 project/
 ├── specs/
-│   ├── 20260224-init-project/
-│   │   └── spec.md
-│   ├── 20260225-feature-name/
-│   │   └── spec.md
-│   └── current -> 20260225-feature-name (symlink)
+│   └── change/
+│       ├── 20260224-init-project/
+│       │   └── spec.md
+│       ├── 20260225-feature-name/
+│       │   └── spec.md
+│       └── current -> 20260225-feature-name (symlink)
 └── .zest-dev/
     └── template/
         └── spec.md

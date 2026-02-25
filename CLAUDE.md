@@ -73,7 +73,7 @@ pnpm test:package
 
 ## Spec-Driven Development by Zest Dev
 
-Specs are stored in `specs/`. Managed via `zest-dev` CLI.
+Specs are stored in `specs/change/`. Managed via `zest-dev` CLI.
 
 ### Commands
 
