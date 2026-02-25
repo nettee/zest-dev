@@ -280,7 +280,7 @@ test('zest-dev status integration', async (t) => {
       // and derive second spec id from status after the first set-current.
       // Simplest fix: run status before set-current to find spec ids from paths isn't available.
       // Use the fact that both specs were created today — find by slug suffix.
-      const specs = fs.readdirSync(path.join(TEST_DIR, 'specs'))
+      const specs = fs.readdirSync(path.join(TEST_DIR, 'specs/change'))
         .filter(d => /^\d{8}-/.test(d));
       const secondSpecDir = specs.find(d => d.endsWith('-second-spec'));
       assert.ok(secondSpecDir, 'second-spec directory should exist');
@@ -292,7 +292,7 @@ test('zest-dev status integration', async (t) => {
       assert.equal(typeof status.current, 'object');
       assert.equal(status.current.id, secondSpecDir);
       assert.equal(status.current.name, 'Second Spec');
-      assert.equal(status.current.path, path.join('specs', secondSpecDir, 'spec.md'));
+      assert.equal(status.current.path, path.join('specs/change', secondSpecDir, 'spec.md'));
       assert.equal(status.current.status, 'new');
       assert.equal(status.agent_hints, undefined);
     });
