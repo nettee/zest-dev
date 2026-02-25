@@ -195,11 +195,11 @@ test('zest-dev create integration', async (t) => {
       const specId = result.spec.id;
       assert.ok(/^\d{8}-default-template$/.test(specId), `spec id should be date-based, got: ${specId}`);
 
-      const specPath = path.join(CREATE_TEST_DIR, `specs/${specId}/spec.md`);
+      const specPath = path.join(CREATE_TEST_DIR, `specs/change/${specId}/spec.md`);
       assert.ok(fs.existsSync(specPath), 'spec file should exist');
 
       const content = fs.readFileSync(specPath, 'utf-8');
-      const frontmatter = extractFrontmatter(content, `specs/${specId}/spec.md`);
+      const frontmatter = extractFrontmatter(content, `specs/change/${specId}/spec.md`);
 
       assert.ok(/^\d{8}-default-template$/.test(frontmatter.id), `frontmatter.id should be date-based, got: ${frontmatter.id}`);
       assert.equal(frontmatter.name, 'Default Template');
@@ -235,11 +235,11 @@ Token: {name}|{date}
       const specId = result.spec.id;
       assert.ok(/^\d{8}-custom-template$/.test(specId), `spec id should be date-based, got: ${specId}`);
 
-      const specPath = path.join(CREATE_TEST_DIR, `specs/${specId}/spec.md`);
+      const specPath = path.join(CREATE_TEST_DIR, `specs/change/${specId}/spec.md`);
       assert.ok(fs.existsSync(specPath), 'spec file should exist');
 
       const content = fs.readFileSync(specPath, 'utf-8');
-      const frontmatter = extractFrontmatter(content, `specs/${specId}/spec.md`);
+      const frontmatter = extractFrontmatter(content, `specs/change/${specId}/spec.md`);
 
       assert.equal(frontmatter.id, undefined);
       assert.equal(frontmatter.name, 'Custom Template');
@@ -280,7 +280,7 @@ test('zest-dev status integration', async (t) => {
       // and derive second spec id from status after the first set-current.
       // Simplest fix: run status before set-current to find spec ids from paths isn't available.
       // Use the fact that both specs were created today — find by slug suffix.
-      const specs = fs.readdirSync(path.join(TEST_DIR, 'specs'))
+      const specs = fs.readdirSync(path.join(TEST_DIR, 'specs/change'))
         .filter(d => /^\d{8}-/.test(d));
       const secondSpecDir = specs.find(d => d.endsWith('-second-spec'));
       assert.ok(secondSpecDir, 'second-spec directory should exist');
@@ -292,7 +292,7 @@ test('zest-dev status integration', async (t) => {
       assert.equal(typeof status.current, 'object');
       assert.equal(status.current.id, secondSpecDir);
       assert.equal(status.current.name, 'Second Spec');
-      assert.equal(status.current.path, path.join('specs', secondSpecDir, 'spec.md'));
+      assert.equal(status.current.path, path.join('specs/change', secondSpecDir, 'spec.md'));
       assert.equal(status.current.status, 'new');
       assert.equal(status.agent_hints, undefined);
     });

@@ -1,5 +1,5 @@
 # Zest dev
-specs/current
+specs/change/current
 
 # Generated plugin deployment directories
 .cursor/**/zest-dev/
