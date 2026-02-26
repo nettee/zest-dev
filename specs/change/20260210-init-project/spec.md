@@ -1,5 +1,5 @@
 ---
-id: "001"
+id: 20260210-init-project
 name: "Init Project"
 status: complete
 created: "2026-02-10"

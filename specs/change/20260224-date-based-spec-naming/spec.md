@@ -1,5 +1,5 @@
 ---
-id: '005'
+id: 20260224-date-based-spec-naming
 name: Date Based Spec Naming
 status: implemented
 created: '2026-02-24'

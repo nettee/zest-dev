@@ -1,5 +1,5 @@
 ---
-id: "002"
+id: 20260210-replace-lean-spec
 name: "Replace Lean Spec"
 status: complete
 created: "2026-02-10"
