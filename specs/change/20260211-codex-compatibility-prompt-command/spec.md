@@ -1,5 +1,5 @@
 ---
-id: "004"
+id: 20260211-codex-compatibility-prompt-command
 name: "Codex Compatibility Prompt Command"
 status: implemented
 created: "2026-02-11"

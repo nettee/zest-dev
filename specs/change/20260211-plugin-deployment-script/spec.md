@@ -1,5 +1,5 @@
 ---
-id: "003"
+id: 20260211-plugin-deployment-script
 name: "Plugin Deployment Script"
 status: implemented
 created: "2026-02-11"
