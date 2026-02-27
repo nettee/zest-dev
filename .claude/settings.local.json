@@ -5,7 +5,8 @@
       "Bash(chmod:*)",
       "Bash(node bin/zest-dev.js:*)",
       "Bash(du:*)",
-      "Bash(pnpm install:*)"
+      "Bash(pnpm install:*)",
+      "Bash(pnpm test:local:*)"
     ]
   },
   "enabledPlugins": {

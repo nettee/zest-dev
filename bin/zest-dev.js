@@ -4,9 +4,12 @@ const { Command } = require('commander');
 const yaml = require('js-yaml');
 const fs = require('fs');
 const path = require('path');
+const readline = require('readline');
+const { spawnSync } = require('child_process');
 const {
   getSpecsStatus,
   getSpec,
+  listSpecs,
   createSpec,
   setCurrentSpec,
   unsetCurrentSpec,
@@ -21,6 +24,57 @@ const DEPLOYED_COMMAND_DIRS = [
   path.join(process.cwd(), '.cursor/commands'),
   path.join(process.cwd(), '.opencode/commands')
 ];
+
+function isFzfAvailable() {
+  const result = spawnSync('fzf', ['--version'], { stdio: 'ignore' });
+  return !result.error;
+}
+
+async function selectSpecInteractively(specs) {
+  if (specs.length === 0) {
+    throw new Error('No specs available');
+  }
+
+  const lines = specs.map(s => {
+    const mark = s.current ? '* ' : '  ';
+    return `${mark}${s.id}  [${s.status}]  ${s.name}`;
+  });
+
+  if (isFzfAvailable()) {
+    const result = spawnSync('fzf', ['--height=40%', '--reverse', '--prompt=Select spec: '], {
+      input: lines.join('\n'),
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'inherit']
+    });
+
+    if (result.status !== 0 || !result.stdout.trim()) {
+      return null; // user cancelled
+    }
+
+    // Line format: "  <id>  [status]  Name" — ID is after the 2-char mark prefix
+    return result.stdout.trim().slice(2).split(/\s{2,}/)[0];
+  }
+
+  // Fallback: numbered list via readline
+  process.stderr.write('Select a spec:\n');
+  specs.forEach((s, i) => {
+    const mark = s.current ? '*' : ' ';
+    process.stderr.write(`  ${mark} ${i + 1}. ${s.id}  [${s.status}]  ${s.name}\n`);
+  });
+
+  return new Promise(resolve => {
+    const rl = readline.createInterface({ input: process.stdin, output: process.stderr });
+    rl.question('Enter number: ', answer => {
+      rl.close();
+      const num = parseInt(answer, 10);
+      if (num >= 1 && num <= specs.length) {
+        resolve(specs[num - 1].id);
+      } else {
+        resolve(null);
+      }
+    });
+  });
+}
 
 function hasDeployedCommandMarkdowns() {
   return DEPLOYED_COMMAND_DIRS.some(dirPath => {
@@ -86,12 +140,20 @@ program
     }
   });
 
-// zest-dev set-current <spec_number>
+// zest-dev set-current [spec_id]
 program
-  .command('set-current <spec>')
-  .description('Set the current spec')
-  .action((spec) => {
+  .command('set-current [spec]')
+  .description('Set the current spec (interactive picker when no ID given)')
+  .action(async (spec) => {
     try {
+      if (!spec) {
+        const specs = listSpecs();
+        spec = await selectSpecInteractively(specs);
+        if (!spec) {
+          console.error('No spec selected.');
+          process.exit(1);
+        }
+      }
       const result = setCurrentSpec(spec);
       console.log(yaml.dump(result));
     } catch (error) {
