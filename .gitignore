@@ -4,8 +4,10 @@ specs/change/current
 # Generated plugin deployment directories
 .cursor/**/zest-dev/
 .cursor/**/zest-dev*.md
+.cursor/**/debug-mode/
 .opencode/**/zest-dev/
 .opencode/**/zest-dev*.md
+.opencode/**/debug-mode/
 
 # Logs
 logs
@@ -148,3 +150,6 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 .llm-chat-history/
+
+# Local debug conversation captures
+specs/change/20260226-cursor-debug-mode-skill/cursor-debug-mode-conversations/
