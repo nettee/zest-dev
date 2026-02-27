@@ -6,7 +6,6 @@
       "Bash(node bin/zest-dev.js:*)",
       "Bash(du:*)",
       "Bash(pnpm install:*)",
-      "WebFetch(domain:cursor.com)",
       "Bash(pnpm test:local:*)"
     ]
   },
