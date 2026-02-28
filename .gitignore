@@ -5,9 +5,11 @@ specs/change/current
 .cursor/**/zest-dev/
 .cursor/**/zest-dev*.md
 .cursor/**/debug-mode/
+.cursor/agents/
 .opencode/**/zest-dev/
 .opencode/**/zest-dev*.md
 .opencode/**/debug-mode/
+.opencode/agents
 
 # Logs
 logs
