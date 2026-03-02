@@ -51,8 +51,15 @@ async function selectSpecInteractively(specs) {
       return null; // user cancelled
     }
 
-    // Line format: "  <id>  [status]  Name" — ID is after the 2-char mark prefix
-    return result.stdout.trim().slice(2).split(/\s{2,}/)[0];
+    // Line format: "* <id>  [status]  Name" or "  <id>  [status]  Name"
+    // Use end-trim only to preserve leading marker spaces for parsing.
+    const selectedLine = result.stdout.trimEnd();
+    const match = selectedLine.match(/^(?:\* |  )(\S+)/);
+    if (!match) {
+      return null;
+    }
+
+    return match[1];
   }
 
   // Fallback: numbered list via readline
