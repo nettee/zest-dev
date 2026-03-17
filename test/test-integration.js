@@ -30,6 +30,11 @@ const EXPECTED_COMMANDS = [
   'zest-dev-summarize-pr.md',
   'zest-dev-quick-implement.md'
 ];
+const EXPECTED_AGENTS = [
+  'code-architect.md',
+  'code-explorer.md',
+  'code-reviewer.md'
+];
 
 function cleanup(testDir = TEST_DIR) {
   if (fs.existsSync(testDir)) {
@@ -70,6 +75,10 @@ function readCommand(target, filename, testDir = TEST_DIR) {
   return fs.readFileSync(path.join(testDir, target, 'commands', filename), 'utf-8');
 }
 
+function readAgent(target, filename, testDir = TEST_DIR) {
+  return fs.readFileSync(path.join(testDir, target, 'agents', filename), 'utf-8');
+}
+
 function extractFrontmatter(content, filename) {
   const match = content.match(/^---\n([\s\S]*?)\n---/);
   assert.ok(match, `${filename} has no frontmatter`);
@@ -92,14 +101,18 @@ test('zest-dev init integration', async (t) => {
       assert.ok(Array.isArray(result.cursor.commands), 'cursor.commands should be an array');
       assert.ok(Array.isArray(result.opencode.commands), 'opencode.commands should be an array');
       assert.ok(Array.isArray(result.cursor.skills), 'cursor.skills should be an array');
+      assert.ok(Array.isArray(result.cursor.agents), 'cursor.agents should be an array');
+      assert.ok(Array.isArray(result.opencode.agents), 'opencode.agents should be an array');
     });
 
     await t.test('directory structure', () => {
       const expectedDirs = [
         '.cursor/commands',
         '.cursor/skills',
+        '.cursor/agents',
         '.opencode/commands',
-        '.opencode/skills'
+        '.opencode/skills',
+        '.opencode/agents'
       ];
 
       for (const dir of expectedDirs) {
@@ -122,6 +135,26 @@ test('zest-dev init integration', async (t) => {
 
       assert.ok(fs.existsSync(cursorSkillPath), 'Cursor skill file should exist');
       assert.ok(fs.existsSync(opencodeSkillPath), 'OpenCode skill file should exist');
+    });
+
+    await t.test('agents deployment and model mapping', () => {
+      for (const file of EXPECTED_AGENTS) {
+        const cursorPath = path.join(TEST_DIR, '.cursor/agents', file);
+        const opencodePath = path.join(TEST_DIR, '.opencode/agents', file);
+
+        assert.ok(fs.existsSync(cursorPath), `Cursor agent should exist: ${file}`);
+        assert.ok(fs.existsSync(opencodePath), `OpenCode agent should exist: ${file}`);
+
+        const cursorFrontmatter = extractFrontmatter(readAgent('.cursor', file), `.cursor/agents/${file}`);
+        const opencodeFrontmatter = extractFrontmatter(readAgent('.opencode', file), `.opencode/agents/${file}`);
+
+        assert.equal(cursorFrontmatter.model, 'sonnet', `Cursor agent model should remain source model for ${file}`);
+        assert.equal(
+          opencodeFrontmatter.model,
+          'openai/gpt-5.3-codex',
+          `OpenCode agent model should be codex for ${file}`
+        );
+      }
     });
 
     await t.test('frontmatter transformation', () => {
