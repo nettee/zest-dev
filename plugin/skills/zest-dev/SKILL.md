@@ -1,6 +1,6 @@
 ---
 name: Zest Dev
-description: This skill should be used when the user asks to "create a spec", "write a spec", mentions "zest dev", "zest-dev", "spec-driven development", "human-interactive development", workflow phases like "research phase", "design phase", "implement phase", or asks "how do I write a spec", "what's the spec process", "spec methodology", or needs guidance on specification planning and development workflows.
+description: This skill should be used when the user asks to "create a spec", "write a spec", mentions "zest dev", "zest-dev", "spec-driven development", "human-interactive development", workflow phases like "research phase", "design phase", "implement phase", asks "how do I write a spec", "what's the spec process", "spec methodology", needs guidance on specification planning and development workflows, or wants to know which workflow to use ("draft", "summarize", "new", "vibe coding").
 version: 0.1.0
 ---
 
@@ -230,6 +230,30 @@ created: 2026-02-10
 ## Implementation
 [Task checklist, files, testing, progress]
 ```
+
+## Choosing a Workflow
+
+There are three ways to enter the workflow depending on how you started:
+
+### Step-by-step (planned)
+You know what you want to build. Start from a description and work through each phase:
+```
+/new <description> → /research → /design → /implement
+```
+
+### Vibe coding first (post-hoc)
+You coded freely and want to document after the fact:
+```
+/summarize-chat   ← from conversation
+/summarize-pr     ← from a PR
+```
+
+### Discussion-driven (draft)
+You've been discussing or brainstorming the idea and want to formalize it before coding:
+```
+/draft → (optionally) /research → (optionally) /design → /implement
+```
+Use `/draft` when you've had a meaningful conversation about the feature and want to crystallize the ideas into a spec before deciding how to proceed. Unlike `/new` (brief description → minimal spec), `/draft` captures the full context of the discussion and then asks how you want to continue.
 
 ## Adapting the Workflow
 

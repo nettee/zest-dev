@@ -23,6 +23,7 @@ const CREATE_TEST_DIR = path.join(__dirname, '../test-project-create-temp');
 const EXPECTED_COMMANDS = [
   'zest-dev-compound.md',
   'zest-dev-design.md',
+  'zest-dev-draft.md',
   'zest-dev-implement.md',
   'zest-dev-new.md',
   'zest-dev-research.md',
