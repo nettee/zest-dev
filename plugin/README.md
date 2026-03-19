@@ -18,9 +18,12 @@ This plugin integrates the Zest Dev methodology into Claude Code, providing a st
 | Command | Purpose |
 |---------|---------|
 | `/new <description>` | Create a new spec from natural language description |
+| `/draft` | Crystallize a conversation into a spec, then proceed step by step |
 | `/research` | Fill research section and advance to researched phase |
 | `/design` | Fill design section and advance to designed phase |
 | `/implement` | Fill implementation plan and advance to implemented phase |
+| `/summarize-chat` | Capture a completed coding session into a spec (post-hoc) |
+| `/summarize-pr <pr>` | Summarize a GitHub PR into a spec (post-hoc) |
 
 ## Skills
 
@@ -40,10 +43,22 @@ This plugin integrates the Zest Dev methodology into Claude Code, providing a st
 cc --plugin-dir /path/to/zest-dev/plugin
 ```
 
-## Workflow
+## Workflows
 
-1. **Create** - Use `/new` with a description to create a new spec
-2. **Research** - Use `/research` to document research findings
-3. **Design** - Use `/design` to create the design approach
-4. **Implement** - Use `/implement` to create the implementation plan
-5. **Build** - Implement according to the spec
+### Step-by-step (planned)
+Start from a description and work through each phase:
+1. `/new <description>` — create spec with overview
+2. `/research` — explore codebase and options
+3. `/design` — design architecture, choose approach
+4. `/implement` — build the feature
+
+### Vibe coding first (post-hoc)
+Code first, then document what was built:
+1. Write code freely
+2. `/summarize-chat` or `/summarize-pr` — capture into a spec
+
+### Discussion-driven (new)
+Chat and brainstorm first, then formalize and proceed:
+1. Have a free-form discussion about the feature
+2. `/draft` — crystallize discussion into a spec with overview
+3. Optionally continue with `/research`, `/design`, `/implement`
