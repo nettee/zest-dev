@@ -88,6 +88,19 @@ function extractFrontmatter(content, filename) {
   return frontmatter;
 }
 
+function createDanglingCurrentSymlink(targetId, testDir = TEST_DIR) {
+  const currentLinkPath = path.join(testDir, 'specs/change/current');
+
+  try {
+    fs.lstatSync(currentLinkPath);
+    fs.unlinkSync(currentLinkPath);
+  } catch (error) {
+    // ignore: link does not exist
+  }
+
+  fs.symlinkSync(targetId, currentLinkPath);
+}
+
 test('zest-dev init integration', async (t) => {
   setup();
 
@@ -329,6 +342,44 @@ test('zest-dev status integration', async (t) => {
       assert.equal(status.current.path, path.join('specs/change', secondSpecDir, 'spec.md'));
       assert.equal(status.current.status, 'new');
       assert.equal(status.agent_hints, undefined);
+    });
+
+    await t.test('status shows dangling current symlink with null fields', () => {
+      const missingSpecId = '19990101-removed-spec';
+      createDanglingCurrentSymlink(missingSpecId);
+
+      const status = yaml.load(runCommand('status'));
+
+      assert.equal(status.specs_count, 2);
+      assert.deepEqual(status.current, {
+        id: missingSpecId,
+        name: null,
+        path: null,
+        status: null
+      });
+    });
+
+    await t.test('set-current replaces dangling current symlink', () => {
+      const specs = fs.readdirSync(path.join(TEST_DIR, 'specs/change'))
+        .filter(d => /^\d{8}-/.test(d));
+      const firstSpecDir = specs.find(d => d.endsWith('-first-spec'));
+      assert.ok(firstSpecDir, 'first-spec directory should exist');
+
+      createDanglingCurrentSymlink('19990101-removed-spec');
+      runCommand(`set-current ${firstSpecDir}`);
+
+      const status = yaml.load(runCommand('status'));
+      assert.equal(status.current.id, firstSpecDir);
+    });
+
+    await t.test('unset-current removes dangling current symlink', () => {
+      const currentLinkPath = path.join(TEST_DIR, 'specs/change/current');
+      createDanglingCurrentSymlink('19990101-removed-spec');
+
+      const result = yaml.load(runCommand('unset-current'));
+      assert.equal(result.ok, true);
+      assert.equal(result.current, null);
+      assert.throws(() => fs.lstatSync(currentLinkPath), /ENOENT/);
     });
 
     await t.test('agent hint appears when deployed zest command markdown exists', () => {
