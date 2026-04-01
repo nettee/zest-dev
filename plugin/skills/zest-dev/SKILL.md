@@ -176,20 +176,22 @@ User Request → Check Cache → Found?
 zest-dev create <spec-slug>     # Create new spec
 zest-dev status                 # View all specs
 zest-dev show <spec-id>         # View specific spec (e.g. 20260224-my-feature)
-zest-dev set-current <spec-id>  # Set current spec
-zest-dev unset-current          # Unset current
+zest-dev set-active <spec-id>   # Set active change spec
+zest-dev unset-active           # Unset active change spec
 ```
+
+Archive is an agent workflow command (`/zest-dev:archive`) or prompt flow (`zest-dev prompt archive`), not a public CLI subcommand.
 
 **Important:** Never manually create spec files or edit frontmatter. Always use CLI.
 
-### Current Spec Context
+### Active Change Spec Context
 
-The "current spec" is the active specification. Plugin commands automatically operate on the current spec.
+The active change spec is the selected in-progress change specification. Plugin commands automatically operate on the active change spec.
 
 **Workflow:**
-1. Create spec (auto-sets as current)
+1. Create spec (auto-sets as active)
 2. Work through phases with plugin commands
-3. Switch specs via `zest-dev set-current <spec-id>`
+3. Switch specs via `zest-dev set-active <spec-id>`
 
 ## Best Practices
 

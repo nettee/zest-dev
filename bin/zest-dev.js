@@ -11,10 +11,10 @@ const {
   getSpec,
   listSpecs,
   createSpec,
-  setCurrentSpec,
-  unsetCurrentSpec,
+  setActiveChangeSpec,
+  unsetActiveChangeSpec,
   updateSpecStatus,
-  createBranchFromCurrentSpec
+  createBranchFromActiveChangeSpec
 } = require('../lib/spec-manager');
 const { deployPlugin } = require('../lib/plugin-deployer');
 const { generatePrompt } = require('../lib/prompt-generator');
@@ -36,7 +36,7 @@ async function selectSpecInteractively(specs) {
   }
 
   const lines = specs.map(s => {
-    const mark = s.current ? '* ' : '  ';
+    const mark = s.active ? '* ' : '  ';
     return `${mark}${s.id}  [${s.status}]  ${s.name}`;
   });
 
@@ -65,7 +65,7 @@ async function selectSpecInteractively(specs) {
   // Fallback: numbered list via readline
   process.stderr.write('Select a spec:\n');
   specs.forEach((s, i) => {
-    const mark = s.current ? '*' : ' ';
+    const mark = s.active ? '*' : ' ';
     process.stderr.write(`  ${mark} ${i + 1}. ${s.id}  [${s.status}]  ${s.name}\n`);
   });
 
@@ -119,7 +119,7 @@ program
     }
   });
 
-// zest-dev show <spec_number|current>
+// zest-dev show <spec_id|active>
 program
   .command('show <spec>')
   .description('Show spec details')
@@ -147,10 +147,11 @@ program
     }
   });
 
-// zest-dev set-current [spec_id]
+// zest-dev set-active [spec_id]
 program
-  .command('set-current [spec]')
-  .description('Set the current spec (interactive picker when no ID given)')
+  .command('set-active [spec]')
+  .alias('set-current')
+  .description('Set the active change spec (interactive picker when no ID given)')
   .action(async (spec) => {
     try {
       if (!spec) {
@@ -161,7 +162,7 @@ program
           process.exit(1);
         }
       }
-      const result = setCurrentSpec(spec);
+      const result = setActiveChangeSpec(spec);
       console.log(yaml.dump(result));
     } catch (error) {
       console.error('Error:', error.message);
@@ -169,13 +170,14 @@ program
     }
   });
 
-// zest-dev unset-current
+// zest-dev unset-active
 program
-  .command('unset-current')
-  .description('Unset the current spec')
+  .command('unset-active')
+  .alias('unset-current')
+  .description('Unset the active change spec')
   .action(() => {
     try {
-      const result = unsetCurrentSpec();
+      const result = unsetActiveChangeSpec();
       console.log(yaml.dump(result));
     } catch (error) {
       console.error('Error:', error.message);
@@ -183,7 +185,7 @@ program
     }
   });
 
-// zest-dev update <spec_number|current> <status>
+// zest-dev update <spec_id|active> <status>
 program
   .command('update <spec> <status>')
   .description('Update spec status')
@@ -200,10 +202,10 @@ program
 // zest-dev create-branch
 program
   .command('create-branch')
-  .description('Create and switch to a git branch from the current spec slug')
+  .description('Create and switch to a git branch from the active change spec slug')
   .action(() => {
     try {
-      const result = createBranchFromCurrentSpec();
+      const result = createBranchFromActiveChangeSpec();
       console.log(yaml.dump(result));
     } catch (error) {
       console.error('Error:', error.message);

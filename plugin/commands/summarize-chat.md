@@ -47,13 +47,13 @@ Example: "Plugin deployment script" → "plugin-deployment-script"
 Execute: `zest-dev create <spec-slug>`
 
 This will:
-- Create the spec file in `specs/` directory
+- Create the spec file in `specs/change/`
 - Generate unique ID and frontmatter
 - Initialize empty sections
 
 **Step 4: Fill Spec Sections**
 
-Read the created spec file from the `specs/` directory.
+Read the created spec file from `specs/change/`.
 
 Fill sections based on the status:
 
@@ -96,9 +96,9 @@ Fill sections based on the status:
 
 Use `zest-dev update` for status transitions (do not edit frontmatter manually):
 - If inferred status is `new`: skip status update (new spec is already `new`)
-- If inferred status is `researched`: execute `zest-dev update current researched`
-- If inferred status is `designed`: execute `zest-dev update current designed`
-- If inferred status is `implemented`: execute `zest-dev update current implemented`
+- If inferred status is `researched`: execute `zest-dev update active researched`
+- If inferred status is `designed`: execute `zest-dev update active designed`
+- If inferred status is `implemented`: execute `zest-dev update active implemented`
 
 **Step 6: Add Notes Section**
 
@@ -111,7 +111,7 @@ Add relevant notes:
 
 **Step 7: Confirm and Show Result**
 
-Execute: `zest-dev show current`
+Execute: `zest-dev show active`
 
 Inform the user:
 - Spec has been created with ID and name

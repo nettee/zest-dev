@@ -21,6 +21,7 @@ const CLI_COMMAND = process.env.ZEST_DEV_CLI_PATH
 const TEST_DIR = path.join(__dirname, '../test-project-temp');
 const CREATE_TEST_DIR = path.join(__dirname, '../test-project-create-temp');
 const EXPECTED_COMMANDS = [
+  'zest-dev-archive.md',
   'zest-dev-compound.md',
   'zest-dev-design.md',
   'zest-dev-draft.md',
@@ -88,17 +89,17 @@ function extractFrontmatter(content, filename) {
   return frontmatter;
 }
 
-function createDanglingCurrentSymlink(targetId, testDir = TEST_DIR) {
-  const currentLinkPath = path.join(testDir, 'specs/change/current');
+function createDanglingActiveSymlink(targetId, testDir = TEST_DIR) {
+  const activeLinkPath = path.join(testDir, 'specs/change/active');
 
   try {
-    fs.lstatSync(currentLinkPath);
-    fs.unlinkSync(currentLinkPath);
+    fs.lstatSync(activeLinkPath);
+    fs.unlinkSync(activeLinkPath);
   } catch (error) {
     // ignore: link does not exist
   }
 
-  fs.symlinkSync(targetId, currentLinkPath);
+  fs.symlinkSync(targetId, activeLinkPath);
 }
 
 test('zest-dev init integration', async (t) => {
@@ -309,49 +310,40 @@ test('zest-dev status integration', async (t) => {
     runCreate('first-spec');
     runCreate('second-spec');
 
-    await t.test('current is null when not set', () => {
+    await t.test('active_change is null when not set', () => {
       const status = yaml.load(runCommand('status'));
       assert.equal(status.specs_count, 2);
-      assert.equal(status.current, null);
+      assert.equal(status.active_change, null);
       assert.equal(status.agent_hints, undefined);
     });
 
-    await t.test('current is an object when set', () => {
-      const secondResult = yaml.load(runCommand('status'));
-      // Get the second spec's id from the spec listing via show
-      // We need to find the id of 'second-spec' — create outputs were not captured, so list all specs
-      // by creating a second spec and capturing its id
-      // Re-run: we already ran runCreate('second-spec') above, so re-query via a fresh create would fail.
-      // Instead, capture from the initial creates by restructuring the test.
-      // Since we can't easily get it here, use show current after set-current on first spec
-      // and derive second spec id from status after the first set-current.
-      // Simplest fix: run status before set-current to find spec ids from paths isn't available.
+    await t.test('active_change is an object when set', () => {
       // Use the fact that both specs were created today — find by slug suffix.
       const specs = fs.readdirSync(path.join(TEST_DIR, 'specs/change'))
         .filter(d => /^\d{8}-/.test(d));
       const secondSpecDir = specs.find(d => d.endsWith('-second-spec'));
       assert.ok(secondSpecDir, 'second-spec directory should exist');
 
-      runCommand(`set-current ${secondSpecDir}`);
+      runCommand(`set-active ${secondSpecDir}`);
       const status = yaml.load(runCommand('status'));
 
       assert.equal(status.specs_count, 2);
-      assert.equal(typeof status.current, 'object');
-      assert.equal(status.current.id, secondSpecDir);
-      assert.equal(status.current.name, 'Second Spec');
-      assert.equal(status.current.path, path.join('specs/change', secondSpecDir, 'spec.md'));
-      assert.equal(status.current.status, 'new');
+      assert.equal(typeof status.active_change, 'object');
+      assert.equal(status.active_change.id, secondSpecDir);
+      assert.equal(status.active_change.name, 'Second Spec');
+      assert.equal(status.active_change.path, path.join('specs/change', secondSpecDir, 'spec.md'));
+      assert.equal(status.active_change.status, 'new');
       assert.equal(status.agent_hints, undefined);
     });
 
-    await t.test('status shows dangling current symlink with null fields', () => {
+    await t.test('status shows dangling active symlink with null fields', () => {
       const missingSpecId = '19990101-removed-spec';
-      createDanglingCurrentSymlink(missingSpecId);
+      createDanglingActiveSymlink(missingSpecId);
 
       const status = yaml.load(runCommand('status'));
 
       assert.equal(status.specs_count, 2);
-      assert.deepEqual(status.current, {
+      assert.deepEqual(status.active_change, {
         id: missingSpecId,
         name: null,
         path: null,
@@ -359,27 +351,27 @@ test('zest-dev status integration', async (t) => {
       });
     });
 
-    await t.test('set-current replaces dangling current symlink', () => {
+    await t.test('set-active replaces dangling active symlink', () => {
       const specs = fs.readdirSync(path.join(TEST_DIR, 'specs/change'))
         .filter(d => /^\d{8}-/.test(d));
       const firstSpecDir = specs.find(d => d.endsWith('-first-spec'));
       assert.ok(firstSpecDir, 'first-spec directory should exist');
 
-      createDanglingCurrentSymlink('19990101-removed-spec');
-      runCommand(`set-current ${firstSpecDir}`);
+      createDanglingActiveSymlink('19990101-removed-spec');
+      runCommand(`set-active ${firstSpecDir}`);
 
       const status = yaml.load(runCommand('status'));
-      assert.equal(status.current.id, firstSpecDir);
+      assert.equal(status.active_change.id, firstSpecDir);
     });
 
-    await t.test('unset-current removes dangling current symlink', () => {
-      const currentLinkPath = path.join(TEST_DIR, 'specs/change/current');
-      createDanglingCurrentSymlink('19990101-removed-spec');
+    await t.test('unset-active removes dangling active symlink', () => {
+      const activeLinkPath = path.join(TEST_DIR, 'specs/change/active');
+      createDanglingActiveSymlink('19990101-removed-spec');
 
-      const result = yaml.load(runCommand('unset-current'));
+      const result = yaml.load(runCommand('unset-active'));
       assert.equal(result.ok, true);
-      assert.equal(result.current, null);
-      assert.throws(() => fs.lstatSync(currentLinkPath), /ENOENT/);
+      assert.equal(result.active_change, null);
+      assert.throws(() => fs.lstatSync(activeLinkPath), /ENOENT/);
     });
 
     await t.test('agent hint appears when deployed zest command markdown exists', () => {
@@ -460,6 +452,37 @@ test('zest-dev update integration', async (t) => {
         /Invalid status "planned"\. Valid: new, researched, designed, implemented/
       );
     });
+
+    await t.test('accepts active alias for show/update', () => {
+      const aliasSpecId = yaml.load(runCreate('alias-spec')).spec.id;
+      runCommand(`set-active ${aliasSpecId}`);
+      const showActive = yaml.load(runCommand('show active'));
+      assert.equal(showActive.id, aliasSpecId);
+
+      const updateActive = yaml.load(runCommand('update active implemented'));
+      assert.equal(updateActive.ok, true);
+      assert.equal(updateActive.spec.id, aliasSpecId);
+      assert.equal(updateActive.spec.status, 'implemented');
+    });
+  } finally {
+    cleanup();
+  }
+});
+
+test('zest-dev prompt archive integration', () => {
+  setup();
+
+  try {
+    const prompt = runCommand('prompt archive');
+    assert.ok(prompt.includes('Archive Active Change Spec'));
+    assert.ok(prompt.includes('zest-dev show active'));
+    assert.ok(prompt.includes('zest-dev unset-active'));
+    assert.equal(prompt.includes('zest-dev archive active --no-merge'), false);
+
+    runInit();
+    const deployedArchive = readCommand('.cursor', 'zest-dev-archive.md');
+    assert.ok(deployedArchive.includes('zest-dev unset-active'));
+    assert.equal(deployedArchive.includes('zest-dev archive active --no-merge'), false);
   } finally {
     cleanup();
   }

@@ -10,7 +10,7 @@ This plugin integrates the Zest Dev methodology into Claude Code, providing a st
 
 - **Spec creation** - Create new specs from natural language descriptions
 - **Phase management** - Guide specs through research → design → implementation phases
-- **Current spec context** - All commands work with the currently active spec
+- **Active change spec context** - All commands work with the active change spec
 - **CLI integration** - Seamlessly integrates with the `zest-dev` CLI tool
 
 ## Commands
@@ -22,6 +22,7 @@ This plugin integrates the Zest Dev methodology into Claude Code, providing a st
 | `/research` | Fill research section and advance to researched phase |
 | `/design` | Fill design section and advance to designed phase |
 | `/implement` | Fill implementation plan and advance to implemented phase |
+| `/archive` | Merge implemented active change spec knowledge into `specs/current/`, then unset active |
 | `/summarize-chat` | Capture a completed coding session into a spec (post-hoc) |
 | `/summarize-pr <pr>` | Summarize a GitHub PR into a spec (post-hoc) |
 
@@ -51,6 +52,7 @@ Start from a description and work through each phase:
 2. `/research` — explore codebase and options
 3. `/design` — design architecture, choose approach
 4. `/implement` — build the feature
+5. `/archive` — merge into `specs/current/` and unset active change spec
 
 ### Vibe coding first (post-hoc)
 Code first, then document what was built:

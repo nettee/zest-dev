@@ -34,13 +34,13 @@ Read the created file and fill sections. Keep content concise — omit subsectio
 **Step 4: Update status**
 
 ```
-zest-dev update current implemented
+zest-dev update active implemented
 ```
 
 **Step 5: Show result**
 
 ```
-zest-dev show current
+zest-dev show active
 ```
 
 **Guidelines:**

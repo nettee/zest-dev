@@ -11,16 +11,16 @@ Resolve ambiguities and design implementation approaches with trade-offs before 
 
 **CRITICAL**: This is one of the most important steps. DO NOT SKIP.
 
-**Step 1: Verify Current Spec**
+**Step 1: Verify Active Change Spec**
 Execute: `zest-dev status`
 
-Confirm there is a current spec set and status is "researched". If:
-- No current spec: Guide user to set one
+Confirm there is an active change spec set and status is "researched". If:
+- No active change spec: Guide user to set one
 - Status is "new": Suggest completing `/research` first
 - Status is "designed" or later: Confirm if user wants to update existing design
 
-**Step 2: Read Current Spec**
-Execute: `zest-dev show current` to get the spec file path.
+**Step 2: Read Active Change Spec**
+Execute: `zest-dev show active` to get the spec file path.
 
 Read the spec file to understand:
 - Overview and problem statement
@@ -126,7 +126,7 @@ When filling Plan, keep it high-level — name what each phase covers, not indiv
 2-3 phases maximum. Do not nest sub-tasks under phases. These boxes will be checked off during the Implement stage.
 
 **Step 10: Update Spec Status**
-Execute: `zest-dev update current designed`
+Execute: `zest-dev update active designed`
 
 This updates the spec status using the CLI (do not edit frontmatter manually).
 

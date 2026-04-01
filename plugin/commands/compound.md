@@ -21,7 +21,7 @@ Every solved problem, key decision, or discovered pattern exists only in the cur
 ## Step 1: Check Project State
 
 Run `zest-dev status` to determine:
-- Whether there is a current spec set
+- Whether there is an active change spec set
 - The list of existing specs (for historical placement)
 
 ---
@@ -33,11 +33,11 @@ Present the user with storage options using AskUserQuestion. Build the options d
 **Always include:**
 - `specs/solutions/` — standalone solutions folder, for general knowledge not tied to a specific spec
 
-**Include if a current spec is set:**
-- Current spec folder: `specs/<current-spec-directory>/` — knowledge directly related to the work in progress
+**Include if an active change spec is set:**
+- Active change spec folder: `specs/change/<active-spec-directory>/` — knowledge directly related to the work in progress
 
 **Include if historical specs exist:**
-- A historical spec — let the user type the spec id directly (e.g. `20260224-my-feature`), then resolve details by running `zest-dev show <spec-id>`
+- A historical change spec — let the user type the spec id directly (e.g. `20260224-my-feature`), then resolve details by running `zest-dev show <spec-id>`
 
 ---
 
@@ -79,8 +79,8 @@ Create a slug-style filename that describes the content:
 
 Determine the final path based on the user's choice in Step 2:
 - Standalone: `specs/solutions/<filename>.md`
-- Current spec: `specs/<current-spec-directory>/<filename>.md`
-- Historical spec: `specs/<historical-spec-directory>/<filename>.md`
+- Active change spec: `specs/change/<active-spec-directory>/<filename>.md`
+- Historical spec: `specs/change/<historical-spec-directory>/<filename>.md`
 
 Create the directory if it does not exist (`mkdir -p`).
 
