@@ -7,6 +7,8 @@ allowed-tools: Read, Edit, Write, Bash, Task, Glob, Grep, TodoWrite
 
 Implement the feature following the design and document what was built.
 
+**Language rule:** Always respond in the user's language throughout the flow unless the user asks to switch languages.
+
 **Step 1: Verify Active Change Spec**
 Execute: `zest-dev status`
 

@@ -7,6 +7,8 @@ allowed-tools: Read, Edit, Bash(zest-dev:*), Task, Glob, Grep, TodoWrite
 
 Understand the feature requirements deeply and explore existing codebase patterns before design.
 
+**Language rule:** Always respond in the user's language throughout the flow unless the user asks to switch languages.
+
 ---
 
 ## Discovery & Verification

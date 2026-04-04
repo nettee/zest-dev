@@ -8,6 +8,8 @@ allowed-tools: Read, Write, Bash(zest-dev:*), AskUserQuestion
 
 Capture knowledge, decisions, and hard-won experience from the current conversation into a permanent, searchable document.
 
+**Language rule:** Always respond in the user's language throughout the flow unless the user asks to switch languages.
+
 **Topic hint (if provided):** $ARGUMENTS
 
 ---

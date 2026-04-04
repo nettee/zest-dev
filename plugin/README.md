@@ -15,6 +15,8 @@ This plugin integrates the Zest Dev methodology into Claude Code, providing a st
 
 ## Commands
 
+All command flows keep responding in the user's language unless the user asks to switch languages.
+
 | Command | Purpose |
 |---------|---------|
 | `/new <description>` | Create a new spec from natural language description |

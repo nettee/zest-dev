@@ -6,6 +6,8 @@ allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(zest-dev:*), AskUserQuestion
 
 # Summarize GitHub PR into Spec
 
+**Language rule:** Always respond in the user's language throughout the flow unless the user asks to switch languages.
+
 **Arguments:** $ARGUMENTS
 - PR number (optional, defaults to current branch's PR)
 

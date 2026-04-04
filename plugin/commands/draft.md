@@ -8,6 +8,8 @@ allowed-tools: Read, Write, Edit, Bash(zest-dev:*), AskUserQuestion
 
 Synthesize the current conversation into a well-formed spec, then decide how to continue.
 
+**Language rule:** Always respond in the user's language throughout the flow unless the user asks to switch languages.
+
 **Spec slug (optional):** $ARGUMENTS
 
 This command is for when you've been chatting and brainstorming with the user and want to formalize the ideas into a spec before implementation. Unlike `/new` (brief description) or `/summarize-chat` (post-hoc capture), `/draft` captures an active discussion in progress and guides the next development steps.
