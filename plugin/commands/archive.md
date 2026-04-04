@@ -7,6 +7,8 @@ allowed-tools: Read, Edit, Write, Bash(zest-dev:*), Glob, Grep, AskUserQuestion
 
 Merge the implemented active change spec into `specs/current/` files, then unset the active change spec.
 
+**Language rule:** Always respond in the user's language throughout the flow unless the user asks to switch languages.
+
 ## Step 1: Verify active change spec is ready
 
 1. Run `zest-dev status` and confirm there is an active change spec.

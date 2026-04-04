@@ -8,6 +8,8 @@ allowed-tools: Read, Write, Edit, Bash(zest-dev:*), AskUserQuestion
 
 Capture the current conversation and development work into a structured feature spec.
 
+**Language rule:** Always respond in the user's language throughout the flow unless the user asks to switch languages.
+
 **Spec slug (optional):** $ARGUMENTS
 
 This command is designed for capturing "vibe coding" sessions where you've been coding and realized the work is worth documenting.

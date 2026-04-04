@@ -37,6 +37,8 @@ const EXPECTED_AGENTS = [
   'code-explorer.md',
   'code-reviewer.md'
 ];
+const LANGUAGE_ALIGNMENT_RULE =
+  'Always respond in the user\'s language throughout the flow unless the user asks to switch languages.';
 
 function cleanup(testDir = TEST_DIR) {
   if (fs.existsSync(testDir)) {
@@ -140,6 +142,18 @@ test('zest-dev init integration', async (t) => {
         for (const file of EXPECTED_COMMANDS) {
           const filePath = path.join(TEST_DIR, target, 'commands', file);
           assert.ok(fs.existsSync(filePath), `${target} command should exist: ${file}`);
+        }
+      }
+    });
+
+    await t.test('command language alignment rule', () => {
+      for (const target of ['.cursor', '.opencode']) {
+        for (const file of EXPECTED_COMMANDS) {
+          const content = readCommand(target, file);
+          assert.ok(
+            content.includes(LANGUAGE_ALIGNMENT_RULE),
+            `${target}/commands/${file} should include the language alignment rule`
+          );
         }
       }
     });

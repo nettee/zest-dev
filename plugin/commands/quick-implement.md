@@ -8,6 +8,8 @@ allowed-tools: Read, Edit, Write, Bash, Task, Glob, Grep, TodoWrite, AskUserQues
 
 Run through all remaining workflow stages — research, design, implement, and final review — in a single command. Suitable for straightforward, well-scoped tasks.
 
+**Language rule:** Always respond in the user's language throughout the flow unless the user asks to switch languages.
+
 Handles two scenarios:
 - **New requirement**: No active change spec — creates a spec, confirms requirements, then runs all stages.
 - **Existing spec**: An active change spec is already set — picks up from the appropriate stage based on its status.

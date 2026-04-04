@@ -7,6 +7,8 @@ allowed-tools: Read, Edit, Bash(zest-dev:*), Task, AskUserQuestion, TodoWrite
 
 Resolve ambiguities and design implementation approaches with trade-offs before coding.
 
+**Language rule:** Always respond in the user's language throughout the flow unless the user asks to switch languages.
+
 ## Clarifying Questions
 
 **CRITICAL**: This is one of the most important steps. DO NOT SKIP.

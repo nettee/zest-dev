@@ -8,6 +8,8 @@ allowed-tools: Read, Write, Edit, Bash(zest-dev:*), AskUserQuestion
 
 Create a new feature specification from the user's description and prepare for development.
 
+**Language rule:** Always respond in the user's language throughout the flow unless the user asks to switch languages.
+
 **User's description:** $ARGUMENTS
 
 ---
