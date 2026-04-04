@@ -189,9 +189,10 @@ Archive is an agent workflow command (`/zest-dev:archive`) or prompt flow (`zest
 The active change spec is the selected in-progress change specification. Plugin commands automatically operate on the active change spec.
 
 **Workflow:**
-1. Create spec (auto-sets as active)
-2. Work through phases with plugin commands
-3. Switch specs via `zest-dev set-active <spec-id>`
+1. Create spec
+2. Set it as active via `zest-dev set-active <spec-id>`
+3. Work through phases with plugin commands
+4. Switch specs via `zest-dev set-active <spec-id>`
 
 ## Best Practices
 

@@ -1,6 +1,6 @@
 ---
 description: Merge implemented active change spec into current specs and unset active
-allowed-tools: Read, Edit, Write, Bash(zest-dev:*), Glob, Grep
+allowed-tools: Read, Edit, Write, Bash(zest-dev:*), Glob, Grep, AskUserQuestion
 ---
 
 # Archive Active Change Spec
@@ -12,7 +12,7 @@ Merge the implemented active change spec into `specs/current/` files, then unset
 1. Run `zest-dev status` and confirm there is an active change spec.
 2. Run `zest-dev show active` and confirm status is `implemented`.
 
-If not implemented, stop and tell the user to run implementation and set status first.
+If not implemented, stop and ask the user to run implementation and set status first.
 
 ## Step 2: Inspect existing `specs/current/`
 
