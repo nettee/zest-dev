@@ -11,15 +11,15 @@ Understand the feature requirements deeply and explore existing codebase pattern
 
 ## Discovery & Verification
 
-**Step 1: Verify Current Spec**
+**Step 1: Verify Active Change Spec**
 Execute: `zest-dev status`
 
-Confirm there is a current spec set. If no current spec:
+Confirm there is an active change spec set. If no active change spec:
 - Inform user no spec is currently active
-- Guide them to use `/new` to create a spec or `zest-dev set-current <spec-id>` to select one
+- Guide them to use `/new` to create a spec or `zest-dev set-active <spec-id>` to select one
 
-**Step 2: Read Current Spec**
-Execute: `zest-dev show current` to get the spec file path.
+**Step 2: Read Active Change Spec**
+Execute: `zest-dev show active` to get the spec file path.
 
 Read the spec file to understand:
 - The overview and problem statement
@@ -114,7 +114,7 @@ Edit the spec file to add/update the Research section.
 ```
 
 **Step 8: Update Spec Status**
-Execute: `zest-dev update current researched`
+Execute: `zest-dev update active researched`
 
 This updates the spec status using the CLI (do not edit frontmatter manually).
 

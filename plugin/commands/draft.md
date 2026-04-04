@@ -40,11 +40,11 @@ If unsure, confirm with the user before proceeding.
 
 Execute: `zest-dev create <spec-slug>`
 
-Then set it as current: `zest-dev set-current <spec-id>`
+Then set it as active: `zest-dev set-active <spec-id>`
 
 ## Step 4: Fill Overview Section
 
-Read the created spec file from `specs/` directory.
+Read the created spec file from `specs/change/`.
 
 Write the Overview based on the conversation. **Only include sections for information that actually came up** — do not invent or assume details.
 
@@ -101,8 +101,8 @@ Evaluate the conversation to determine the appropriate starting status. Assess e
 
 Apply the highest status the conversation genuinely reached, then execute the CLI command:
 - Status is `new`: no update needed (spec is already `new`)
-- Status is `researched`: fill the Research section from conversation context, then run `zest-dev update current researched`
-- Status is `designed`: fill both Research and Design sections from conversation context, then run `zest-dev update current designed`
+- Status is `researched`: fill the Research section from conversation context, then run `zest-dev update active researched`
+- Status is `designed`: fill both Research and Design sections from conversation context, then run `zest-dev update active designed`
 
 When filling sections from conversation context, follow the same content rules as `/research` and `/design` respectively — facts in Research, decisions and architecture in Design.
 
@@ -146,7 +146,7 @@ Based on the user's choice:
 
 Inform the user:
 - Spec id and name
-- Spec file location: `specs/<spec-id>/spec.md`
+- Spec file location: `specs/change/<spec-id>/spec.md`
 - What sections were filled in Overview
 - Current status and what was run (if research/design was executed)
 - Next command to use when they're ready to continue

@@ -23,19 +23,19 @@ Analyze the user's description and determine:
 Execute: `zest-dev create <spec-slug>`
 
 This will:
-- Create the spec file in `specs/` directory with a date-based id (e.g. `20260224-spec-slug`)
+- Create the spec file in `specs/change/` with a date-based id (e.g. `20260224-spec-slug`)
 - Generate frontmatter with `name` and `status`
 - Initialize empty sections
 
-**Step 3: Set as Current Spec**
+**Step 3: Set as Active Change Spec**
 
-Execute: `zest-dev set-current <spec-id>`
+Execute: `zest-dev set-active <spec-id>`
 
 Use the `id` from the created spec's CLI output (e.g. `20260224-spec-slug`).
 
 **Step 4: Understand the Feature**
 
-Read the created spec file from `specs/` directory.
+Read the created spec file from `specs/change/`.
 
 Evaluate the user's description:
 - **If comprehensive** (clear problem, scope, and context):
@@ -118,8 +118,8 @@ Full (user provided all details):
 
 Inform the user:
 - ✅ Spec id: `<spec-id>` (e.g. `20260224-spec-slug`), name: `<spec-name>`
-- ✅ Spec file location: `specs/<spec-id>/spec.md`
-- ✅ Set as current working spec
+- ✅ Spec file location: `specs/change/<spec-id>/spec.md`
+- ✅ Set as active change spec
 - ✅ Overview section completed
 
 **Next steps:**

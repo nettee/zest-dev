@@ -9,8 +9,8 @@ allowed-tools: Read, Edit, Write, Bash, Task, Glob, Grep, TodoWrite, AskUserQues
 Run through all remaining workflow stages — research, design, implement, and final review — in a single command. Suitable for straightforward, well-scoped tasks.
 
 Handles two scenarios:
-- **New requirement**: No current spec — creates a spec, confirms requirements, then runs all stages.
-- **Existing spec**: A spec is already set as current — picks up from the appropriate stage based on its status.
+- **New requirement**: No active change spec — creates a spec, confirms requirements, then runs all stages.
+- **Existing spec**: An active change spec is already set — picks up from the appropriate stage based on its status.
 
 **User's description:** $ARGUMENTS
 
@@ -18,10 +18,10 @@ Handles two scenarios:
 
 ## Step 0: Detect Starting Point
 
-Run `zest-dev status` to check if there is a current spec set.
+Run `zest-dev status` to check if there is an active change spec set.
 
-**If a current spec exists:**
-- Run `zest-dev show current` to read its content and current status
+**If an active change spec exists:**
+- Run `zest-dev show active` to read its content and status
 - Skip ahead based on status:
   - `new` → skip "New" and "Checkpoint 1", go directly to [Stage 1: Research](#stage-1-research)
   - `researched` → skip to [Stage 2: Design](#stage-2-design)
@@ -29,14 +29,14 @@ Run `zest-dev status` to check if there is a current spec set.
   - `implemented` → inform the user the spec is already fully implemented and exit
 - Create a task list covering only the remaining stages
 
-**If no current spec exists:**
+**If no active change spec exists:**
 - Proceed to the [New](#new) section below
 
 ---
 
 ## New
 
-*Only when no current spec exists.*
+*Only when no active change spec exists.*
 
 **Step 1: Create Spec**
 
@@ -46,7 +46,7 @@ Analyze the user's description and determine:
 
 Execute: `zest-dev create <spec-slug>`
 
-Then set it as current: `zest-dev set-current <spec-id>` (use the `id` from the create output, e.g. `20260224-spec-slug`)
+Then set it as active: `zest-dev set-active <spec-id>` (use the `id` from the create output, e.g. `20260224-spec-slug`)
 
 **Step 2: Fill Overview Section**
 
@@ -114,7 +114,7 @@ Edit the spec file's Research section with findings:
 
 **Step 8: Update Status**
 
-Execute: `zest-dev update current researched`
+Execute: `zest-dev update active researched`
 
 ---
 
@@ -138,7 +138,7 @@ Edit the spec file's Design section with the chosen architecture:
 
 **Step 11: Update Status**
 
-Execute: `zest-dev update current designed`
+Execute: `zest-dev update active designed`
 
 ---
 
@@ -192,7 +192,7 @@ Edit the spec file's Implementation section:
 
 **Step 16: Update Status**
 
-Execute: `zest-dev update current implemented`
+Execute: `zest-dev update active implemented`
 
 ---
 
@@ -223,4 +223,4 @@ Mark all todo items complete and inform the user:
 ## Important Notes
 
 - **Simple tasks only**: For complex features with many unknowns, use the individual stage commands (`/research`, `/design`, `/implement`) for more thorough handling.
-- **Picks up from current status**: If a spec is already in progress, this command continues from where it left off.
+- **Picks up from current status**: If an active change spec is already in progress, this command continues from where it left off.

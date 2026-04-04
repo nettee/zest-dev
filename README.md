@@ -24,10 +24,11 @@ npm install -g zest-dev
 Work through a feature spec one phase at a time, with human review between each stage.
 
 ```bash
-/zest-dev:new "My new feature"   # Create a spec and set it as current
+/zest-dev:new "My new feature"   # Create a spec and set it as active
 /zest-dev:research            # Research requirements and explore the codebase
 /zest-dev:design              # Clarify requirements and design the architecture
 /zest-dev:implement           # Build the feature following the design
+/zest-dev:archive             # Agent-guided merge into specs/current, then unset active
 ```
 
 Each command advances the spec to the next status: `new → researched → designed → implemented`.
@@ -45,7 +46,7 @@ Start from a description:
 Or start from an existing spec:
 
 ```bash
-zest-dev set-current <spec-id>
+zest-dev set-active <spec-id>
 /zest-dev:quick-implement
 ```
 
@@ -68,12 +69,14 @@ The `zest-dev` CLI manages spec files. Use it to inspect and update specs outsid
 | Command | Purpose |
 |---------|---------|
 | `zest-dev status` | View project status |
-| `zest-dev show <spec-id\|current>` | View spec content |
+| `zest-dev show <spec-id\|active>` | View spec content |
 | `zest-dev create <slug>` | Create new spec |
-| `zest-dev set-current <spec-id>` | Set current working spec |
-| `zest-dev unset-current` | Unset current working spec |
-| `zest-dev update <spec-id> <status>` | Update spec status |
-| `zest-dev create-branch` | Create a git branch from the current spec |
+| `zest-dev set-active <spec-id>` | Set active change spec |
+| `zest-dev unset-active` | Unset active change spec |
+| `zest-dev update <spec-id\|active> <status>` | Update spec status |
+| `zest-dev create-branch` | Create a git branch from the active change spec |
+
+Archive is intentionally **not** a public CLI subcommand. Use `/zest-dev:archive` in plugin-enabled editors or `zest-dev prompt archive` for prompt-driven flows.
 
 ### Status Transitions
 
@@ -92,6 +95,7 @@ codex "$(zest-dev prompt new 'some description')"
 codex "$(zest-dev prompt research)"
 codex "$(zest-dev prompt design)"
 codex "$(zest-dev prompt implement)"
+codex "$(zest-dev prompt archive)"
 codex "$(zest-dev prompt summarize)"
 ```
 
@@ -100,12 +104,14 @@ codex "$(zest-dev prompt summarize)"
 ```
 project/
 ├── specs/
-│   └── change/
+│   ├── change/
 │       ├── 20260224-init-project/
 │       │   └── spec.md
 │       ├── 20260225-feature-name/
 │       │   └── spec.md
-│       └── current -> 20260225-feature-name (symlink)
+│       └── active -> 20260225-feature-name (symlink)
+│   └── current/
+│       └── implementation.md
 └── .zest-dev/
     └── template/
         └── spec.md
