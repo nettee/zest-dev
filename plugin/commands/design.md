@@ -33,8 +33,9 @@ Read the spec file to understand:
 Use TodoWrite to create a task list tracking:
 - Identify and ask clarifying questions
 - Launch architecture design agents
-- Present options to user
-- Document chosen design
+- Synthesize recommended architecture
+- Decide whether user choice is actually needed
+- Document final design
 - Update spec status
 
 **Step 4: Identify Underspecified Aspects**
@@ -57,47 +58,85 @@ If the user says "whatever you think is best", provide your recommendation and g
 ## Architecture Design
 
 **Step 6: Launch Architect Agents**
-Launch 2-3 code-architect agents **in parallel** using the Task tool with different focuses:
-- **Minimal changes**: Smallest change, maximum reuse of existing code
-- **Clean architecture**: Maintainability, elegant abstractions, long-term quality
-- **Pragmatic balance**: Speed + quality, practical trade-offs
+Launch 2-3 code-architect agents **in parallel** using the Task tool with different lenses:
+- **Reuse / low-risk lens**: Smallest safe change, maximum reuse of existing code
+- **Maintainability / system-design lens**: Long-term clarity, abstractions, architectural consistency
+- **Delivery pragmatism lens**: Fastest practical path with acceptable quality and validation
+
+Treat these agents as **research inputs**, not as user-facing option generators.
+Do not ask them to manufacture contrast or intentionally produce extreme alternatives.
 
 Each agent should provide:
+- Recommended architecture from its lens
 - Architecture overview with components
 - Implementation approach
 - Trade-offs (pros/cons)
 - Files to create or modify
+- Which parts are true architectural differences vs tuning/degree differences
+- Which ideas from other likely approaches could be combined safely
 
-**Step 7: Review Approaches & Form Opinion**
-Review all approaches and form your opinion on which fits best for this specific task.
+**Step 7: Synthesize Findings & Form Opinion**
+Review all agent outputs and synthesize them into a single recommended architecture by default.
+
+The main agent should:
+- Extract shared recommendations and constraints
+- Merge compatible strengths from different agents
+- Discard clearly inferior, redundant, or theatrical extreme proposals
+- Decide whether one subagent's proposal is already clearly correct as-is
+- Form a strong opinion on the best fit for this specific task and repository
 
 Consider:
 - Is this a small fix or large feature?
 - Urgency vs quality trade-offs
 - Team context and existing patterns
 - Complexity and maintenance burden
+- Backward compatibility and migration implications
+- Whether differences are strategic or merely implementation tuning
 
-**Step 8: Present Options to User**
-Present to user:
-- **Brief summary of each approach** (2-3 sentences)
-- **Trade-offs comparison** (use table format)
-- **Your recommendation with reasoning**
-- **Concrete implementation differences**
+**Default rule:** the main agent should make the architectural decision and present one synthesized recommendation.
 
-**Ask user which approach they prefer.**
+**Step 8: Decide Whether User Choice Is Actually Needed**
+Only ask the user to choose when there are **2-3 genuinely viable and materially different architectural directions**.
 
-Wait for user decision before documenting the design.
+Ask the user to choose only if one or more of these is true:
+- The approaches imply different product behavior or UX semantics
+- The approaches imply different compatibility, migration, or rollout strategies
+- The approaches create meaningfully different module boundaries, contracts, or system shape
+- The approaches have materially different long-term cost profiles and there is no clear winner
+- Two or more directions are genuinely viable and depend on user/team preference rather than technical correctness
+
+Do **not** ask the user to choose when:
+- One direction is clearly best for the issue and repository
+- One subagent's proposal is clearly correct and the others are weaker variations
+- Differences are only about abstraction level, naming, file split, sequencing, or other implementation tuning
+- The alternatives are artificial extremes (for example: too minimal, too overengineered, and one obvious middle ground)
+
+If user choice is **not** needed:
+- Present one recommended architecture
+- Briefly explain what was synthesized from the subagent findings
+- Proceed directly to documenting the design
+
+If user choice **is** needed:
+- Present only the 2-3 genuinely viable directions
+- Summarize the real trade-offs briefly
+- State your recommendation with reasoning
+- Ask the user which direction they prefer
+
+Wait for user decision **only** when this decision gate determines that user input is actually needed.
 
 **Step 9: Document Design**
-Edit the spec file to add/update the Design section based on chosen approach.
+Edit the spec file to add/update the Design section based on the synthesized recommendation or the user-chosen direction when a real decision fork exists.
 
 **Include:**
 - **Architecture overview**: Components, data flow, system structure
+- **Why this design**: Why this is the recommended direction, including what was synthesized or intentionally rejected
 - **Implementation steps**: Ordered sequence of what to build
 - **Pseudocode**: Logic for non-trivial algorithms or processes
 - **File structure**: Files to create or modify
 - **Interfaces/APIs**: Contracts between components
 - **Edge cases**: How to handle errors and unusual scenarios
+
+If alternatives were considered but not surfaced to the user, summarize them briefly only when helpful for future reviewers.
 
 **Format guidelines:**
 - Use visual diagrams (ASCII art, flowcharts) for architecture
