@@ -70,13 +70,16 @@ Edit the spec file to fill the `### Implementation` and `### Verification` subse
 
 Keep both sections brief. Use bullet points. Skip a subsection entirely if there's nothing worth noting.
 
-**Step 7: Update Spec Status**
-Execute: `zest-dev update active implemented`
+**Step 7: Update Spec Status (Only When Fully Complete)**
+Support incremental delivery by phase:
+- If only part of the spec is implemented (for example, one phase), **do not** mark status as `implemented` yet.
+- Keep status at its current in-progress phase until all planned work for the spec is complete.
+- Only when the full spec is complete, execute: `zest-dev update active implemented`
 
-This updates the spec status using the CLI (do not edit frontmatter manually).
+Always update status via the CLI (do not edit frontmatter manually).
 
-**Step 8: Confirm Completion**
+**Step 8: Confirm Progress or Completion**
 Mark todo items complete and inform user:
-- ✅ Implementation complete
-- ✅ Spec status updated to "implemented"
+- ✅ Implemented scope completed (phase or full spec)
+- ✅ Spec status updated appropriately (only set to `implemented` when full spec is done)
 - ✅ Implementation documented

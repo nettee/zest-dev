@@ -501,3 +501,22 @@ test('zest-dev prompt archive integration', () => {
     cleanup();
   }
 });
+
+test('zest-dev prompt implement supports incremental phases', () => {
+  setup();
+
+  try {
+    const prompt = runCommand('prompt implement');
+    assert.ok(prompt.includes('Step 7: Update Spec Status (Only When Fully Complete)'));
+    assert.ok(prompt.includes('If only part of the spec is implemented'));
+    assert.ok(prompt.includes('Only when the full spec is complete, execute: `zest-dev update active implemented`'));
+
+    runInit();
+    const deployedImplement = readCommand('.cursor', 'zest-dev-implement.md');
+    assert.ok(deployedImplement.includes('Step 7: Update Spec Status (Only When Fully Complete)'));
+    assert.ok(deployedImplement.includes('If only part of the spec is implemented'));
+    assert.ok(deployedImplement.includes('Only when the full spec is complete, execute: `zest-dev update active implemented`'));
+  } finally {
+    cleanup();
+  }
+});
