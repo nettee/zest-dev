@@ -79,7 +79,8 @@ Support incremental delivery by phase:
 Always update status via the CLI (do not edit frontmatter manually).
 
 **Step 8: Confirm Progress or Completion**
-Mark todo items complete and inform user:
+Mark only the todo items for the work completed in this run, leaving future phases unchecked. Then inform user:
 - ✅ Implemented scope completed (phase or full spec)
 - ✅ Spec status updated appropriately (only set to `implemented` when full spec is done)
+- ✅ Relevant todo items updated for this run
 - ✅ Implementation documented
