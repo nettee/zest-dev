@@ -152,6 +152,7 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 .llm-chat-history/
+.opencode/
 
 # Local debug conversation captures
 specs/change/20260226-cursor-debug-mode-skill/cursor-debug-mode-conversations/
