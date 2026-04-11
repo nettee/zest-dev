@@ -1,7 +1,6 @@
 ---
 description: Summarize a GitHub PR into a spec (for post-hoc documentation)
 argument-hint: [pr-number]
-allowed-tools: Read, Write, Edit, Bash(gh:*), Bash(zest-dev:*), AskUserQuestion
 ---
 
 # Summarize GitHub PR into Spec

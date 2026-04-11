@@ -1,6 +1,5 @@
 ---
 description: Research feature requirements and explore codebase patterns
-allowed-tools: Read, Edit, Bash(zest-dev:*), Task, Glob, Grep, TodoWrite
 ---
 
 # Research: Understand Requirements & Explore Codebase
@@ -49,20 +48,20 @@ Use TodoWrite to create a task list tracking:
 
 ## Codebase Exploration
 
-**Step 5: Launch Explorer Agents
-Launch 2-3 code-explorer agents **in parallel** using the Task tool. Each agent should:
-- Trace through the code comprehensively and focus on getting a comprehensive understanding of abstractions, architecture and flow of control
-- Target a different aspect of the codebase
-- Include a list of 5-10 key files to read
+**Step 5: Launch Codebase Exploration**
+Delegate codebase discovery to one or more explorer subagents when that is faster than doing all search yourself. Parallelize only when different searches are clearly independent. Each exploration pass should:
+- Trace through the codebase to understand abstractions, architecture, and flow of control
+- Focus on a distinct angle
+- Return a concise list of the most important files to read next
 
-**Example agent prompts**:
+**Example exploration prompts**:
 - "Find features similar to [feature] and trace through their implementation comprehensively"
 - "Map the architecture and abstractions for [feature area], tracing through the code comprehensively"
 - "Analyze the current implementation of [existing feature/area], tracing through the code comprehensively"
 - "Identify UI patterns, testing approaches, or extension points relevant to [feature]"
 
 **Step 6: Read Identified Files**
-**IMPORTANT**: Once the agents return, read all files identified by agents to build deep understanding. Do NOT proceed to design without reading these files.
+**IMPORTANT**: Once the subagents return, read all files they identified to build deep understanding. Do NOT proceed to design without reading these files.
 
 **Step 7: Document Research Findings**
 Edit the spec file to add/update the Research section.

@@ -1,7 +1,6 @@
 ---
 description: Run all remaining workflow stages end-to-end for simple tasks with approval checkpoints
 argument-hint: <description of feature or requirement>
-allowed-tools: Read, Edit, Write, Bash, Task, Glob, Grep, TodoWrite, AskUserQuestion
 ---
 
 # Quick Implement
@@ -86,7 +85,7 @@ Present the filled Overview to the user. Identify any gaps or ambiguities:
 
 Ask the user to confirm the requirements are correct and complete before research begins.
 
-Use AskUserQuestion with options:
+Use the question tool with options:
 - **Requirements look good — start research** — proceed with the research phase
 - **Need to clarify first** — ask follow-up questions, update the Overview section, then ask again
 
@@ -98,13 +97,13 @@ Do not proceed until requirements are confirmed.
 
 **Step 5: Explore Codebase**
 
-Launch 1-2 code-explorer agents **in parallel** using the Task tool. Focus on:
+Run targeted codebase discovery. Delegate to explorer subagents when helpful, and parallelize only for independent searches. Focus on:
 - Existing patterns and conventions relevant to the feature
 - Files and modules likely to be affected
 
 **Step 6: Read Identified Files**
 
-Read the key files identified by the agents before proceeding.
+Read the key files identified by the subagents before proceeding.
 
 **Step 7: Document Research**
 
@@ -122,12 +121,14 @@ Execute: `zest-dev update active researched`
 
 ## Stage 2: Design
 
-**Step 9: Launch Architect Agent**
+**Step 9: Design a Pragmatic Solution**
 
-Launch a single code-architect agent using the Task tool. Instruct it to design a pragmatic, minimal solution that:
+Design a pragmatic, minimal solution that:
 - Reuses existing patterns and conventions
 - Minimizes new abstractions
 - Produces a clear step-by-step implementation plan
+
+If a design review would materially improve quality, ask architect or reviewer subagents to review or pressure-test the proposed direction.
 
 **Step 10: Document Design**
 
@@ -156,7 +157,7 @@ Ask the user:
 > [brief summary]
 > Proceed with implementation?
 
-Use AskUserQuestion with options:
+Use the question tool with options:
 - **Implement now** — proceed with implementation
 - **Stop here** — exit and let the user review the design before continuing manually with `/implement`
 
@@ -200,14 +201,14 @@ Execute: `zest-dev update active implemented`
 
 ## Stage 4: Final Review
 
-**Step 17: Run Code Reviewer**
+**Step 17: Run Final Review**
 
-Launch a code-reviewer agent using the Task tool to review the changes made during implementation.
+Review the changes made during implementation.
 
-Instruct the agent to:
-- Review the staged/unstaged changes for this feature
-- Check for bugs, logic errors, and security issues
-- Verify code follows project conventions
+If specialist review is warranted, delegate to reviewer subagents to review:
+- The changes for bugs, logic errors, and security issues
+- Whether the code follows project conventions
+- Whether the implementation stayed appropriately simple
 
 **Step 18: Address Critical Issues**
 

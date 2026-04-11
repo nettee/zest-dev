@@ -1,7 +1,6 @@
 ---
 description: Crystallize a discussion into a spec, then proceed step by step
 argument-hint: [optional spec-slug]
-allowed-tools: Read, Write, Edit, Bash(zest-dev:*), AskUserQuestion
 ---
 
 # Draft: Discussion → Spec → Guided Next Steps
@@ -25,7 +24,7 @@ Review the conversation history to extract:
 - **Open questions**: Things still undecided or unclear
 - **Scope signals**: What's in vs out, even if stated informally
 
-If the conversation is too early or vague to draft a spec, use AskUserQuestion to ask:
+If the conversation is too early or vague to draft a spec, use the question tool or ask directly:
 - "What's the core thing you're trying to build?"
 - "What problem does this solve?"
 
@@ -132,14 +131,14 @@ After the spec is created and status set, present next-step options **based on t
 2. Stop here — I'll continue manually when ready
 ```
 
-Use AskUserQuestion with these options, or proceed directly if the conversation makes the answer obvious.
+Use the question tool with these options, or proceed directly if the conversation makes the answer obvious.
 
 ## Step 7: Execute Chosen Path
 
 Based on the user's choice:
 
-- **Research**: Proceed as `/research` would — clarify requirements, launch explorer agents, document findings, update status to `researched`
-- **Design**: Proceed as `/design` would — identify underspecified aspects, ask clarifying questions, launch architect agents, document chosen design, update status to `designed`
+- **Research**: Proceed as `/research` would — clarify requirements, run codebase exploration, document findings, update status to `researched`
+- **Design**: Proceed as `/design` would — identify underspecified aspects, ask clarifying questions, develop the architecture, document the chosen design, update status to `designed`
 - **Research then Design**: Run research phase fully, then run design phase
 - **Implement**: Guide user to `/implement` (do not run it inline — implementation is long-running)
 - **Stop here**: Confirm the spec is saved and guide them to the appropriate next command

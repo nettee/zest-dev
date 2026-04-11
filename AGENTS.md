@@ -4,6 +4,25 @@
 
 Zest Dev: A lightweight, human-interactive development workflow for AI-assisted coding.
 
+## Command Prompt Environment
+
+This repository's custom command prompts are designed for **OpenCode / oh-my-opencode-slim**, not Claude Code.
+
+### Prompt writing guidance
+
+- Write prompts in terms of **capabilities and roles**, not Claude-specific tool names or fixed implementations.
+- Prefer flexible role names such as **explorer subagent**, **architect subagent**, and **reviewer subagent**.
+- Do **not** hardcode specific oh-my-opencode-slim agent handles in prompts unless there is a strong reason; let the runtime choose the best matching subagent.
+- For user interaction, say **ask the user directly** or **use the question tool** rather than Claude-specific names.
+- For codebase work, describe the goal (read files, search code, inspect references, run shell commands) rather than enumerating a Claude-only tool contract.
+
+### Prompt format constraints
+
+- Do **not** rely on `allowed-tools` frontmatter for deployed OpenCode commands. Our deploy step strips non-OpenCode frontmatter and keeps only `description`.
+- `argument-hint` may exist in source command files for authoring convenience, but it is not preserved in deployed `.opencode/commands/` files.
+- Avoid prompt text that assumes Claude Code-only primitives such as `AskUserQuestion` or Claude-specific plugin agent names.
+- When describing delegation, prefer generic subagent language over implementation-specific names so the same prompt remains portable across OpenCode setups.
+
 ## Development
 
 ### Testing Zest Dev CLI
