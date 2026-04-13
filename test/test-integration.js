@@ -32,11 +32,6 @@ const EXPECTED_COMMANDS = [
   'zest-dev-summarize-pr.md',
   'zest-dev-quick-implement.md'
 ];
-const EXPECTED_AGENTS = [
-  'code-architect.md',
-  'code-explorer.md',
-  'code-reviewer.md'
-];
 const LANGUAGE_ALIGNMENT_RULE =
   'Always respond in the user\'s language throughout the flow unless the user asks to switch languages.';
 
@@ -79,10 +74,6 @@ function readCommand(target, filename, testDir = TEST_DIR) {
   return fs.readFileSync(path.join(testDir, target, 'commands', filename), 'utf-8');
 }
 
-function readAgent(target, filename, testDir = TEST_DIR) {
-  return fs.readFileSync(path.join(testDir, target, 'agents', filename), 'utf-8');
-}
-
 function extractFrontmatter(content, filename) {
   const match = content.match(/^---\n([\s\S]*?)\n---/);
   assert.ok(match, `${filename} has no frontmatter`);
@@ -120,16 +111,16 @@ test('zest-dev init integration', async (t) => {
       assert.ok(Array.isArray(result.cursor.skills), 'cursor.skills should be an array');
       assert.ok(Array.isArray(result.cursor.agents), 'cursor.agents should be an array');
       assert.ok(Array.isArray(result.opencode.agents), 'opencode.agents should be an array');
+      assert.deepEqual(result.cursor.commands, [], 'cursor.commands should be empty');
+      assert.deepEqual(result.cursor.skills, [], 'cursor.skills should be empty');
+      assert.deepEqual(result.cursor.agents, [], 'cursor.agents should be empty');
+      assert.deepEqual(result.opencode.agents, [], 'opencode.agents should be empty');
     });
 
     await t.test('directory structure', () => {
       const expectedDirs = [
-        '.cursor/commands',
-        '.cursor/skills',
-        '.cursor/agents',
         '.opencode/commands',
-        '.opencode/skills',
-        '.opencode/agents'
+        '.opencode/skills'
       ];
 
       for (const dir of expectedDirs) {
@@ -138,81 +129,90 @@ test('zest-dev init integration', async (t) => {
     });
 
     await t.test('command files', () => {
-      for (const target of ['.cursor', '.opencode']) {
-        for (const file of EXPECTED_COMMANDS) {
-          const filePath = path.join(TEST_DIR, target, 'commands', file);
-          assert.ok(fs.existsSync(filePath), `${target} command should exist: ${file}`);
-        }
+      for (const file of EXPECTED_COMMANDS) {
+        const filePath = path.join(TEST_DIR, '.opencode', 'commands', file);
+        assert.ok(fs.existsSync(filePath), `.opencode command should exist: ${file}`);
       }
+
+      assert.equal(
+        fs.existsSync(path.join(TEST_DIR, '.cursor')),
+        false,
+        '.cursor should not be created during init'
+      );
     });
 
     await t.test('command language alignment rule', () => {
-      for (const target of ['.cursor', '.opencode']) {
-        for (const file of EXPECTED_COMMANDS) {
-          const content = readCommand(target, file);
-          assert.ok(
-            content.includes(LANGUAGE_ALIGNMENT_RULE),
-            `${target}/commands/${file} should include the language alignment rule`
-          );
-        }
+      for (const file of EXPECTED_COMMANDS) {
+        const content = readCommand('.opencode', file);
+        assert.ok(
+          content.includes(LANGUAGE_ALIGNMENT_RULE),
+          `.opencode/commands/${file} should include the language alignment rule`
+        );
       }
     });
 
     await t.test('skills deployment', () => {
-      const cursorSkillPath = path.join(TEST_DIR, '.cursor/skills/zest-dev/SKILL.md');
       const opencodeSkillPath = path.join(TEST_DIR, '.opencode/skills/zest-dev/SKILL.md');
 
-      assert.ok(fs.existsSync(cursorSkillPath), 'Cursor skill file should exist');
       assert.ok(fs.existsSync(opencodeSkillPath), 'OpenCode skill file should exist');
     });
 
-    await t.test('agents deployment and model mapping', () => {
-      for (const file of EXPECTED_AGENTS) {
-        const cursorPath = path.join(TEST_DIR, '.cursor/agents', file);
-        const opencodePath = path.join(TEST_DIR, '.opencode/agents', file);
+    await t.test('agents are not deployed', () => {
+      assert.equal(
+        fs.existsSync(path.join(TEST_DIR, '.opencode/agents')),
+        false,
+        '.opencode/agents should not be created during init'
+      );
+    });
 
-        assert.ok(fs.existsSync(cursorPath), `Cursor agent should exist: ${file}`);
-        assert.ok(fs.existsSync(opencodePath), `OpenCode agent should exist: ${file}`);
+    await t.test('init removes only known legacy agent files and keeps other agents content', () => {
+      const agentsDir = path.join(TEST_DIR, '.opencode/agents');
+      const staleLegacyFile = path.join(agentsDir, 'code-explorer.md');
+      const nonLegacyTopLevelFile = path.join(agentsDir, 'my-custom-agent.md');
+      const nestedDir = path.join(agentsDir, 'nested-dir');
 
-        const cursorFrontmatter = extractFrontmatter(readAgent('.cursor', file), `.cursor/agents/${file}`);
-        const opencodeFrontmatter = extractFrontmatter(readAgent('.opencode', file), `.opencode/agents/${file}`);
+      fs.mkdirSync(nestedDir, { recursive: true });
+      fs.writeFileSync(staleLegacyFile, '# stale legacy agent', 'utf-8');
+      fs.writeFileSync(nonLegacyTopLevelFile, '# user agent', 'utf-8');
 
-        assert.equal(cursorFrontmatter.model, 'sonnet', `Cursor agent model should remain source model for ${file}`);
-        assert.equal(
-          opencodeFrontmatter.model,
-          'openai/gpt-5.3-codex',
-          `OpenCode agent model should be codex for ${file}`
-        );
-      }
+      assert.ok(fs.existsSync(staleLegacyFile), 'known legacy file should exist before init');
+      assert.ok(fs.existsSync(nonLegacyTopLevelFile), 'non-legacy file should exist before init');
+      assert.ok(fs.existsSync(agentsDir), 'agents directory should exist before cleanup');
+
+      const rerunOutput = yaml.load(runInit());
+      assert.equal(rerunOutput.ok, true, 'init rerun should succeed during upgrade cleanup');
+
+      assert.equal(fs.existsSync(staleLegacyFile), false, 'known legacy file should be removed');
+      assert.ok(fs.existsSync(nonLegacyTopLevelFile), 'non-legacy top-level file should be preserved');
+      assert.ok(fs.existsSync(agentsDir), 'agents directory should be kept');
+      assert.ok(fs.existsSync(nestedDir), 'subdirectories under agents should be kept');
     });
 
     await t.test('frontmatter transformation', () => {
-      for (const target of ['.cursor', '.opencode']) {
-        const fileLabel = `${target}/commands/zest-dev-new.md`;
-        const content = readCommand(target, 'zest-dev-new.md');
-        const frontmatter = extractFrontmatter(content, fileLabel);
+      const fileLabel = '.opencode/commands/zest-dev-new.md';
+      const content = readCommand('.opencode', 'zest-dev-new.md');
+      const frontmatter = extractFrontmatter(content, fileLabel);
 
-        assert.ok(frontmatter.description, `${fileLabel} should include description`);
-        assert.equal(
-          frontmatter['argument-hint'],
-          undefined,
-          `${fileLabel} should remove argument-hint`
-        );
-        assert.equal(
-          frontmatter['allowed-tools'],
-          undefined,
-          `${fileLabel} should remove allowed-tools`
-        );
-        assert.equal(
-          Object.keys(frontmatter).length,
-          1,
-          `${fileLabel} should only contain one frontmatter field`
-        );
-      }
+      assert.ok(frontmatter.description, `${fileLabel} should include description`);
+      assert.equal(
+        frontmatter['argument-hint'],
+        undefined,
+        `${fileLabel} should remove argument-hint`
+      );
+      assert.equal(
+        frontmatter['allowed-tools'],
+        undefined,
+        `${fileLabel} should remove allowed-tools`
+      );
+      assert.equal(
+        Object.keys(frontmatter).length,
+        1,
+        `${fileLabel} should only contain one frontmatter field`
+      );
     });
 
     await t.test('content preservation', () => {
-      const content = readCommand('.cursor', 'zest-dev-new.md');
+      const content = readCommand('.opencode', 'zest-dev-new.md');
       const match = content.match(/^---\n[\s\S]*?\n---\n\n([\s\S]*)/);
       assert.ok(match, 'should be able to extract command body');
 
@@ -226,14 +226,8 @@ test('zest-dev init integration', async (t) => {
       const secondRun = yaml.load(secondRunOutput);
       assert.equal(secondRun.ok, true, 'second init run should succeed');
 
-      const cursorCommands = fs.readdirSync(path.join(TEST_DIR, '.cursor/commands'));
       const opencodeCommands = fs.readdirSync(path.join(TEST_DIR, '.opencode/commands'));
 
-      assert.equal(
-        cursorCommands.length,
-        EXPECTED_COMMANDS.length,
-        'cursor commands count should remain unchanged'
-      );
       assert.equal(
         opencodeCommands.length,
         EXPECTED_COMMANDS.length,
@@ -494,7 +488,7 @@ test('zest-dev prompt archive integration', () => {
     assert.equal(prompt.includes('zest-dev archive active --no-merge'), false);
 
     runInit();
-    const deployedArchive = readCommand('.cursor', 'zest-dev-archive.md');
+    const deployedArchive = readCommand('.opencode', 'zest-dev-archive.md');
     assert.ok(deployedArchive.includes('zest-dev unset-active'));
     assert.equal(deployedArchive.includes('zest-dev archive active --no-merge'), false);
   } finally {
@@ -512,7 +506,7 @@ test('zest-dev prompt implement supports incremental phases', () => {
     assert.ok(prompt.includes('Only when the full spec is complete, execute: `zest-dev update active implemented`'));
 
     runInit();
-    const deployedImplement = readCommand('.cursor', 'zest-dev-implement.md');
+    const deployedImplement = readCommand('.opencode', 'zest-dev-implement.md');
     assert.ok(deployedImplement.includes('Step 7: Update Spec Status (Only When Fully Complete)'));
     assert.ok(deployedImplement.includes('If only part of the spec is implemented'));
     assert.ok(deployedImplement.includes('Only when the full spec is complete, execute: `zest-dev update active implemented`'));

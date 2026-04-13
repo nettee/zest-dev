@@ -216,7 +216,7 @@ program
 // zest-dev init
 program
   .command('init')
-  .description('Initialize plugin deployment to .cursor and .opencode directories')
+  .description('Initialize plugin deployment to .opencode directories')
   .action(() => {
     try {
       const result = deployPlugin();

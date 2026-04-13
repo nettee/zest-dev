@@ -1,7 +1,6 @@
 ---
 description: Capture chat conversation into a spec (for post-hoc documentation)
 argument-hint: [optional spec-slug]
-allowed-tools: Read, Write, Edit, Bash(zest-dev:*), AskUserQuestion
 ---
 
 # Summarize Conversation into Spec
@@ -32,7 +31,7 @@ Based on the conversation, determine the spec status:
 - **"designed"**: Clarified requirements, designed architecture with trade-offs
 - **"implemented"**: Actually wrote code, tested it, and reviewed quality
 
-**If status is vague or unclear**, use AskUserQuestion to ask:
+**If status is vague or unclear**, use the question tool to ask:
 - "What status should this spec be in?"
 - Options: new, researched, designed, implemented
 - Provide brief description:

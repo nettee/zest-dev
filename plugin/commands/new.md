@@ -1,7 +1,6 @@
 ---
 description: Create a new feature spec from description
 argument-hint: <description of feature or requirement>
-allowed-tools: Read, Write, Edit, Bash(zest-dev:*), AskUserQuestion
 ---
 
 # Create New Feature Spec
@@ -44,7 +43,7 @@ Evaluate the user's description:
   - Proceed to fill Overview section
 
 - **If vague or unclear**:
-  - Use AskUserQuestion or direct questions to clarify:
+  - Use the question tool or direct questions to clarify:
     - What specific problem needs solving?
     - What is the expected outcome or user value?
     - Are there any constraints or requirements?

@@ -1,6 +1,5 @@
 ---
 description: Build feature following the design
-allowed-tools: Read, Edit, Write, Bash, Task, Glob, Grep, TodoWrite
 ---
 
 # Implement: Build the Feature

@@ -1,7 +1,6 @@
 ---
 description: Document knowledge and experience from the current session into a permanent record
 argument-hint: "[optional: brief topic hint]"
-allowed-tools: Read, Write, Bash(zest-dev:*), AskUserQuestion
 ---
 
 # Compound: Knowledge Documentation
@@ -30,7 +29,7 @@ Run `zest-dev status` to determine:
 
 ## Step 2: Ask Where to Save
 
-Present the user with storage options using AskUserQuestion. Build the options dynamically based on the output of Step 1:
+Present the user with storage options using the question tool. Build the options dynamically based on the output of Step 1:
 
 **Always include:**
 - `specs/solutions/` — standalone solutions folder, for general knowledge not tied to a specific spec

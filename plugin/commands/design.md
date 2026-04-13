@@ -1,6 +1,5 @@
 ---
 description: Clarify requirements and design architecture
-allowed-tools: Read, Edit, Bash(zest-dev:*), Task, AskUserQuestion, TodoWrite
 ---
 
 # Design: Clarify Requirements & Design Architecture
@@ -49,7 +48,7 @@ Review the codebase findings and original feature request to identify:
 - **Testing strategy**: What needs tests, testing approach
 
 **Step 5: Ask Clarifying Questions**
-**Present all questions to the user in a clear, organized list** using AskUserQuestion when multiple choice, or direct questions for open-ended queries.
+**Present all questions to the user in a clear, organized list**. Use the question tool for multiple-choice checkpoints, or ask directly for open-ended input.
 
 **Wait for answers before proceeding to architecture design.**
 
@@ -57,32 +56,33 @@ If the user says "whatever you think is best", provide your recommendation and g
 
 ## Architecture Design
 
-**Step 6: Launch Architect Agents**
-Launch 2-3 code-architect agents **in parallel** using the Task tool with different lenses:
-- **Reuse / low-risk lens**: Smallest safe change, maximum reuse of existing code
-- **Maintainability / system-design lens**: Long-term clarity, abstractions, architectural consistency
-- **Delivery pragmatism lens**: Fastest practical path with acceptable quality and validation
+**Step 6: Develop the Architecture Recommendation**
+Form the architecture recommendation yourself, using repository evidence first.
 
-Treat these agents as **research inputs**, not as user-facing option generators.
-Do not ask them to manufacture contrast or intentionally produce extreme alternatives.
+When extra design validation is useful, delegate selectively:
+- Use explorer subagents to verify existing patterns or affected modules
+- Use architect subagents to generate candidate directions or pressure-test the design
+- Use reviewer subagents for high-value critique, trade-off analysis, or synthesis feedback
 
-Each agent should provide:
-- Recommended architecture from its lens
+Treat delegated findings as **inputs**, not as user-facing option generators.
+
+The design pass should produce:
+- A recommended architecture
 - Architecture overview with components
 - Implementation approach
-- Trade-offs (pros/cons)
+- Key trade-offs
 - Files to create or modify
-- Which parts are true architectural differences vs tuning/degree differences
-- Which ideas from other likely approaches could be combined safely
+- Which differences are truly architectural vs mere tuning
+- Any ideas that can be safely combined
 
 **Step 7: Synthesize Findings & Form Opinion**
-Review all agent outputs and synthesize them into a single recommended architecture by default.
+Review all subagent outputs and synthesize them into a single recommended architecture by default.
 
 The main agent should:
 - Extract shared recommendations and constraints
 - Merge compatible strengths from different agents
 - Discard clearly inferior, redundant, or theatrical extreme proposals
-- Decide whether one subagent's proposal is already clearly correct as-is
+- Decide whether one delegated recommendation is already clearly correct as-is
 - Form a strong opinion on the best fit for this specific task and repository
 
 Consider:
@@ -107,13 +107,13 @@ Ask the user to choose only if one or more of these is true:
 
 Do **not** ask the user to choose when:
 - One direction is clearly best for the issue and repository
-- One subagent's proposal is clearly correct and the others are weaker variations
+- One delegated recommendation is clearly correct and the others are weaker variations
 - Differences are only about abstraction level, naming, file split, sequencing, or other implementation tuning
 - The alternatives are artificial extremes (for example: too minimal, too overengineered, and one obvious middle ground)
 
 If user choice is **not** needed:
 - Present one recommended architecture
-- Briefly explain what was synthesized from the subagent findings
+- Briefly explain what was synthesized from the delegated findings
 - Proceed directly to documenting the design
 
 If user choice **is** needed:

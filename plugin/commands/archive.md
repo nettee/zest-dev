@@ -1,6 +1,5 @@
 ---
 description: Merge implemented active change spec into current specs and unset active
-allowed-tools: Read, Edit, Write, Bash(zest-dev:*), Glob, Grep, AskUserQuestion
 ---
 
 # Archive Active Change Spec
