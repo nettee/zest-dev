@@ -165,21 +165,25 @@ test('zest-dev init integration', async (t) => {
       );
     });
 
-    await t.test('init removes stale legacy agent files but keeps agents directory', () => {
+    await t.test('init removes only known legacy agent files and keeps other agents content', () => {
       const agentsDir = path.join(TEST_DIR, '.opencode/agents');
-      const staleAgentFile = path.join(agentsDir, 'zest-dev-legacy-agent.md');
+      const staleLegacyFile = path.join(agentsDir, 'code-explorer.md');
+      const nonLegacyTopLevelFile = path.join(agentsDir, 'my-custom-agent.md');
       const nestedDir = path.join(agentsDir, 'nested-dir');
 
       fs.mkdirSync(nestedDir, { recursive: true });
-      fs.writeFileSync(staleAgentFile, '# stale agent', 'utf-8');
+      fs.writeFileSync(staleLegacyFile, '# stale legacy agent', 'utf-8');
+      fs.writeFileSync(nonLegacyTopLevelFile, '# user agent', 'utf-8');
 
-      assert.ok(fs.existsSync(staleAgentFile), 'stale legacy file should exist before init');
+      assert.ok(fs.existsSync(staleLegacyFile), 'known legacy file should exist before init');
+      assert.ok(fs.existsSync(nonLegacyTopLevelFile), 'non-legacy file should exist before init');
       assert.ok(fs.existsSync(agentsDir), 'agents directory should exist before cleanup');
 
       const rerunOutput = yaml.load(runInit());
       assert.equal(rerunOutput.ok, true, 'init rerun should succeed during upgrade cleanup');
 
-      assert.equal(fs.existsSync(staleAgentFile), false, 'stale agent file should be removed');
+      assert.equal(fs.existsSync(staleLegacyFile), false, 'known legacy file should be removed');
+      assert.ok(fs.existsSync(nonLegacyTopLevelFile), 'non-legacy top-level file should be preserved');
       assert.ok(fs.existsSync(agentsDir), 'agents directory should be kept');
       assert.ok(fs.existsSync(nestedDir), 'subdirectories under agents should be kept');
     });
