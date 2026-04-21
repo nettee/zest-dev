@@ -83,4 +83,4 @@ Inform the user:
 
 - This command is intentionally thin.
 - Preserve open questions instead of resolving them silently.
-- The workflow source lives in `plugin/skills/zest-dev/SKILL.md`.
+- The workflow source is the `Zest Dev` skill.

@@ -8,8 +8,8 @@ This plugin integrates the Zest Dev methodology into command- and prompt-driven 
 
 ## Architecture
 
-- `plugin/skills/zest-dev/SKILL.md` is the canonical workflow source
-- detailed phase workflows live in `plugin/skills/zest-dev/{new,research,design,implement}.md`
+- the `Zest Dev` skill is the canonical workflow source
+- detailed phase workflows live under the `Zest Dev` skill
 - commands in `plugin/commands/` are thin entrypoints and compatibility shims
 - the `zest-dev` CLI manages spec lifecycle and prompt generation
 
@@ -37,7 +37,7 @@ All command flows keep responding in the user's language unless the user asks to
 
 ## Skills
 
-- **zest-dev** - Canonical workflow source for the New / Research / Design / Implement phases
+- **Zest Dev** - Canonical workflow source for the New / Research / Design / Implement phases
 
 ## Prerequisites
 
