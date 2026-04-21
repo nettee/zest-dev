@@ -1,7 +1,7 @@
 ---
 id: 20260421-thick-skill-thin-command-workflow
 name: Thick Skill Thin Command Workflow
-status: researched
+status: designed
 created: '2026-04-21'
 ---
 
@@ -66,12 +66,134 @@ created: '2026-04-21'
 
 ## Design
 
-<!-- Technical approach, architecture decisions -->
+### Architecture Overview
+
+```text
+自然语言 / /zest-dev:* / zest-dev prompt <command>
+                    │
+                    ▼
+          plugin/commands/*.md（薄入口）
+                    │
+                    ▼
+        plugin/skills/zest-dev/SKILL.md
+        ├─ Phase: New
+        ├─ Phase: Research
+        ├─ Phase: Design
+        └─ Phase: Implement
+                    │
+                    ▼
+              zest-dev CLI
+      (status/show/create/set-active/update/init)
+                    │
+                    ▼
+              specs/change/*
+```
+
+### Why this design
+- 以 `plugin/skills/zest-dev/SKILL.md` 作为核心 workflow 的唯一真源，收敛 `new / research / design / implement` 的阶段逻辑，减少当前 command 间的重复与漂移。
+- `plugin/commands/new.md`、`plugin/commands/research.md`、`plugin/commands/design.md`、`plugin/commands/implement.md` 退化为薄入口，保留 command 兼容性，但不再承载完整流程。
+- `zest-dev` CLI 继续只负责 spec 生命周期、prompt 兼容层和部署，不把 workflow 细节下沉到 CLI 中，保持与 `lib/spec-manager.js` 的状态机边界一致。
+- 自然语言直触发主要依赖 skill 的 description 与 phase 路由说明，符合部署后 command frontmatter 只保留 `description` 的约束。
+
+### Component Responsibilities
+- **CLI (`bin/zest-dev.js`, `lib/spec-manager.js`)**
+  - 负责 spec 的创建、读取、active 切换、状态更新、plugin 部署、prompt 输出。
+  - 不负责阶段内的 agent 编排、澄清问题模板或 spec 内容写作策略。
+- **Thin commands (`plugin/commands/{new,research,design,implement}.md`)**
+  - 负责显式入口、阶段名称、参数透传和“进入 Zest Dev skill 对应 phase”的最小提示。
+  - 不再包含完整步骤、重复规则和大段 workflow 说明。
+- **Main skill (`plugin/skills/zest-dev/SKILL.md`)**
+  - 负责自然语言触发、phase 路由、共享规则和四个核心阶段的完整 canonical workflow。
+  - 统一语言规则、active spec 校验、何时提问、何时调用 CLI、各阶段写回 spec 的要求。
+- **Specs (`specs/change/*/spec.md`)**
+  - 负责承载 Overview / Research / Design / Plan / Notes，记录状态和设计结果。
+  - 不承载 command 或 skill 的执行说明文本。
+- **Deployer (`lib/plugin-deployer.js`)**
+  - 继续负责把 source plugin 部署到 `.opencode/commands/` 与 `.opencode/skills/`。
+  - 不承担 workflow 编排，仅做最小转换与复制。
+- **Tests (`test/test-integration.js`)**
+  - 负责锁定 command 兼容性、prompt 输出可用性、技能部署结果，以及“command 变薄 / skill 成为真源”的结构约束。
+
+### Implementation Steps
+1. **把 skill 升级为真源**
+   - 重写 `plugin/skills/zest-dev/SKILL.md`，加入 phase 路由和四个核心阶段的完整流程定义。
+   - 将通用规则（语言、状态校验、CLI-only frontmatter 更新、facts vs decisions）收敛到 skill 的共享部分。
+2. **把核心 command 压薄**
+   - 重写 `plugin/commands/new.md`、`research.md`、`design.md`、`implement.md` 为轻量入口。
+   - 每个 command 只保留阶段目的、参数位和“调用主 skill 对应 phase”的说明。
+3. **补齐 prompt 兼容层**
+   - 调整 `lib/prompt-generator.js`，使其定位为“薄入口 prompt 生成器”，同时处理当前 command 枚举与仓库实际文件集合不一致的问题。
+   - 保持 `zest-dev prompt <command>` 仍可作为兼容入口使用。
+4. **清理组合型入口的依赖关系**
+   - 更新 `plugin/commands/draft.md` 与 `quick-implement.md` 等组合入口，使其复用新的主 skill phase，而不是继续内嵌旧的厚流程。
+5. **更新文档与测试**
+   - 更新 `plugin/README.md` 与 `README.md`，明确“skill 是 workflow 真源，command 是兼容入口”。
+   - 更新 `test/test-integration.js`，验证核心 command 仍部署、prompt 仍可用、skill 部署存在，以及 command 内容不再承载厚流程。
+
+### Pseudocode
+```text
+When request arrives:
+  If user uses /zest-dev:new|research|design|implement:
+    Load thin command prompt
+    Command tells agent to enter Zest Dev skill phase
+
+  Else if user uses natural language matching Zest Dev:
+    Trigger Zest Dev skill directly
+
+Inside Zest Dev skill:
+  Detect target phase from command context or user intent
+  Verify active spec and required status for that phase
+  Ask clarifying questions when required
+  Read spec and relevant codebase context
+  Execute phase-specific workflow
+  Use zest-dev CLI for spec creation / status transitions
+  Write results back into spec sections
+  Return next-step guidance
+```
+
+### File Structure
+- `plugin/skills/zest-dev/SKILL.md` - 核心 workflow 真源，承载 phase 路由与四个核心阶段逻辑。
+- `plugin/commands/new.md` - new 阶段的薄入口。
+- `plugin/commands/research.md` - research 阶段的薄入口。
+- `plugin/commands/design.md` - design 阶段的薄入口。
+- `plugin/commands/implement.md` - implement 阶段的薄入口。
+- `plugin/commands/draft.md` - 组合入口，改为桥接到主 skill phase。
+- `plugin/commands/quick-implement.md` - 组合入口，改为串联主 skill phase。
+- `lib/prompt-generator.js` - prompt 兼容层，输出薄 command prompt。
+- `plugin/README.md` - plugin 层工作流说明与入口说明。
+- `README.md` - 仓库对外使用说明。
+- `test/test-integration.js` - command/skill 部署、prompt 输出与架构约束测试。
+
+### Interfaces / APIs
+- **CLI → Skill / Command**
+  - `zest-dev status`
+  - `zest-dev show <spec-id|active>`
+  - `zest-dev create <slug>`
+  - `zest-dev set-active <spec-id>`
+  - `zest-dev update <spec-id|active> <status>`
+  - `zest-dev prompt <command> [args...]`
+- **Command → Skill**
+  - command prompt 不再直接描述完整工作流，而是声明当前 phase，并要求进入 Zest Dev skill 的对应 phase。
+- **Skill → Spec**
+  - 通过 CLI 更新 status；通过编辑 spec 正文填充 Overview / Research / Design / Notes。
+
+### Edge Cases
+- **没有 active spec**：`research / design / implement` phase 必须先中止并引导用户创建或设置 active spec。
+- **status 不匹配**：主 skill 必须按阶段校验 `new / researched / designed` 前置状态，避免绕过既有状态机约束。
+- **自然语言触发不精确**：skill description 需要覆盖 phase 触发词和“create spec / research phase / design architecture / implement feature”等意图，降低误触发或漏触发概率。
+- **prompt 兼容入口枚举漂移**：`lib/prompt-generator.js` 的命令集合需要与实际 command 文件集合保持一致，避免迁移后出现入口存在但 prompt 不支持的情况。
+- **部署后 frontmatter 被裁剪**：不能依赖 deployed command 的 `argument-hint` 或其他 frontmatter 字段，相关上下文必须写进正文或 skill 中。
+- **一次性迁移的回归面**：`draft`、`quick-implement` 等组合入口如果仍内嵌旧逻辑，会与主 skill 真源产生再次漂移，需同轮对齐。
+
+### Alternatives Considered
+- 保持“厚 command、薄 skill”：会继续把 workflow 真源放在多个 command 文件中，不能解决漂移问题。
+- 为每个 phase 单独拆分 skill：会重复共享规则，并增加 phase 间一致性维护成本。
+- 把更多 workflow 下沉到 CLI：会把 AI workflow 与本地状态机耦合，削弱自然语言直触发能力。
 
 ## Plan
 
-<!-- Optional: Phase breakdown for complex features that need multiple implementation phases.
-     Decided during Design. Checked off during Implement. -->
+- [ ] Phase 1: 将核心 workflow 真源迁移到 `plugin/skills/zest-dev/SKILL.md`，并压薄 `new/research/design/implement` commands。
+- [ ] Phase 2: 对齐 prompt 兼容层、组合入口、文档与集成测试，确保一次性迁移后的行为一致性。
 
 ## Notes
 
