@@ -269,6 +269,11 @@ test('zest-dev init integration', async (t) => {
       const implementContent = readCommand('.opencode', 'zest-dev-implement.md');
       assert.ok(implementContent.includes('Run Zest Dev **Implement** phase workflow.'));
       assert.equal(implementContent.includes('Treat this command as a request'), false, 'implement command should avoid request/run phrasing');
+
+      const draftContent = readCommand('.opencode', 'zest-dev-draft.md');
+      assert.ok(draftContent.includes('run `zest-dev update active researched`'));
+      assert.ok(draftContent.includes('run `zest-dev update active designed`'));
+      assert.ok(draftContent.includes('the inferred status is persisted'));
     });
 
     await t.test('idempotency', () => {
@@ -557,6 +562,8 @@ test('zest-dev prompt supports actual command set and summarize alias', () => {
     const draftPrompt = runCommand('prompt draft');
     assert.ok(draftPrompt.includes('Bridge entrypoint into the Zest Dev skill.'));
     assert.ok(draftPrompt.includes('guide the user to `/implement` as the next explicit step'));
+    assert.ok(draftPrompt.includes('run `zest-dev update active researched`'));
+    assert.ok(draftPrompt.includes('run `zest-dev update active designed`'));
 
     const summarizeAliasPrompt = runCommand('prompt summarize');
     const summarizeChatPrompt = runCommand('prompt summarize-chat');

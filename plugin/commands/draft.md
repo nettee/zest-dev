@@ -27,9 +27,14 @@ Use this command as a lightweight bridge:
 
 If the conversation already reached research or design depth, fill those sections briefly using the same canonical rules from the Zest Dev skill.
 
+Then persist the inferred status explicitly:
+- if the highest reached status is `new`, leave the status as-is
+- if the highest reached status is `researched`, fill `## Research` and run `zest-dev update active researched`
+- if the highest reached status is `designed`, fill `## Research` and `## Design`, then run `zest-dev update active designed`
+
 ## Step 2: Route into the next Zest Dev phase
 
-After the spec is created and status set, present next-step options **based on the current status**:
+After the spec is created and the inferred status is persisted, present next-step options **based on the current status**:
 
 **If status is `new`:**
 ```
