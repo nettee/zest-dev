@@ -175,6 +175,18 @@ test('zest-dev init integration', async (t) => {
         const filePath = path.join(TEST_DIR, '.opencode/skills/zest-dev', file);
         assert.ok(fs.existsSync(filePath), `skill phase file should exist: ${file}`);
       }
+
+      const researchPhase = fs.readFileSync(path.join(TEST_DIR, '.opencode/skills/zest-dev/research.md'), 'utf-8');
+      assert.ok(
+        researchPhase.includes('Summarize your understanding of the request and confirm it with the user'),
+        'research phase should preserve the confirmation checkpoint before deeper exploration'
+      );
+
+      const designPhase = fs.readFileSync(path.join(TEST_DIR, '.opencode/skills/zest-dev/design.md'), 'utf-8');
+      assert.ok(
+        designPhase.includes('If the status is `designed` or `implemented`, confirm that the user wants to revise the existing design before continuing.'),
+        'design phase should preserve confirmation when revising an existing design'
+      );
     });
 
     await t.test('agents are not deployed', () => {
@@ -544,6 +556,7 @@ test('zest-dev prompt supports actual command set and summarize alias', () => {
 
     const draftPrompt = runCommand('prompt draft');
     assert.ok(draftPrompt.includes('Bridge entrypoint into the Zest Dev skill.'));
+    assert.ok(draftPrompt.includes('guide the user to `/implement` as the next explicit step'));
 
     const summarizeAliasPrompt = runCommand('prompt summarize');
     const summarizeChatPrompt = runCommand('prompt summarize-chat');

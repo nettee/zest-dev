@@ -11,15 +11,16 @@ Canonical workflow for researching an active change spec.
 2. Run `zest-dev show active` and read the spec file.
 3. If the status is `new`, continue. If later, confirm whether the user wants to refresh research.
 4. Clarify missing requirement details if needed.
-5. Explore the codebase and locate relevant files.
-6. Read the identified files.
-7. Fill `## Research` with facts only:
+5. Summarize your understanding of the request and confirm it with the user before deeper exploration when the requirements are still ambiguous.
+6. Explore the codebase and locate relevant files.
+7. Read the identified files.
+8. Fill `## Research` with facts only:
    - Existing System
    - Available Approaches
    - Constraints & Dependencies
    - Key References
-8. Run `zest-dev update active researched`.
-9. Summarize findings and point to the design phase.
+9. Run `zest-dev update active researched`.
+10. Summarize findings and point to the design phase.
 
 ## Rule
 Document what exists and what is possible, not what should be chosen.

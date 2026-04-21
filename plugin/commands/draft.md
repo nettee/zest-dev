@@ -60,7 +60,7 @@ Based on the user's choice:
 - **Research**: enter the Zest Dev skill's Research phase
 - **Design**: enter the Zest Dev skill's Design phase
 - **Research then Design**: run the skill's Research phase, then its Design phase
-- **Implement**: guide the user to `/implement` or enter the skill's Implement phase only if they explicitly want to proceed now
+- **Implement**: guide the user to `/implement` as the next explicit step instead of running implementation inline from `/draft`
 - **Stop here**: confirm the spec is saved and point to the next command
 
 ## Step 4: Confirm completion
