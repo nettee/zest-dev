@@ -19,8 +19,9 @@ Canonical workflow for researching an active change spec.
    - Available Approaches
    - Constraints & Dependencies
    - Key References
-9. Run `zest-dev update active researched`.
-10. Summarize findings and point to the design phase.
+9. If the current status is `new`, run `zest-dev update active researched`.
+10. If this is a refresh for a later-phase spec, keep the current status and do not downgrade it.
+11. Summarize findings and point to the design phase.
 
 ## Rule
 Document what exists and what is possible, not what should be chosen.
