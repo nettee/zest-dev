@@ -20,6 +20,7 @@ npm install -g zest-dev
 
 Zest Dev uses a **thick skill / thin command** model:
 - `plugin/skills/zest-dev/SKILL.md` is the workflow source of truth
+- detailed phase workflows live in `plugin/skills/zest-dev/{new,research,design,implement}.md`
 - `/zest-dev:*` commands are lightweight entrypoints and compatibility shims
 - `zest-dev` CLI manages spec lifecycle only
 

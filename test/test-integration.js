@@ -40,6 +40,7 @@ const THIN_COMMANDS = [
   'zest-dev-draft.md',
   'zest-dev-quick-implement.md'
 ];
+const SKILL_PHASE_FILES = ['new.md', 'research.md', 'design.md', 'implement.md'];
 const LANGUAGE_ALIGNMENT_RULE =
   'Always respond in the user\'s language throughout the flow unless the user asks to switch languages.';
 
@@ -167,6 +168,11 @@ test('zest-dev init integration', async (t) => {
       const skillContent = fs.readFileSync(opencodeSkillPath, 'utf-8');
       assert.ok(skillContent.includes('This skill is the **canonical workflow source**'));
       assert.ok(skillContent.includes('Commands should stay thin'));
+
+      for (const file of SKILL_PHASE_FILES) {
+        const filePath = path.join(TEST_DIR, '.opencode/skills/zest-dev', file);
+        assert.ok(fs.existsSync(filePath), `skill phase file should exist: ${file}`);
+      }
     });
 
     await t.test('agents are not deployed', () => {
@@ -224,13 +230,22 @@ test('zest-dev init integration', async (t) => {
     });
 
     await t.test('content preservation', () => {
-      const content = readCommand('.opencode', 'zest-dev-new.md');
-      const match = content.match(/^---\n[\s\S]*?\n---\n\n([\s\S]*)/);
-      assert.ok(match, 'should be able to extract command body');
+      const coreCommands = [
+        ['zest-dev-new.md', 'Zest Dev skill'],
+        ['zest-dev-research.md', 'Zest Dev skill'],
+        ['zest-dev-design.md', 'Zest Dev skill'],
+        ['zest-dev-implement.md', 'Zest Dev skill']
+      ];
 
-      const bodyContent = match[1];
-      assert.ok(bodyContent.includes('$ARGUMENTS'), 'command body should keep $ARGUMENTS placeholder');
-      assert.ok(bodyContent.includes('Step 1'), 'command body should keep step structure');
+      for (const [file, phaseRef] of coreCommands) {
+        const content = readCommand('.opencode', file);
+        const match = content.match(/^---\n[\s\S]*?\n---\n\n([\s\S]*)/);
+        assert.ok(match, `should be able to extract command body: ${file}`);
+
+        const bodyContent = match[1];
+        assert.ok(bodyContent.includes('$ARGUMENTS'), `${file} should keep $ARGUMENTS placeholder`);
+        assert.ok(bodyContent.includes(phaseRef), `${file} should preserve skill reference`);
+      }
     });
 
     await t.test('core workflow commands are thin entrypoints', () => {
@@ -239,8 +254,15 @@ test('zest-dev init integration', async (t) => {
         assert.ok(content.includes('This command is intentionally thin.'), `${file} should declare thin entrypoint behavior`);
       }
 
+      const newContent = readCommand('.opencode', 'zest-dev-new.md');
+      assert.ok(newContent.includes('let the Zest Dev skill naturally continue with the New phase.'));
+      assert.equal(newContent.includes('**Step 1:'), false, 'new command should not re-describe phase steps');
+      assert.equal(newContent.includes('Treat this command as a request'), false, 'new command should avoid request/run phrasing');
+
       const implementContent = readCommand('.opencode', 'zest-dev-implement.md');
-      assert.ok(implementContent.includes('Only when the full spec is complete, execute: `zest-dev update active implemented`'));
+      assert.ok(implementContent.includes('let the Zest Dev skill naturally continue with the Implement phase.'));
+      assert.equal(implementContent.includes('**Step 1:'), false, 'implement command should not re-describe phase steps');
+      assert.equal(implementContent.includes('Treat this command as a request'), false, 'implement command should avoid request/run phrasing');
     });
 
     await t.test('idempotency', () => {
@@ -542,15 +564,15 @@ test('zest-dev prompt implement supports incremental phases', () => {
 
   try {
     const prompt = runCommand('prompt implement');
-    assert.ok(prompt.includes('Step 7: Update Spec Status (Only When Fully Complete)'));
-    assert.ok(prompt.includes('If only part of the spec is implemented'));
-    assert.ok(prompt.includes('Only when the full spec is complete, execute: `zest-dev update active implemented`'));
+    assert.ok(prompt.includes('let the Zest Dev skill naturally continue with the Implement phase.'));
+    assert.equal(prompt.includes('**Step 1:'), false);
+    assert.equal(prompt.includes('Treat this command as a request'), false);
 
     runInit();
     const deployedImplement = readCommand('.opencode', 'zest-dev-implement.md');
-    assert.ok(deployedImplement.includes('Step 7: Update Spec Status (Only When Fully Complete)'));
-    assert.ok(deployedImplement.includes('If only part of the spec is implemented'));
-    assert.ok(deployedImplement.includes('Only when the full spec is complete, execute: `zest-dev update active implemented`'));
+    assert.ok(deployedImplement.includes('let the Zest Dev skill naturally continue with the Implement phase.'));
+    assert.equal(deployedImplement.includes('**Step 1:'), false);
+    assert.equal(deployedImplement.includes('Treat this command as a request'), false);
   } finally {
     cleanup();
   }

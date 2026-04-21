@@ -202,7 +202,10 @@ Inside Zest Dev skill:
 ### Implementation
 
 - `plugin/skills/zest-dev/SKILL.md` - 重写为四个核心 phase 的 canonical workflow 真源，并收敛共享规则、phase 路由与 bridge workflow 说明。
+- `plugin/skills/zest-dev/{new,research,design,implement}.md` - 将四个核心 phase 的详细 workflow 从 `SKILL.md` 中拆出，改为按 phase 分文件维护。
 - `plugin/commands/{new,research,design,implement}.md` - 压薄为进入主 skill 对应 phase 的轻入口，保留最小上下文与关键约束。
+- `plugin/commands/{new,research,design,implement}.md` - 进一步压薄为只声明 phase 入口，并引用 skill 共享规则文件与对应 phase 文件。
+- `plugin/commands/{new,research,design,implement}.md` - 四个核心入口统一补上 `$ARGUMENTS` 透传，允许 phase-specific 的 scope / focus / constraint hint 继续传给 skill。
 - `plugin/commands/{draft,quick-implement}.md` - 改为 bridge 入口，复用主 skill phase，而不是继续内嵌完整厚流程。
 - `lib/prompt-generator.js` - 改为从 `plugin/commands/` 实际文件集合动态派生可用 command，并保留 `summarize -> summarize-chat` 兼容别名。
 - `README.md`、`plugin/README.md` - 更新为 thick skill / thin command 架构说明，并对齐 prompt 与命令使用方式。
@@ -213,4 +216,6 @@ Inside Zest Dev skill:
 
 - 运行 `pnpm install` 以安装仓库依赖。
 - 运行 `pnpm test:local`，33 个集成测试全部通过。
+- 验证部署后的 skill 目录包含 `SKILL.md` 和四个 phase 文件，确认拆分后的 skill 结构会被 `zest-dev init` 一并复制。
+- 验证四个核心 command 的部署产物都保留 `$ARGUMENTS` 占位符，并继续引用对应 phase skill 文件。
 - 手动验证 `zest-dev status` 与 `zest-dev show active`，确认 active spec 读取正常；并验证实现过程中已将 `Plan` 两个 phase 都标记为 `[x]`。

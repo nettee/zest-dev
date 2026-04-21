@@ -18,6 +18,12 @@ This skill is the **canonical workflow source** for planned feature work:
 
 Commands should stay thin. They exist as explicit entrypoints and compatibility shims. The actual phase logic lives here.
 
+To keep this file concise, the detailed workflows live in sibling phase docs:
+- `new.md`
+- `research.md`
+- `design.md`
+- `implement.md`
+
 **Core principle:** keep workflow intelligence in the skill, keep commands lightweight.
 
 ## When This Skill Should Trigger
@@ -123,84 +129,23 @@ Use when research or direct understanding is sufficient to make an implementatio
 ### Implement phase
 Use when the design is ready and the user approves coding.
 
-## Canonical Phase Workflows
+## Canonical Phase Workflow Files
 
-### Phase: New
+### New
+- The canonical New workflow lives in `plugin/skills/zest-dev/new.md`.
+- Use it for spec creation, overview writing, and first-step guidance.
 
-1. Extract a human-readable name and kebab-case slug.
-2. Run `zest-dev create <slug>`.
-3. Set the created spec active with `zest-dev set-active <spec-id>`.
-4. Read the created spec file.
-5. Fill `## Overview` using only information the user actually provided.
-6. Ask clarifying questions only when the requirement is too vague to produce a useful overview.
-7. Confirm spec id, path, active status, and next step.
+### Research
+- The canonical Research workflow lives in `plugin/skills/zest-dev/research.md`.
+- Use it for repository discovery, factual research writing, and status advancement to `researched`.
 
-**Overview content may include:**
-- Problem Statement
-- Goals
-- Scope
-- Constraints
-- Success Criteria
+### Design
+- The canonical Design workflow lives in `plugin/skills/zest-dev/design.md`.
+- Use it for clarifications, architecture synthesis, plan shaping, and status advancement to `designed`.
 
-Do not invent missing sections.
-
-### Phase: Research
-
-1. Run `zest-dev status` and verify an active change spec exists.
-2. Run `zest-dev show active` and read the spec file.
-3. If the status is `new`, continue. If later, confirm whether the user wants to refresh research.
-4. Clarify missing requirement details if needed.
-5. Explore the codebase and locate relevant files.
-6. Read the identified files.
-7. Fill `## Research` with facts only:
-   - Existing System
-   - Available Approaches
-   - Constraints & Dependencies
-   - Key References
-8. Run `zest-dev update active researched`.
-9. Summarize findings and point to the design phase.
-
-**Research rule:** document what exists and what is possible, not what should be chosen.
-
-### Phase: Design
-
-1. Run `zest-dev status` and verify an active change spec exists.
-2. Run `zest-dev show active` and read the spec file.
-3. If the status is `new`, suggest research first unless the task is simple and sufficiently understood.
-4. Identify underspecified areas: scope, edge cases, contracts, compatibility, testing, rollout.
-5. Ask the user clarifying questions when needed.
-6. Synthesize one recommended architecture by default.
-7. Fill `## Design` with:
-   - Architecture Overview
-   - Why this design
-   - Implementation Steps
-   - Pseudocode
-   - File Structure
-   - Interfaces / APIs
-   - Edge Cases
-8. Fill `## Plan` only when implementation should be split into 2-3 coarse phases.
-9. Run `zest-dev update active designed`.
-10. Present the design and stop for implementation approval.
-
-**Design rule:** this is where decisions, trade-offs, and recommendations belong.
-
-### Phase: Implement
-
-1. Run `zest-dev status` and verify an active change spec exists with status `designed`.
-2. Run `zest-dev show active` and read the full spec.
-3. Read all relevant implementation files before coding.
-4. Create a task list.
-5. Present the implementation scope and get explicit approval.
-6. Implement the feature following the design and repository conventions.
-7. Write or update tests alongside the implementation.
-8. After each completed plan phase, mark the corresponding `## Plan` checkbox as `[x]`.
-9. Fill `## Notes` with brief:
-   - `### Implementation`
-   - `### Verification`
-10. If the full spec is complete, run `zest-dev update active implemented`.
-11. If only part of the work is complete, keep the current non-final status and document what was done.
-
-**Implementation rule:** only mark the spec `implemented` when the whole plan is finished.
+### Implement
+- The canonical Implement workflow lives in `plugin/skills/zest-dev/implement.md`.
+- Use it for approval-gated implementation, test writing, notes updates, and status advancement to `implemented` only when the full plan is complete.
 
 ## Bridge Workflows
 
