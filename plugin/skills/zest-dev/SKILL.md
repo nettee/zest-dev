@@ -132,19 +132,19 @@ Use when the design is ready and the user approves coding.
 ## Canonical Phase Workflow Files
 
 ### New
-- The canonical New workflow lives in `plugin/skills/zest-dev/new.md`.
+- The canonical New workflow lives in `new.md`.
 - Use it for spec creation, overview writing, and first-step guidance.
 
 ### Research
-- The canonical Research workflow lives in `plugin/skills/zest-dev/research.md`.
+- The canonical Research workflow lives in `research.md`.
 - Use it for repository discovery, factual research writing, and status advancement to `researched`.
 
 ### Design
-- The canonical Design workflow lives in `plugin/skills/zest-dev/design.md`.
+- The canonical Design workflow lives in `design.md`.
 - Use it for clarifications, architecture synthesis, plan shaping, and status advancement to `designed`.
 
 ### Implement
-- The canonical Implement workflow lives in `plugin/skills/zest-dev/implement.md`.
+- The canonical Implement workflow lives in `implement.md`.
 - Use it for approval-gated implementation, test writing, notes updates, and status advancement to `implemented` only when the full plan is complete.
 
 ## Bridge Workflows
