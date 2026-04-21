@@ -5,7 +5,7 @@ argument-hint: <description of feature or requirement>
 
 # Create New Feature Spec
 
-Create a new feature specification from the user's description and prepare for development.
+Thin entrypoint for the Zest Dev **New** phase.
 
 **Language rule:** Always respond in the user's language throughout the flow unless the user asks to switch languages.
 
@@ -13,126 +13,35 @@ Create a new feature specification from the user's description and prepare for d
 
 ---
 
-**Step 1: Extract Spec Information**
+Use the Zest Dev skill as the canonical workflow source for this phase.
 
-Analyze the user's description and determine:
-- **Spec name**: Human-readable name (e.g., "User Authentication System")
-- **Spec slug**: URL-friendly identifier in kebab-case (e.g., "user-authentication-system")
+**Step 1: Enter the Zest Dev New phase**
 
-**Step 2: Create Spec via CLI**
+Treat this command as a request to run the skill's **New** workflow.
 
-Execute: `zest-dev create <spec-slug>`
+**Step 2: Pass along the user description**
 
-This will:
-- Create the spec file in `specs/change/` with a date-based id (e.g. `20260224-spec-slug`)
-- Generate frontmatter with `name` and `status`
-- Initialize empty sections
+Use the description below as the source requirement when creating the spec:
 
-**Step 3: Set as Active Change Spec**
+`$ARGUMENTS`
 
-Execute: `zest-dev set-active <spec-id>`
+**Step 3: Let the skill execute the phase**
 
-Use the `id` from the created spec's CLI output (e.g. `20260224-spec-slug`).
+Inside the skill, follow the canonical New workflow to:
+- determine name and slug
+- run `zest-dev create <slug>`
+- run `zest-dev set-active <spec-id>`
+- read the created spec file
+- fill `## Overview` using only information the user actually provided
+- ask clarification questions only if the request is too vague
 
-**Step 4: Understand the Feature**
+**Step 4: Confirm result**
 
-Read the created spec file from `specs/change/`.
-
-Evaluate the user's description:
-- **If comprehensive** (clear problem, scope, and context):
-  - Proceed to fill Overview section
-
-- **If vague or unclear**:
-  - Use the question tool or direct questions to clarify:
-    - What specific problem needs solving?
-    - What is the expected outcome or user value?
-    - Are there any constraints or requirements?
-    - What is in scope vs out of scope?
-    - Any performance, security, or compatibility requirements?
-
-**Step 5: Fill Overview Section**
-
-Edit the spec file to record what the user provided. **Only include sections for information the user actually gave — do not invent or assume.**
-
-**Possible sections (include only if user provided the information):**
-- **Problem Statement**: What problem is being solved and why it matters
-- **Goals**: What should the feature accomplish
-- **Scope**: What's included and what's explicitly excluded
-- **Constraints**: Technical limitations, requirements, or dependencies
-- **Success Criteria**: How to measure if the feature is successful
-
-**Format:**
-- Use bullet points for clarity
-- Keep descriptions brief (1-2 sentences per item)
-- Focus on "what" and "why", not "how" (implementation comes later)
-- If the user's description is a single clear statement, a plain paragraph or a few bullets under `## Overview` is sufficient — no sub-sections needed
-
-**Examples:**
-
-Minimal (user gave a brief description only):
-```markdown
-## Overview
-
-Add dark mode support to the settings page so users can switch between light and dark themes.
-```
-
-Partial (user gave goals and constraints but no success criteria):
-```markdown
-## Overview
-
-### Goals
-- Allow users to toggle between light and dark themes
-- Persist preference across sessions
-
-### Constraints
-- Must work with the existing CSS variable system
-- No changes to the backend
-```
-
-Full (user provided all details):
-```markdown
-## Overview
-
-### Problem Statement
-- Users currently cannot [problem]
-- This causes [impact] and prevents [desired outcome]
-
-### Goals
-- Enable users to [capability 1]
-- Support [use case or requirement]
-
-### Scope
-**In scope:**
-- [Feature component 1]
-
-**Out of scope:**
-- [Related feature to defer]
-
-### Constraints
-- Must maintain backward compatibility with [system/API]
-
-### Success Criteria
-- [ ] Users can successfully [action]
-```
-
-**Step 6: Confirm and Guide Next Steps**
-
-Inform the user:
-- ✅ Spec id: `<spec-id>` (e.g. `20260224-spec-slug`), name: `<spec-name>`
-- ✅ Spec file location: `specs/change/<spec-id>/spec.md`
-- ✅ Set as active change spec
-- ✅ Overview section completed
-
-**Next steps:**
-- Use `/research` command to start discovery and codebase exploration
-- Or manually explore the spec with `zest-dev show <spec-id>`
+Report the new spec id, path, active status, and the recommended next phase.
 
 ---
 
 **Important Notes**
 
-- **Record only what the user provided**: Do not add sections the user didn't mention
-- **Keep overview brief**: Focus on problem and goals, not solution
-- **Clarify early**: Better to ask questions now than assume later
-- **Use bullet points**: Makes the spec scannable and reviewable
-- **No implementation details**: Overview describes "what" and "why", not "how"
+- This command is intentionally thin.
+- The workflow source lives in `plugin/skills/zest-dev/SKILL.md`.

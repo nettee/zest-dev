@@ -5,7 +5,7 @@ argument-hint: <description of feature or requirement>
 
 # Quick Implement
 
-Run through all remaining workflow stages — research, design, implement, and final review — in a single command. Suitable for straightforward, well-scoped tasks.
+Thin bridge entrypoint for running the remaining Zest Dev phases end-to-end.
 
 **Language rule:** Always respond in the user's language throughout the flow unless the user asks to switch languages.
 
@@ -17,18 +17,14 @@ Handles two scenarios:
 
 ---
 
-## Step 0: Detect Starting Point
+## Step 0: Detect the starting point
 
 Run `zest-dev status` to check if there is an active change spec set.
 
 **If an active change spec exists:**
-- Run `zest-dev show active` to read its content and status
-- Skip ahead based on status:
-  - `new` → skip "New" and "Checkpoint 1", go directly to [Stage 1: Research](#stage-1-research)
-  - `researched` → skip to [Stage 2: Design](#stage-2-design)
-  - `designed` → skip to [Checkpoint 2: Approve Implementation](#checkpoint-2-approve-implementation)
-  - `implemented` → inform the user the spec is already fully implemented and exit
-- Create a task list covering only the remaining stages
+- Run `zest-dev show active` to read its content and status.
+- Use the current status only to determine which canonical Zest Dev phases still need to run.
+- If status is `implemented`, inform the user and stop.
 
 **If no active change spec exists:**
 - Proceed to the [New](#new) section below
@@ -39,191 +35,48 @@ Run `zest-dev status` to check if there is an active change spec set.
 
 *Only when no active change spec exists.*
 
-**Step 1: Create Spec**
-
-Analyze the user's description and determine:
-- **Spec name**: Human-readable name (e.g., "User Authentication System")
-- **Spec slug**: URL-friendly identifier in kebab-case (e.g., "user-authentication-system")
-
-Execute: `zest-dev create <spec-slug>`
-
-Then set it as active: `zest-dev set-active <spec-id>` (use the `id` from the create output, e.g. `20260224-spec-slug`)
-
-**Step 2: Fill Overview Section**
-
-Read the created spec file. Edit the Overview section with:
-- **Problem Statement**: What problem is being solved and why it matters
-- **Goals**: What the feature should accomplish
-- **Scope**: What's included and what's explicitly excluded
-- **Constraints**: Technical limitations, requirements, or dependencies
-- **Success Criteria**: How to measure if the feature is successful
-
-Keep it brief — bullet points, 1-2 sentences each.
-
-**Step 3: Create Task List**
-
-Use TodoWrite to create a task list tracking all four stages:
-- [Checkpoint] Confirm requirements with user
-- Research codebase
-- Design architecture
-- [Checkpoint] Await user approval to implement
-- Implement feature
-- Final review
+Use the Zest Dev skill's **New** phase to create the spec and fill Overview briefly.
 
 ---
 
-## Checkpoint 1: Confirm Requirements
+## Checkpoint 1: Confirm requirements
 
-*Only when a new spec was created in the [New](#new) section above.*
-
-**Step 4: Present Requirements & Ask for Approval**
-
-Present the filled Overview to the user. Identify any gaps or ambiguities:
-- Is the problem statement clear?
-- Are the goals and scope well-defined?
-- Are there constraints or unknowns that need resolving?
-
-Ask the user to confirm the requirements are correct and complete before research begins.
-
-Use the question tool with options:
-- **Requirements look good — start research** — proceed with the research phase
-- **Need to clarify first** — ask follow-up questions, update the Overview section, then ask again
-
-Do not proceed until requirements are confirmed.
+If this command created a new spec, confirm the filled Overview with the user before moving into research.
 
 ---
 
 ## Stage 1: Research
 
-**Step 5: Explore Codebase**
-
-Run targeted codebase discovery. Delegate to explorer subagents when helpful, and parallelize only for independent searches. Focus on:
-- Existing patterns and conventions relevant to the feature
-- Files and modules likely to be affected
-
-**Step 6: Read Identified Files**
-
-Read the key files identified by the subagents before proceeding.
-
-**Step 7: Document Research**
-
-Edit the spec file's Research section with findings:
-- **Existing System**: Current code and patterns relevant to this task
-- **Available Approaches**: Technical options (no ranking or recommendations)
-- **Constraints**: Hard requirements, compatibility needs
-- **Key References**: Important files (`file:line` format)
-
-**Step 8: Update Status**
-
-Execute: `zest-dev update active researched`
+Enter the Zest Dev skill's **Research** phase and let it run the canonical research workflow.
 
 ---
 
 ## Stage 2: Design
 
-**Step 9: Design a Pragmatic Solution**
-
-Design a pragmatic, minimal solution that:
-- Reuses existing patterns and conventions
-- Minimizes new abstractions
-- Produces a clear step-by-step implementation plan
-
-If a design review would materially improve quality, ask architect or reviewer subagents to review or pressure-test the proposed direction.
-
-**Step 10: Document Design**
-
-Edit the spec file's Design section with the chosen architecture:
-- Architecture overview (use ASCII diagrams or flowcharts for clarity)
-- Ordered implementation steps
-- Pseudocode for non-trivial logic
-- Files to create or modify
-- Edge cases and error handling
-
-**Step 11: Update Status**
-
-Execute: `zest-dev update active designed`
+Enter the Zest Dev skill's **Design** phase and let it run the canonical design workflow.
 
 ---
 
-## Checkpoint 2: Approve Implementation
+## Checkpoint 2: Approve implementation
 
-**Step 12: Present Design & Ask for Approval**
-
-Present a brief summary of the design (architecture overview, implementation steps, files affected).
-
-Ask the user:
-
-> Design is ready. Here's what will be implemented:
-> [brief summary]
-> Proceed with implementation?
-
-Use the question tool with options:
-- **Implement now** — proceed with implementation
-- **Stop here** — exit and let the user review the design before continuing manually with `/implement`
+After design is ready, present a brief summary and get explicit approval before entering the Implement phase.
 
 ---
 
 ## Stage 3: Implement
 
-**Step 13: Read All Relevant Files**
-
-Before writing any code, read all files identified in research and referenced in the design.
-
-**Step 14: Implement Following Design**
-
-Implement the feature:
-- Follow the architecture from the Design section
-- Match existing code conventions and patterns
-- Write tests alongside implementation
-- Update todos as you progress
-- **After each phase/task completes, immediately mark the corresponding Plan section item as `[x]`** in the spec file
-
-**Implementation principles:**
-- Simple and minimal — only what's needed for current requirements
-- Follow conventions — match existing code style
-- Security first — avoid introducing vulnerabilities
-- Test as you go
-
-**Step 15: Document Implementation**
-
-Before documenting, verify that all completed items in the spec's Plan section are marked `[x]`. Any item left as `[ ]` must either be completed or explicitly noted as skipped with a reason.
-
-Edit the spec file's Implementation section:
-- Files created or modified with descriptions
-- Testing results
-- Any deviations from the design with rationale
-
-**Step 16: Update Status**
-
-Execute: `zest-dev update active implemented`
+Enter the Zest Dev skill's **Implement** phase and let it run the canonical implementation workflow.
 
 ---
 
-## Stage 4: Final Review
+## Stage 4: Final review
 
-**Step 17: Run Final Review**
-
-Review the changes made during implementation.
-
-If specialist review is warranted, delegate to reviewer subagents to review:
-- The changes for bugs, logic errors, and security issues
-- Whether the code follows project conventions
-- Whether the implementation stayed appropriately simple
-
-**Step 18: Address Critical Issues**
-
-If the reviewer finds critical or important issues (confidence ≥ 80), fix them before marking complete.
-
-**Step 19: Confirm Completion**
-
-Mark all todo items complete and inform the user:
-- Research, design, and implementation are complete
-- Spec is documented and status updated to "implemented"
-- Any review findings addressed
+After implementation, review the result, address critical issues, and confirm what status the spec reached.
 
 ---
 
 ## Important Notes
 
-- **Simple tasks only**: For complex features with many unknowns, use the individual stage commands (`/research`, `/design`, `/implement`) for more thorough handling.
-- **Picks up from current status**: If an active change spec is already in progress, this command continues from where it left off.
+- This command is intentionally thin.
+- It reuses the Zest Dev skill's canonical phase workflows.
+- For complex work, prefer the individual stage commands.

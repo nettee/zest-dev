@@ -4,303 +4,278 @@ description: This skill should be used when the user asks to "create a spec", "w
 version: 0.1.0
 ---
 
-# Zest Dev: Spec-Driven Development
+# Zest Dev: Thick Skill, Thin Commands
 
-## Overview
+## Purpose
 
-Zest Dev is a lightweight, human-interactive workflow that emphasizes planning before coding through structured specification documents. The methodology guides development through sequential phases ensuring clarity before implementation.
+Zest Dev is a lightweight, human-interactive workflow for spec-driven development.
 
-**Core principle:** Plan with clarity → Implement with confidence
+This skill is the **canonical workflow source** for planned feature work:
+- `new`
+- `research`
+- `design`
+- `implement`
 
-## When to Use Specs
+Commands should stay thin. They exist as explicit entrypoints and compatibility shims. The actual phase logic lives here.
 
-**Use specs for:**
-- New features requiring research and design
-- Significant changes affecting multiple components
-- Unclear requirements or approach
-- Team collaboration and design review
+**Core principle:** keep workflow intelligence in the skill, keep commands lightweight.
 
-**Skip specs for:**
-- Trivial changes (typos, simple bug fixes)
-- Experimental prototypes
-- Well-understood, obvious tasks
+## When This Skill Should Trigger
 
-## Workflow Phases
+Use this skill when the user:
+- asks to create a spec or write a spec
+- mentions Zest Dev or spec-driven development
+- asks to enter a workflow phase such as new, research, design, or implement
+- wants to continue an active change spec
+- uses a thin command that explicitly routes into this skill
 
-Specs progress through sequential phases:
+## Shared Rules
 
+### Language
+- Always respond in the user's language unless the user asks to switch languages.
+
+### Source of truth
+- Treat this skill as the workflow source for the four core phases.
+- Treat commands as wrappers that declare intent and hand off to this skill.
+
+### CLI boundaries
+- Use `zest-dev` CLI for spec lifecycle operations.
+- Never manually create spec files.
+- Never manually edit spec frontmatter.
+- Use CLI status transitions only:
+  - `new`
+  - `researched`
+  - `designed`
+  - `implemented`
+
+### Spec writing principles
+- Prioritize brevity.
+- Prefer bullets over long prose.
+- Use pseudocode and flow descriptions instead of production code.
+- Keep Research factual.
+- Keep Design opinionated.
+- Keep Notes concise and implementation-focused.
+
+### Reading discipline
+- Before writing or deciding, read the active spec and the relevant repository files.
+- If subagents or searches identify files, read those files before continuing.
+
+### Questions and approvals
+- Ask targeted clarifying questions when requirements or architecture are underspecified.
+- Before implementation, get explicit user approval.
+- If the user says “whatever you think is best,” provide your recommendation and get confirmation when the choice is consequential.
+
+## Entry Modes
+
+### 1. Thin command entry
+
+Examples:
+- `/zest-dev:new`
+- `/zest-dev:research`
+- `/zest-dev:design`
+- `/zest-dev:implement`
+
+Interpret the command as a request to run the corresponding phase in this skill.
+
+### 2. Natural-language entry
+
+Examples:
+- “create a spec for this”
+- “research this change”
+- “design the architecture”
+- “implement the active spec”
+
+Infer the intended phase from user intent and current spec status.
+
+### 3. Bridge entry
+
+Composite commands such as `draft` and `quick-implement` should use this skill's core phases instead of re-describing thick workflows themselves.
+
+## Workflow Overview
+
+```text
+User intent or thin command
+          ↓
+  Zest Dev skill phase routing
+          ↓
+     zest-dev CLI + spec files
+          ↓
+ spec updated with brief, reviewable content
 ```
-new → researched → designed → implemented → delivered
+
+Valid progression:
+
+```text
+new → researched → designed → implemented
 ```
 
-### Phase 1: New (Creation)
+## Phase Routing
 
-Capture the initial requirement with:
-- Problem statement
-- Why it matters
-- High-level scope
-- Critical constraints
+### New phase
+Use when there is no spec yet and the user wants to formalize a requirement.
 
-Keep it brief—details come later.
+### Research phase
+Use when a spec exists and the team needs repository facts, patterns, and options.
 
-### Phase 2: Research
+### Design phase
+Use when research or direct understanding is sufficient to make an implementation plan.
 
-Gather information for informed decisions:
-- Investigate existing code/systems
-- Evaluate technical options (2-3 alternatives)
-- Document key findings
-- Recommend approach with rationale
+### Implement phase
+Use when the design is ready and the user approves coding.
 
-**Format:**
+## Canonical Phase Workflows
+
+### Phase: New
+
+1. Extract a human-readable name and kebab-case slug.
+2. Run `zest-dev create <slug>`.
+3. Set the created spec active with `zest-dev set-active <spec-id>`.
+4. Read the created spec file.
+5. Fill `## Overview` using only information the user actually provided.
+6. Ask clarifying questions only when the requirement is too vague to produce a useful overview.
+7. Confirm spec id, path, active status, and next step.
+
+**Overview content may include:**
+- Problem Statement
+- Goals
+- Scope
+- Constraints
+- Success Criteria
+
+Do not invent missing sections.
+
+### Phase: Research
+
+1. Run `zest-dev status` and verify an active change spec exists.
+2. Run `zest-dev show active` and read the spec file.
+3. If the status is `new`, continue. If later, confirm whether the user wants to refresh research.
+4. Clarify missing requirement details if needed.
+5. Explore the codebase and locate relevant files.
+6. Read the identified files.
+7. Fill `## Research` with facts only:
+   - Existing System
+   - Available Approaches
+   - Constraints & Dependencies
+   - Key References
+8. Run `zest-dev update active researched`.
+9. Summarize findings and point to the design phase.
+
+**Research rule:** document what exists and what is possible, not what should be chosen.
+
+### Phase: Design
+
+1. Run `zest-dev status` and verify an active change spec exists.
+2. Run `zest-dev show active` and read the spec file.
+3. If the status is `new`, suggest research first unless the task is simple and sufficiently understood.
+4. Identify underspecified areas: scope, edge cases, contracts, compatibility, testing, rollout.
+5. Ask the user clarifying questions when needed.
+6. Synthesize one recommended architecture by default.
+7. Fill `## Design` with:
+   - Architecture Overview
+   - Why this design
+   - Implementation Steps
+   - Pseudocode
+   - File Structure
+   - Interfaces / APIs
+   - Edge Cases
+8. Fill `## Plan` only when implementation should be split into 2-3 coarse phases.
+9. Run `zest-dev update active designed`.
+10. Present the design and stop for implementation approval.
+
+**Design rule:** this is where decisions, trade-offs, and recommendations belong.
+
+### Phase: Implement
+
+1. Run `zest-dev status` and verify an active change spec exists with status `designed`.
+2. Run `zest-dev show active` and read the full spec.
+3. Read all relevant implementation files before coding.
+4. Create a task list.
+5. Present the implementation scope and get explicit approval.
+6. Implement the feature following the design and repository conventions.
+7. Write or update tests alongside the implementation.
+8. After each completed plan phase, mark the corresponding `## Plan` checkbox as `[x]`.
+9. Fill `## Notes` with brief:
+   - `### Implementation`
+   - `### Verification`
+10. If the full spec is complete, run `zest-dev update active implemented`.
+11. If only part of the work is complete, keep the current non-final status and document what was done.
+
+**Implementation rule:** only mark the spec `implemented` when the whole plan is finished.
+
+## Bridge Workflows
+
+### Draft
+- Capture a discussion into a spec.
+- Set the highest status genuinely reached by the conversation.
+- Then route the user into the next appropriate core phase from this skill.
+
+### Quick Implement
+- Create or resume the active spec.
+- Run the remaining core phases in order.
+- Keep explicit approval checkpoints before coding.
+- Reuse the canonical phase rules from this skill instead of embedding separate thick instructions.
+
+## Content Templates
+
+### Research
 ```markdown
 ## Research
 
 ### Existing System
-- [Current state]
+- ...
 
-### Options Evaluated
-1. **Option A** - [Description] (recommended)
-2. **Option B** - [Description]
+### Available Approaches
+- **Option A**: ...
+- **Option B**: ...
 
-### Recommendation
-[1-2 sentences on approach and why]
+### Constraints & Dependencies
+- ...
+
+### Key References
+- `path/to/file:line` - ...
 ```
 
-### Phase 3: Design
-
-Create implementation plan with:
-- Architecture overview (components, data flow)
-- Implementation steps (ordered sequence)
-- Pseudocode for complex logic
-- Files to create/modify
-- Edge case handling
-
-**Format:**
+### Design
 ```markdown
 ## Design
 
-### Architecture
-[Component A] → [Component B] → [Component C]
+### Architecture Overview
+[diagram]
+
+### Why this design
+- ...
 
 ### Implementation Steps
-1. **Step 1** - [Description]
-2. **Step 2** - [Description]
+1. ...
 
-### Pseudocode: [Key Algorithm]
-Function name(params):
-  Initialize state
-  Process items
-  Return result
+### Pseudocode
+Flow:
+  Step A
+  Step B
 
-### Files to Modify
-- `path/to/file.ext` - [What changes]
+### File Structure
+- `path/to/file` - ...
 ```
 
-### Phase 4: Implement
-
-Create concrete implementation plan:
-- Task checklist with checkboxes
-- Specific files to change
-- Testing approach
-- Progress tracking
-
-**Format:**
+### Notes
 ```markdown
-## Implementation
+## Notes
 
-### Tasks
-- [ ] Task 1
-- [ ] Task 2
-- [ ] Write tests
-- [ ] Deploy
+### Implementation
+- `path/to/file` - what changed
 
-### Files Modified
-- `file1.ext` - [Change description]
-- `file2.ext` - [Change description]
+### Verification
+- Tests run and results
+- Manual validation and outcomes
 ```
 
-## Content Principles
+## Guardrails
 
-### 1. Prioritize Brevity
-
-Write main flow and key ideas, not full implementation. Use bullet points over paragraphs.
-
-**Good:** Auth options: Passport.js (recommended), custom JWT, Auth0. Choosing Passport.js: battle-tested, minimal setup.
-
-**Bad:** For authentication, there are several options available. First, Passport.js which is mature... [continues for paragraphs]
-
-### 2. Easy to Review
-
-Structure for quick understanding:
-- Use clear headers
-- Put key decisions up front
-- Use tables for comparisons
-- Make it scannable in 2-3 minutes
-
-### 3. Pseudocode Over Code
-
-Show logic without implementation details:
-
-**Good:**
-```
-Load user preferences
-For each preference:
-  If enabled: Apply to session
-Return session
-```
-
-**Bad:**
-```javascript
-async function loadUserPreferences(userId) {
-  try {
-    const prefs = await db.query('SELECT...');
-    // [30 lines of implementation]
-  } catch (error) { ... }
-}
-```
-
-### 4. Use Flowcharts for Complex Logic
-
-For multi-step processes with branches:
-```
-User Request → Check Cache → Found?
-                               ↓ Yes → Return Cached
-                               ↓ No → Query DB → Cache → Return
-```
-
-## Working with Specs
-
-### CLI Commands
-
-```bash
-zest-dev create <spec-slug>     # Create new spec
-zest-dev status                 # View all specs
-zest-dev show <spec-id>         # View specific spec (e.g. 20260224-my-feature)
-zest-dev set-active <spec-id>   # Set active change spec
-zest-dev unset-active           # Unset active change spec
-```
-
-Archive is an agent workflow command (`/zest-dev:archive`) or prompt flow (`zest-dev prompt archive`), not a public CLI subcommand.
-
-**Important:** Never manually create spec files or edit frontmatter. Always use CLI.
-
-### Active Change Spec Context
-
-The active change spec is the selected in-progress change specification. Plugin commands automatically operate on the active change spec.
-
-**Workflow:**
-1. Create spec
-2. Set it as active via `zest-dev set-active <spec-id>`
-3. Work through phases with plugin commands
-4. Switch specs via `zest-dev set-active <spec-id>`
-
-## Best Practices
-
-### Do's
-
-✅ Start with clear problem statement and success criteria
-✅ Research before designing—understand options
-✅ Use pseudocode for logic—focus on algorithm, not syntax
-✅ Keep specs as living documents—update during implementation
-✅ Review design before implementing—validate approach
-
-### Don'ts
-
-❌ Don't write production code in specs—use pseudocode
-❌ Don't create exhaustive documentation—write what's needed
-❌ Don't skip phases—each builds on the previous
-❌ Don't let specs become stale—update as you learn
-❌ Don't over-engineer—solve the immediate problem
-
-## Spec Structure
-
-```markdown
----
-name: Spec Name
-status: new
-created: 2026-02-10
----
-
-## Overview
-[Problem, scope, constraints]
-
-## Research
-[Findings, options, recommendations]
-
-## Design
-[Architecture, steps, pseudocode, files]
-
-## Implementation
-[Task checklist, files, testing, progress]
-```
-
-## Choosing a Workflow
-
-There are three ways to enter the workflow depending on how you started:
-
-### Step-by-step (planned)
-You know what you want to build. Start from a description and work through each phase:
-```
-/new <description> → /research → /design → /implement
-```
-
-### Vibe coding first (post-hoc)
-You coded freely and want to document after the fact:
-```
-/summarize-chat   ← from conversation
-/summarize-pr     ← from a PR
-```
-
-### Discussion-driven (draft)
-You've been discussing or brainstorming the idea and want to formalize it before coding:
-```
-/draft → (optionally) /research → (optionally) /design → /implement
-```
-Use `/draft` when you've had a meaningful conversation about the feature and want to crystallize the ideas into a spec before deciding how to proceed. Unlike `/new` (brief description → minimal spec), `/draft` captures the full context of the discussion and then asks how you want to continue.
-
-## Adapting the Workflow
-
-The workflow is flexible:
-
-**Simple features:**
-- Minimal research (quick investigation)
-- Brief design (just key steps)
-- Fast implementation checklist
-
-**Complex features:**
-- Thorough research with options
-- Detailed design with architecture
-- Comprehensive implementation plan
-
-**Goal:** Provide enough clarity to implement confidently, not to document exhaustively.
-
-## Integration with Development
-
-Specs complement other practices:
-
-**Specs + Agile:** Spec per story, research in planning, design in refinement
-**Specs + TDD:** Design defines test cases, pseudocode becomes test scenarios
-**Specs + Code Review:** Reference spec in PR, compare to design
-**Specs + Docs:** Specs inform user docs, capture architecture decisions
-
-## Troubleshooting
-
-**Spec too long?** → Focus on main flow, cut obvious details, use bullets
-**Don't know what to research?** → Ask: What don't I understand? What are my options?
-**Design feels like code?** → Use pseudocode, show structure not implementation
-**Spec became outdated?** → Update implementation section—specs are living docs
-**Unsure which phase?** → Check status, move forward—you can return
+- Do not rely on deployed command frontmatter except `description`.
+- Do not hardcode platform-specific agent handles in command text.
+- Prefer generic role language such as explorer, architect, or reviewer subagent.
+- Keep commands small enough that future workflow changes happen primarily in this skill.
 
 ## Summary
 
-Zest Spec workflow:
-
-1. **Create** - Capture the problem
-2. **Research** - Understand options
-3. **Design** - Plan the approach
-4. **Implement** - Build with clarity
-5. **Deliver** - Ship with confidence
-
-Write specs that are **brief**, **easy to review**, and use **pseudocode**. Adapt the workflow to your needs. Keep specs as living documents that evolve with your code.
-
-**Remember:** The goal is clarity and alignment, not documentation for its own sake. Write enough to implement confidently, then build.
+Use thin commands for entry, this skill for workflow logic, the CLI for lifecycle transitions, and the spec file as the durable record.

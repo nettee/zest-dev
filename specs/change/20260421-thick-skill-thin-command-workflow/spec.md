@@ -1,7 +1,7 @@
 ---
 id: 20260421-thick-skill-thin-command-workflow
 name: Thick Skill Thin Command Workflow
-status: designed
+status: implemented
 created: '2026-04-21'
 ---
 
@@ -192,8 +192,8 @@ Inside Zest Dev skill:
 
 ## Plan
 
-- [ ] Phase 1: 将核心 workflow 真源迁移到 `plugin/skills/zest-dev/SKILL.md`，并压薄 `new/research/design/implement` commands。
-- [ ] Phase 2: 对齐 prompt 兼容层、组合入口、文档与集成测试，确保一次性迁移后的行为一致性。
+- [x] Phase 1: 将核心 workflow 真源迁移到 `plugin/skills/zest-dev/SKILL.md`，并压薄 `new/research/design/implement` commands。
+- [x] Phase 2: 对齐 prompt 兼容层、组合入口、文档与集成测试，确保一次性迁移后的行为一致性。
 
 ## Notes
 
@@ -201,8 +201,16 @@ Inside Zest Dev skill:
 
 ### Implementation
 
-<!-- Files created/modified, decisions made during coding, deviations from design -->
+- `plugin/skills/zest-dev/SKILL.md` - 重写为四个核心 phase 的 canonical workflow 真源，并收敛共享规则、phase 路由与 bridge workflow 说明。
+- `plugin/commands/{new,research,design,implement}.md` - 压薄为进入主 skill 对应 phase 的轻入口，保留最小上下文与关键约束。
+- `plugin/commands/{draft,quick-implement}.md` - 改为 bridge 入口，复用主 skill phase，而不是继续内嵌完整厚流程。
+- `lib/prompt-generator.js` - 改为从 `plugin/commands/` 实际文件集合动态派生可用 command，并保留 `summarize -> summarize-chat` 兼容别名。
+- `README.md`、`plugin/README.md` - 更新为 thick skill / thin command 架构说明，并对齐 prompt 与命令使用方式。
+- `test/test-integration.js` - 增加 skill 真源、thin command、实际 prompt command 集合与 summarize alias 的集成测试。
+- 编码时额外决定：为避免已有 `zest-dev prompt summarize` 用法回归，保留兼容 alias，而不是完全移除旧入口名。
 
 ### Verification
 
-<!-- How the feature was verified: tests written, manual testing steps, results -->
+- 运行 `pnpm install` 以安装仓库依赖。
+- 运行 `pnpm test:local`，33 个集成测试全部通过。
+- 手动验证 `zest-dev status` 与 `zest-dev show active`，确认 active spec 读取正常；并验证实现过程中已将 `Plan` 两个 phase 都标记为 `[x]`。

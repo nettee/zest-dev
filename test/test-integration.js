@@ -32,6 +32,14 @@ const EXPECTED_COMMANDS = [
   'zest-dev-summarize-pr.md',
   'zest-dev-quick-implement.md'
 ];
+const THIN_COMMANDS = [
+  'zest-dev-new.md',
+  'zest-dev-research.md',
+  'zest-dev-design.md',
+  'zest-dev-implement.md',
+  'zest-dev-draft.md',
+  'zest-dev-quick-implement.md'
+];
 const LANGUAGE_ALIGNMENT_RULE =
   'Always respond in the user\'s language throughout the flow unless the user asks to switch languages.';
 
@@ -155,6 +163,10 @@ test('zest-dev init integration', async (t) => {
       const opencodeSkillPath = path.join(TEST_DIR, '.opencode/skills/zest-dev/SKILL.md');
 
       assert.ok(fs.existsSync(opencodeSkillPath), 'OpenCode skill file should exist');
+
+      const skillContent = fs.readFileSync(opencodeSkillPath, 'utf-8');
+      assert.ok(skillContent.includes('This skill is the **canonical workflow source**'));
+      assert.ok(skillContent.includes('Commands should stay thin'));
     });
 
     await t.test('agents are not deployed', () => {
@@ -219,6 +231,16 @@ test('zest-dev init integration', async (t) => {
       const bodyContent = match[1];
       assert.ok(bodyContent.includes('$ARGUMENTS'), 'command body should keep $ARGUMENTS placeholder');
       assert.ok(bodyContent.includes('Step 1'), 'command body should keep step structure');
+    });
+
+    await t.test('core workflow commands are thin entrypoints', () => {
+      for (const file of THIN_COMMANDS) {
+        const content = readCommand('.opencode', file);
+        assert.ok(content.includes('This command is intentionally thin.'), `${file} should declare thin entrypoint behavior`);
+      }
+
+      const implementContent = readCommand('.opencode', 'zest-dev-implement.md');
+      assert.ok(implementContent.includes('Only when the full spec is complete, execute: `zest-dev update active implemented`'));
     });
 
     await t.test('idempotency', () => {
@@ -491,6 +513,25 @@ test('zest-dev prompt archive integration', () => {
     const deployedArchive = readCommand('.opencode', 'zest-dev-archive.md');
     assert.ok(deployedArchive.includes('zest-dev unset-active'));
     assert.equal(deployedArchive.includes('zest-dev archive active --no-merge'), false);
+  } finally {
+    cleanup();
+  }
+});
+
+test('zest-dev prompt supports actual command set and summarize alias', () => {
+  setup();
+
+  try {
+    const quickPrompt = runCommand('prompt quick-implement test feature');
+    assert.ok(quickPrompt.includes('Thin bridge entrypoint'));
+    assert.ok(quickPrompt.includes('test feature'));
+
+    const draftPrompt = runCommand('prompt draft');
+    assert.ok(draftPrompt.includes('Bridge entrypoint into the Zest Dev skill.'));
+
+    const summarizeAliasPrompt = runCommand('prompt summarize');
+    const summarizeChatPrompt = runCommand('prompt summarize-chat');
+    assert.equal(summarizeAliasPrompt, summarizeChatPrompt);
   } finally {
     cleanup();
   }
