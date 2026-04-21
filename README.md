@@ -4,13 +4,7 @@ A lightweight, human-interactive development workflow for AI-assisted coding.
 
 ## Quick Start
 
-Install the CLI:
-
-```bash
-npm install -g zest-dev
-```
-
-Initialize the editor-facing commands and skills in your project:
+Assuming `zest-dev` is already installed and available in PATH, initialize the editor-facing commands and skills in your project:
 
 ```bash
 zest-dev init
