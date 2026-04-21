@@ -15,6 +15,7 @@ This repository's custom command prompts are designed for **OpenCode / oh-my-ope
 - Do **not** hardcode specific oh-my-opencode-slim agent handles in prompts unless there is a strong reason; let the runtime choose the best matching subagent.
 - For user interaction, say **ask the user directly** or **use the question tool** rather than Claude-specific names.
 - For codebase work, describe the goal (read files, search code, inspect references, run shell commands) rather than enumerating a Claude-only tool contract.
+- When referring to a skill in prompts or command docs, refer to it by its registered skill name (for example `Zest Dev`), not by repository or deployed file paths.
 
 ### Prompt format constraints
 

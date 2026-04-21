@@ -1,85 +1,12 @@
 ---
 description: Build feature following the design
+argument-hint: [optional implementation scope or phase hint]
 ---
 
 # Implement: Build the Feature
 
-Implement the feature following the design and document what was built.
+Run Zest Dev **Implement** phase workflow.
 
-**Language rule:** Always respond in the user's language throughout the flow unless the user asks to switch languages.
+**Language rule:** Respond in the user's language by default, if user's language is not English.
 
-**Step 1: Verify Active Change Spec**
-Execute: `zest-dev status`
-
-Confirm there is an active change spec set and status is "designed". If:
-- No active change spec: Guide user to set one
-- Status is "new" or "researched": Suggest completing previous phases first
-- Status is "implemented": Confirm if user wants to continue/update implementation
-
-**Step 2: Read Active Change Spec**
-Execute: `zest-dev show active` to get the spec file path.
-
-**IMPORTANT**: Read all research and design content before coding.
-
-Do not start implementation until you have comprehensive understanding of:
-- Existing code patterns
-- Architecture and abstractions
-- Conventions and style
-- Testing approaches
-
-**Step 3: Create Task List**
-Use TodoWrite to create a task list tracking:
-- Read all relevant files
-- Get user approval
-- Implement features following design
-- Document implementation in spec
-- Update spec status
-
-**Step 4: Implement Following Design**
-Once approved, implement the feature:
-- Follow the architecture designed in previous phase
-- Adhere to codebase conventions strictly
-- Write clean, well-documented code
-- Follow existing patterns discovered in research
-- Update todos as you progress
-- **After each phase/task completes, immediately mark the corresponding Plan section item as `[x]`** in the spec file
-
-**Implementation principles:**
-- **Simple and elegant**: Prioritize readable, maintainable code
-- **No over-engineering**: Only add what's needed for current requirements
-- **Follow conventions**: Match existing code style and patterns
-- **Security first**: Avoid introducing vulnerabilities
-- **Test as you go**: Write tests alongside implementation
-
-**Step 5: Verify Plan Checkboxes**
-Before moving on, confirm all completed items in the spec's Plan section are marked `[x]`. Any item left as `[ ]` must either be completed or explicitly noted as skipped with a reason.
-
-**Step 6: Document in Notes**
-Edit the spec file to fill the `### Implementation` and `### Verification` subsections under Notes.
-
-**Implementation** — what was actually built:
-- Files created or modified (with one-line description each)
-- Decisions made during coding that weren't in the design
-- Deviations from original design with rationale
-
-**Verification** — how it was validated:
-- Tests written and their results
-- Manual testing steps and outcomes
-- Any known limitations or follow-up items
-
-Keep both sections brief. Use bullet points. Skip a subsection entirely if there's nothing worth noting.
-
-**Step 7: Update Spec Status (Only When Fully Complete)**
-Support incremental delivery by phase:
-- If only part of the spec is implemented (for example, one phase), **do not** mark status as `implemented` yet.
-- Keep status at its current in-progress phase until all planned work for the spec is complete.
-- Only when the full spec is complete, execute: `zest-dev update active implemented`
-
-Always update status via the CLI (do not edit frontmatter manually).
-
-**Step 8: Confirm Progress or Completion**
-Mark only the todo items for the work completed in this run, leaving future phases unchecked. Then inform user:
-- ✅ Implemented scope completed (phase or full spec)
-- ✅ Spec status updated appropriately (only set to `implemented` when full spec is done)
-- ✅ Relevant todo items updated for this run
-- ✅ Implementation documented
+**Arguments:** $ARGUMENTS

@@ -5,111 +5,36 @@ argument-hint: [optional spec-slug]
 
 # Draft: Discussion → Spec → Guided Next Steps
 
-Synthesize the current conversation into a well-formed spec, then decide how to continue.
+Bridge entrypoint into the Zest Dev skill.
 
 **Language rule:** Always respond in the user's language throughout the flow unless the user asks to switch languages.
 
 **Spec slug (optional):** $ARGUMENTS
 
-This command is for when you've been chatting and brainstorming with the user and want to formalize the ideas into a spec before implementation. Unlike `/new` (brief description) or `/summarize-chat` (post-hoc capture), `/draft` captures an active discussion in progress and guides the next development steps.
+This command is for when you've been chatting and brainstorming with the user and want to formalize the ideas into a spec before implementation. Unlike `/new` (brief description) or `/summarize-chat` (post-hoc capture), `/draft` captures an active discussion in progress and then routes into the appropriate Zest Dev phase.
 
 ---
 
-## Step 1: Analyze Conversation
+## Step 1: Capture the current discussion into a spec
 
-Review the conversation history to extract:
-- **Core goal**: What the user ultimately wants to build or solve
-- **Problem context**: Why this matters and what pain it addresses
-- **Ideas discussed**: Approaches, options, constraints mentioned
-- **Open questions**: Things still undecided or unclear
-- **Scope signals**: What's in vs out, even if stated informally
+Use this command as a lightweight bridge:
+- extract the core goal, context, constraints, open questions, and scope signals from the conversation
+- infer or confirm a slug from `$ARGUMENTS`
+- create the spec with `zest-dev create <slug>`
+- set it active with `zest-dev set-active <spec-id>`
+- fill `## Overview` briefly using only conversation-backed information
+- infer the highest status genuinely reached by the conversation
 
-If the conversation is too early or vague to draft a spec, use the question tool or ask directly:
-- "What's the core thing you're trying to build?"
-- "What problem does this solve?"
+If the conversation already reached research or design depth, fill those sections briefly using the same canonical rules from the Zest Dev skill.
 
-## Step 2: Infer or Confirm Spec Slug
+Then persist the inferred status explicitly:
+- if the highest reached status is `new`, leave the status as-is
+- if the highest reached status is `researched`, fill `## Research` and run `zest-dev update active researched`
+- if the highest reached status is `designed`, fill `## Research` and `## Design`, then run `zest-dev update active designed`
 
-If `$ARGUMENTS` is provided, use it as the spec slug.
+## Step 2: Route into the next Zest Dev phase
 
-Otherwise, infer a kebab-case slug from the main goal.
-Example: "Add webhook support for notifications" → `webhook-notifications`
-
-If unsure, confirm with the user before proceeding.
-
-## Step 3: Create Spec via CLI
-
-Execute: `zest-dev create <spec-slug>`
-
-Then set it as active: `zest-dev set-active <spec-id>`
-
-## Step 4: Fill Overview Section
-
-Read the created spec file from `specs/change/`.
-
-Write the Overview based on the conversation. **Only include sections for information that actually came up** — do not invent or assume details.
-
-**Possible sections (include only if discussed):**
-- **Problem Statement**: What problem is being solved and why it matters
-- **Goals**: What the feature should accomplish
-- **Scope**: What's included vs explicitly excluded
-- **Constraints**: Technical limitations, requirements, or dependencies
-- **Ideas & Approaches**: Options discussed (without picking one — that's for design)
-- **Open Questions**: Things not yet decided
-- **Success Criteria**: How to measure if the feature is successful
-
-**Format:**
-- Use bullet points for clarity
-- Keep descriptions brief (1-2 sentences per item)
-- Focus on "what" and "why", not "how" (implementation comes later)
-- Capture the spirit of the discussion, not a transcript
-
-**Example with discussion context:**
-
-```markdown
-## Overview
-
-### Problem Statement
-- Users lose context when switching between tasks mid-conversation
-- No way to bookmark a discussion state for later
-
-### Goals
-- Let users save and restore conversation checkpoints
-- Support tagging checkpoints for easy retrieval
-
-### Ideas & Approaches
-- Store checkpoints as local files vs remote database (not yet decided)
-- Could piggyback on existing export functionality
-
-### Open Questions
-- Should checkpoints be project-scoped or global?
-- What's the retention policy?
-
-### Constraints
-- Must not break existing conversation flow
-- No changes to backend schema in this phase
-```
-
-## Step 5: Determine Spec Status
-
-Evaluate the conversation to determine the appropriate starting status. Assess each stage in sequence:
-
-**`new`** — the default. The discussion identified the problem and goals but did not explore the codebase or settle on an architecture.
-
-**`researched`** — advance to this if the conversation included genuine codebase exploration: files were read, existing patterns were identified, and available approaches were surfaced. Casual mention of an idea does not count.
-
-**`designed`** — advance to this if the conversation went further and produced a concrete architectural decision: components, data flow, implementation steps, and key trade-offs were resolved and agreed upon.
-
-Apply the highest status the conversation genuinely reached, then execute the CLI command:
-- Status is `new`: no update needed (spec is already `new`)
-- Status is `researched`: fill the Research section from conversation context, then run `zest-dev update active researched`
-- Status is `designed`: fill both Research and Design sections from conversation context, then run `zest-dev update active designed`
-
-When filling sections from conversation context, follow the same content rules as `/research` and `/design` respectively — facts in Research, decisions and architecture in Design.
-
-## Step 6: Ask How to Proceed
-
-After the spec is created and status set, present next-step options **based on the current status**:
+After the spec is created and the inferred status is persisted, present next-step options **based on the current status**:
 
 **If status is `new`:**
 ```
@@ -133,17 +58,17 @@ After the spec is created and status set, present next-step options **based on t
 
 Use the question tool with these options, or proceed directly if the conversation makes the answer obvious.
 
-## Step 7: Execute Chosen Path
+## Step 3: Reuse the canonical skill workflow
 
 Based on the user's choice:
 
-- **Research**: Proceed as `/research` would — clarify requirements, run codebase exploration, document findings, update status to `researched`
-- **Design**: Proceed as `/design` would — identify underspecified aspects, ask clarifying questions, develop the architecture, document the chosen design, update status to `designed`
-- **Research then Design**: Run research phase fully, then run design phase
-- **Implement**: Guide user to `/implement` (do not run it inline — implementation is long-running)
-- **Stop here**: Confirm the spec is saved and guide them to the appropriate next command
+- **Research**: enter the Zest Dev skill's Research phase
+- **Design**: enter the Zest Dev skill's Design phase
+- **Research then Design**: run the skill's Research phase, then its Design phase
+- **Implement**: guide the user to `/implement` as the next explicit step instead of running implementation inline from `/draft`
+- **Stop here**: confirm the spec is saved and point to the next command
 
-## Step 8: Confirm Completion
+## Step 4: Confirm completion
 
 Inform the user:
 - Spec id and name
@@ -156,8 +81,6 @@ Inform the user:
 
 ## Important Notes
 
-- **This is a discussion → spec bridge**: The goal is to capture what was talked about, not to start fresh
-- **Preserve open questions**: If something was undecided in conversation, record it as an open question — don't resolve it silently
-- **Don't fill in gaps**: If the user didn't discuss scope, don't invent scope
-- **Ideas ≠ Design**: Capture brainstormed approaches in "Ideas & Approaches" — leave evaluation for the design phase
-- **Lean toward asking**: When unsure whether to proceed with research or design, ask
+- This command is intentionally thin.
+- Preserve open questions instead of resolving them silently.
+- The workflow source is the `Zest Dev` skill.

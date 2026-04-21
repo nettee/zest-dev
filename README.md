@@ -4,20 +4,19 @@ A lightweight, human-interactive development workflow for AI-assisted coding.
 
 ## Quick Start
 
-Install the Claude Code plugin:
+Assuming `zest-dev` is already installed and available in PATH, initialize the editor-facing commands and skills in your project:
 
 ```bash
-/plugin marketplace add https://github.com/nettee/zest-dev
-/plugin install zest-dev
-```
-
-Install the CLI:
-
-```bash
-npm install -g zest-dev
+zest-dev init
 ```
 
 ## Usage Workflow
+
+Zest Dev uses a **thick skill / thin command** model:
+- the `Zest Dev` skill is the workflow source of truth
+- detailed phase workflows are owned by the `Zest Dev` skill
+- `/zest-dev:*` commands are lightweight entrypoints and compatibility shims
+- `zest-dev` CLI manages spec lifecycle only
 
 ### Step-by-Step
 
@@ -25,13 +24,13 @@ Work through a feature spec one phase at a time, with human review between each 
 
 ```bash
 /zest-dev:new "My new feature"   # Create a spec and set it as active
-/zest-dev:research            # Research requirements and explore the codebase
-/zest-dev:design              # Clarify requirements and design the architecture
-/zest-dev:implement           # Build the feature following the design
-/zest-dev:archive             # Agent-guided merge into specs/current, then unset active
+/zest-dev:research              # Research requirements and explore the codebase
+/zest-dev:design                # Clarify requirements and design the architecture
+/zest-dev:implement             # Build the feature following the design
+/zest-dev:archive               # Agent-guided merge into specs/current, then unset active
 ```
 
-Each command advances the spec to the next status: `new → researched → designed → implemented`.
+Each command routes into the main Zest Dev skill, which advances the spec through `new → researched → designed → implemented`.
 
 ### Quick Implementation
 
@@ -88,7 +87,7 @@ Valid status values: `new`, `researched`, `designed`, `implemented`
 
 ### Generate Prompts for Codex
 
-For editors like Codex that don't support project-level commands, use `zest-dev prompt` to generate the equivalent prompt text:
+For editors that don't support project-level commands, use `zest-dev prompt` to generate the equivalent thin-entry prompt text:
 
 ```bash
 codex "$(zest-dev prompt new 'some description')"
@@ -96,8 +95,13 @@ codex "$(zest-dev prompt research)"
 codex "$(zest-dev prompt design)"
 codex "$(zest-dev prompt implement)"
 codex "$(zest-dev prompt archive)"
-codex "$(zest-dev prompt summarize)"
+codex "$(zest-dev prompt draft)"
+codex "$(zest-dev prompt quick-implement 'some description')"
+codex "$(zest-dev prompt summarize-chat)"
+codex "$(zest-dev prompt summarize-pr 123)"
 ```
+
+`zest-dev prompt` supports the actual command files in `plugin/commands/`. The legacy alias `summarize` maps to `summarize-chat` for compatibility.
 
 ### Project Structure
 
