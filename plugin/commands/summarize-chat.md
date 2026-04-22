@@ -66,32 +66,21 @@ Fill sections based on the status:
 - **Success Criteria**: How to measure success
 
 **If status is "researched" or later - Fill Research section:**
-- **Existing Systems**: Code, patterns, or infrastructure explored
-- **Options Evaluated**: 2-3 alternatives with trade-offs (use table)
-- **Recommended Approach**: Chosen direction with rationale
-- **Key Findings**: Insights discovered during exploration
-- **File References**: Important files found (use `file:line` format)
+- Follow the canonical Research rules from the Zest Dev skill
+- Facts only; do not backfill design recommendations into Research
+- Every finding must include a fact source from code, database artifacts, or documentation
+- Reuse sources already present in the conversation/worklog when possible
 
 **If status is "designed" or later - Fill Design section:**
-- **Chosen Approach**: Brief description of architecture and why
-- **Architecture**: Visual diagram of components and data flow
-- **Implementation Steps**: Numbered sequence of what to build
-- **Pseudocode**: Logic for non-trivial algorithms
-- **Files to Modify**: List of files with descriptions
-- **Edge Cases**: How to handle errors and unusual scenarios
-- **Design Decisions**: Key decisions with rationale
+- Follow the canonical Design rules from the Zest Dev skill
+- List all meaningful design decisions and attach fact sources
+- Include the matching test strategy alongside the implementation design
+- If a `## Plan` phase breakdown is added, each phase must include implementation + validation; do not create a testing-only phase
 
-**If status is "implemented" - Fill Implementation section:**
-- **Tasks**: Checklist with completed tasks marked `[x]`
-- **Files Modified**: All created/modified files with descriptions and line counts
-- **Testing**: What tests were written and their status
-- **Design Changes**: Any deviations from original design with rationale
-- **Summary**:
-  - What was built
-  - Key decisions made
-  - Files modified (with totals)
-  - Testing status
-  - Current status and next steps
+**If status is "implemented" - Fill Notes section:**
+- `### Implementation`: What was built, files changed, and design deviations
+- `### Verification`: Tests written/run, results, manual validation, and relevant fix-and-rerun notes
+- Only treat work as implemented when the relevant tests were actually run and passed
 
 **Step 5: Update Spec Status**
 
@@ -129,6 +118,7 @@ Inform the user:
 - **File references**: Link to relevant files, don't paste full code
 - **Rationale**: Always include "why" for key decisions
 - **Challenges**: Document what was hard and how it was solved
+- **Source discipline**: Research findings and design decisions need fact sources
 
 **Example Scenario:**
 

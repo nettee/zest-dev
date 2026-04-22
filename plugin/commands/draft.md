@@ -26,6 +26,8 @@ Use this command as a lightweight bridge:
 - infer the highest status genuinely reached by the conversation
 
 If the conversation already reached research or design depth, fill those sections briefly using the same canonical rules from the Zest Dev skill.
+- `## Research`: facts only, and every finding must include a fact source.
+- `## Design`: list design decisions with fact sources and include the matching test strategy.
 
 Then persist the inferred status explicitly:
 - if the highest reached status is `new`, leave the status as-is
