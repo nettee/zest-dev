@@ -167,17 +167,19 @@ Use when the design is ready and the user approves coding.
 ## Research
 
 ### Existing System
-- ...
+- ... Source: `path/to/file:line` / `docs/path.md#section` / `migration_name.sql`
 
 ### Available Approaches
-- **Option A**: ...
-- **Option B**: ...
+- **Option A**: ... Source: `path/to/file:line`
+- **Option B**: ... Source: `docs/path.md#section`
 
 ### Constraints & Dependencies
-- ...
+- ... Source: `path/to/file:line`
 
 ### Key References
 - `path/to/file:line` - ...
+
+Every research finding must include a fact source from code, database artifacts, or documentation.
 ```
 
 ### Design
@@ -187,11 +189,17 @@ Use when the design is ready and the user approves coding.
 ### Architecture Overview
 [diagram]
 
+### Design Decisions
+- Decision: ... Source: `path/to/file:line` / `docs/path.md#section` / `migration_name.sql`
+
 ### Why this design
 - ...
 
 ### Implementation Steps
 1. ...
+
+### Test Strategy
+- Phase/area: ... Validation: ... Source: `path/to/file:line`
 
 ### Pseudocode
 Flow:
@@ -201,6 +209,10 @@ Flow:
 ### File Structure
 - `path/to/file` - ...
 ```
+
+List all meaningful design decisions and attach a fact source to each one. Reuse `## Research` sources when possible, and add new factual sources when needed.
+
+If `## Plan` is used, each phase must include its own implementation and validation. Do not create a testing-only phase. Each phase should be small enough for one coding agent session to implement and verify.
 
 ### Notes
 ```markdown

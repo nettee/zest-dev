@@ -16,16 +16,26 @@ Canonical workflow for designing an active change spec.
 4. Identify underspecified areas: scope, edge cases, contracts, compatibility, testing, rollout.
 5. Ask the user clarifying questions when needed.
 6. Wait for answers before finalizing the architecture when the open questions are consequential.
-7. Synthesize one recommended architecture by default.
+7. Synthesize one recommended architecture by default, including the matching test strategy.
 8. Fill `## Design` with:
    - Architecture Overview
+   - Design Decisions
    - Why this design
    - Implementation Steps
+   - Test Strategy
    - Pseudocode
    - File Structure
    - Interfaces / APIs
    - Edge Cases
+   - List all design decisions.
+   - Every design decision must cite its fact source inline or immediately adjacent to it.
+   - Reuse sources already captured in `## Research` when possible; gather new factual sources when needed.
+   - Valid fact sources include code (`path/to/file:line`), database artifacts (schema/table/migration/query reference), and documentation (doc path, URL, or section).
 9. Fill `## Plan` only when implementation should be split into 2-3 coarse phases.
+   - Do not create a dedicated testing/verification phase.
+   - Each phase must include both implementation work and its own testing/verification.
+   - A phase is complete only when its relevant tests pass.
+   - Size each phase so a coding agent can implement and validate it within a single session.
 10. Run `zest-dev update active designed`.
 11. Present the design and stop for implementation approval.
 
