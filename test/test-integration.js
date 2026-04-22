@@ -338,7 +338,7 @@ test('zest-dev init integration', async (t) => {
       for (const subagent of CODEX_SUBAGENTS) {
         const content = fs.readFileSync(path.join(codexAgentsDir, subagent), 'utf-8');
         assert.ok(content.includes('name = '), `${subagent} should contain name field`);
-        assert.ok(content.includes('prompt = '), `${subagent} should contain prompt field`);
+        assert.ok(content.includes('developer_instructions = '), `${subagent} should contain developer_instructions field`);
       }
 
       const codexCommandFile = path.join(codexCommandsDir, 'zest-dev-new.md');
