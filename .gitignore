@@ -2,6 +2,8 @@
 specs/change/active
 
 # Generated plugin deployment directories
+.agents/**/zest-dev/
+.agents/**/zest-dev*.md
 .cursor/**/zest-dev/
 .cursor/**/zest-dev*.md
 .cursor/**/debug-mode/
@@ -10,6 +12,7 @@ specs/change/active
 .opencode/**/zest-dev*.md
 .opencode/**/debug-mode/
 .opencode/agents
+.codex/agents
 
 # Logs
 logs
