@@ -19,6 +19,8 @@ Canonical workflow for researching an active change spec.
    - Available Approaches
    - Constraints & Dependencies
    - Key References
+   - Every finding must cite its fact source inline or immediately adjacent to it.
+   - Valid fact sources include code (`path/to/file:line`), database artifacts (schema/table/migration/query reference), and documentation (doc path, URL, or section).
 9. If the current status is `new`, run `zest-dev update active researched`.
 10. If this is a refresh for a later-phase spec, keep the current status and do not downgrade it.
 11. Summarize findings and point to the design phase.

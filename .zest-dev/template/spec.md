@@ -15,12 +15,14 @@ created: "{date}"
 
 ## Design
 
-<!-- Technical approach, architecture decisions -->
+<!-- Technical approach, architecture decisions, and test strategy. Each design decision should cite a fact source. -->
 
 ## Plan
 
 <!-- Optional: Phase breakdown for complex features that need multiple implementation phases.
-     Decided during Design. Checked off during Implement. -->
+     Decided during Design. Checked off during Implement.
+     Each phase should include both implementation and validation; do not create a testing-only phase.
+     Each phase should be small enough to finish implementation + verification in one coding session. -->
 
 ## Notes
 
