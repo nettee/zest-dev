@@ -41,6 +41,7 @@ const THIN_COMMANDS = [
   'zest-dev-quick-implement.md'
 ];
 const SKILL_PHASE_FILES = ['new.md', 'research.md', 'design.md', 'implement.md'];
+const CODEX_SUBAGENTS = ['code-architect.toml', 'code-explorer.toml', 'code-reviewer.toml'];
 const LANGUAGE_ALIGNMENT_RULES = [
   'Respond in the user\'s language by default, if user\'s language is not English.',
   'Always respond in the user\'s language throughout the flow unless the user asks to switch languages.'
@@ -71,6 +72,26 @@ function runCommand(command, cwd = TEST_DIR) {
 
 function runInit(cwd = TEST_DIR) {
   return runCommand('init', cwd);
+}
+
+function runInitWithTarget(target, cwd = TEST_DIR) {
+  return runCommand(`init -t ${target}`, cwd);
+}
+
+function runCommandExpectFailure(command, cwd = TEST_DIR) {
+  try {
+    execSync(`${CLI_COMMAND} ${command}`, {
+      cwd,
+      encoding: 'utf-8',
+      stdio: 'pipe'
+    });
+    return { failed: false, output: '' };
+  } catch (error) {
+    return {
+      failed: true,
+      output: [error.stdout, error.stderr, error.message].filter(Boolean).join('\n')
+    };
+  }
 }
 
 function runCreate(slug, cwd = TEST_DIR) {
@@ -112,13 +133,15 @@ test('zest-dev init integration', async (t) => {
   try {
     const firstRunOutput = runInit();
 
-    await t.test('output format', () => {
+    await t.test('default target output format (opencode)', () => {
       const result = yaml.load(firstRunOutput);
 
       assert.equal(result.ok, true, 'output should include ok: true');
-      assert.ok(result.cursor && result.opencode, 'output should group by cursor/opencode');
+      assert.equal(result.target, 'opencode', 'default init target should be opencode');
+      assert.ok(result.cursor && result.opencode && result.codex, 'output should include grouped targets');
       assert.ok(Array.isArray(result.cursor.commands), 'cursor.commands should be an array');
       assert.ok(Array.isArray(result.opencode.commands), 'opencode.commands should be an array');
+      assert.ok(Array.isArray(result.codex.commands), 'codex.commands should be an array');
       assert.ok(Array.isArray(result.cursor.skills), 'cursor.skills should be an array');
       assert.ok(Array.isArray(result.cursor.agents), 'cursor.agents should be an array');
       assert.ok(Array.isArray(result.opencode.agents), 'opencode.agents should be an array');
@@ -126,6 +149,9 @@ test('zest-dev init integration', async (t) => {
       assert.deepEqual(result.cursor.skills, [], 'cursor.skills should be empty');
       assert.deepEqual(result.cursor.agents, [], 'cursor.agents should be empty');
       assert.deepEqual(result.opencode.agents, [], 'opencode.agents should be empty');
+      assert.deepEqual(result.codex.commands, [], 'codex.commands should be empty for opencode target');
+      assert.deepEqual(result.codex.skills, [], 'codex.skills should be empty for opencode target');
+      assert.deepEqual(result.codex.agents, [], 'codex.agents should be empty for opencode target');
     });
 
     await t.test('directory structure', () => {
@@ -287,6 +313,51 @@ test('zest-dev init integration', async (t) => {
         opencodeCommands.length,
         EXPECTED_COMMANDS.length,
         'opencode commands count should remain unchanged'
+      );
+    });
+
+    await t.test('codex target deploys codex-specific layout with exactly three subagents', () => {
+      const codexOutput = yaml.load(runInitWithTarget('codex'));
+      assert.equal(codexOutput.ok, true);
+      assert.equal(codexOutput.target, 'codex');
+      assert.deepEqual(codexOutput.opencode.commands, [], 'opencode commands should be empty for codex target');
+      assert.equal(fs.existsSync(path.join(TEST_DIR, '.opencode', 'commands', EXPECTED_COMMANDS[0])), true, 'existing opencode files are preserved from previous init');
+
+      const codexAgentsDir = path.join(TEST_DIR, '.codex/agents');
+      const codexSkillRoot = path.join(TEST_DIR, '.agents/skills/zest-dev');
+      const codexCommandsDir = path.join(codexSkillRoot, 'commands');
+
+      assert.ok(fs.existsSync(codexAgentsDir), '.codex/agents should exist');
+      assert.ok(fs.existsSync(codexSkillRoot), '.agents/skills/zest-dev should exist');
+      assert.ok(fs.existsSync(codexCommandsDir), '.agents/skills/zest-dev/commands should exist');
+      assert.equal(fs.existsSync(path.join(TEST_DIR, 'AGENTS.md')), false, 'AGENTS.md should not be generated for codex target');
+
+      const subagents = fs.readdirSync(codexAgentsDir).sort();
+      assert.deepEqual(subagents, CODEX_SUBAGENTS, 'codex should deploy exactly three subagent toml files');
+
+      for (const subagent of CODEX_SUBAGENTS) {
+        const content = fs.readFileSync(path.join(codexAgentsDir, subagent), 'utf-8');
+        assert.ok(content.includes('name = '), `${subagent} should contain name field`);
+        assert.ok(content.includes('prompt = '), `${subagent} should contain prompt field`);
+      }
+
+      const codexCommandFile = path.join(codexCommandsDir, 'zest-dev-new.md');
+      assert.ok(fs.existsSync(codexCommandFile), 'codex command prompt should be deployed');
+      const opencodeCommandFile = path.join(TEST_DIR, '.opencode/commands/zest-dev-new.md');
+      assert.ok(fs.existsSync(opencodeCommandFile), 'opencode command should be deployed');
+      assert.notEqual(
+        codexCommandFile,
+        opencodeCommandFile,
+        'codex and opencode command outputs should differ by target path'
+      );
+    });
+
+    await t.test('invalid target fails with clear error', () => {
+      const failed = runCommandExpectFailure('init --target invalid');
+      assert.equal(failed.failed, true, 'init with invalid target should fail');
+      assert.ok(
+        failed.output.includes('Invalid target: invalid. Expected one of: opencode, codex'),
+        'error should clearly describe valid targets'
       );
     });
   } finally {

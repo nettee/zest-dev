@@ -216,10 +216,11 @@ program
 // zest-dev init
 program
   .command('init')
-  .description('Initialize plugin deployment to .opencode directories')
-  .action(() => {
+  .description('Initialize plugin deployment for a target ecosystem')
+  .option('-t, --target <target>', 'Deployment target (opencode|codex)', 'opencode')
+  .action((options) => {
     try {
-      const result = deployPlugin();
+      const result = deployPlugin(options.target);
       console.log(yaml.dump(result));
     } catch (error) {
       console.error('Error:', error.message);
