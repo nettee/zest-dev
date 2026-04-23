@@ -212,7 +212,7 @@ Flow:
 
 List all meaningful design decisions and attach a fact source to each one. Reuse `## Research` sources when possible, and add new factual sources when needed.
 
-If `## Plan` is used, each phase must include its own implementation and validation. Do not create a testing-only phase. Each phase should be small enough for one coding agent session to implement and verify.
+If `## Plan` is used, use a capability-based breakdown with meaningful, easy-to-review increments. Good boundaries usually align with one user-visible workflow, one subsystem/integration boundary, one migration/rollout step, or one stabilization milestone. Each implementation phase must include implementation + immediate testing/verification; the final phase may focus on overall testing/verification, edge cases, regression coverage, and coverage improvements. A phase is complete only when its relevant tests pass. Size each phase for one coding-agent session, and write each phase to clearly state both implementation scope and verification approach.
 
 ### Notes
 ```markdown

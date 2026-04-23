@@ -75,7 +75,7 @@ Fill sections based on the status:
 - Follow the canonical Design rules from the Zest Dev skill
 - List all meaningful design decisions and attach fact sources
 - Include the matching test strategy alongside the implementation design
-- If a `## Plan` phase breakdown is added, each phase must include implementation + validation; do not create a testing-only phase
+- If a `## Plan` phase breakdown is added, use capability-based phases that deliver meaningful, reviewable increments; each implementation phase must include implementation + immediate verification, the final phase may focus on overall testing/verification and coverage improvements, and each phase is complete only when relevant tests pass
 
 **If status is "implemented" - Fill Notes section:**
 - `### Implementation`: What was built, files changed, and design deviations
