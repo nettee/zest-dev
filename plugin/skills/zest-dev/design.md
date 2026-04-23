@@ -33,6 +33,18 @@ Canonical workflow for designing an active change spec.
    - Valid fact sources include code (`path/to/file:line`), database artifacts (schema/table/migration/query reference), and documentation (doc path, URL, or section).
 9. Fill `## Plan` only when implementation should be split into phases.
    - Use a capability-based phase breakdown.
+   - Keep the plan compact and phase-based.
+   - Use markdown checkboxes for every phase and sub-item.
+   - Format as a short checklist, for example:
+     - [ ] Phase 1: Foo
+       - [ ] Implement: Foo
+       - [ ] Verify: Foo
+     - [ ] Phase 2: Bar
+       - [ ] Implement: Bar
+       - [ ] Verify: Bar
+     - [ ] Phase 3: Baz
+       - [ ] Implement: Baz
+       - [ ] Verify: Baz
    - Prefer phases that each deliver one meaningful increment and remain easy to review.
    - Good phase boundaries usually align with one user-visible workflow, one subsystem or integration boundary, one migration or rollout step, or one stabilization milestone.
    - Each implementation phase must include both implementation work and its own immediate testing/verification.
