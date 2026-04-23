@@ -21,8 +21,24 @@ created: "{date}"
 
 <!-- Optional: Phase breakdown for complex features that need multiple implementation phases.
      Decided during Design. Checked off during Implement.
-     Each phase should include both implementation and validation; do not create a testing-only phase.
-     Each phase should be small enough to finish implementation + verification in one coding session. -->
+     Keep this section compact and phase-based.
+     Use markdown checkboxes for all phase items, for example:
+     - [ ] Phase 1: Foo
+       - [ ] Implement: Foo
+       - [ ] Verify: Foo
+     - [ ] Phase 2: Bar
+       - [ ] Implement: Bar
+       - [ ] Verify: Bar
+     - [ ] Phase 3: Baz
+       - [ ] Implement: Baz
+       - [ ] Verify: Baz
+     Use a capability-based phase breakdown with reviewable, meaningful increments.
+     Good boundaries align with one user-visible workflow, one subsystem/integration boundary, one migration/rollout step, or one stabilization milestone.
+     Each implementation phase must include implementation + immediate testing/verification.
+     The final phase may focus on overall testing/verification, edge cases, regression coverage, and coverage improvements.
+     A phase is complete only when relevant tests pass.
+     Size phases so one coding agent can implement + validate in a single session.
+     Write each phase to clearly state both implementation scope and verification approach. -->
 
 ## Notes
 

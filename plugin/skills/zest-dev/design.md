@@ -31,11 +31,27 @@ Canonical workflow for designing an active change spec.
    - Every design decision must cite its fact source inline or immediately adjacent to it.
    - Reuse sources already captured in `## Research` when possible; gather new factual sources when needed.
    - Valid fact sources include code (`path/to/file:line`), database artifacts (schema/table/migration/query reference), and documentation (doc path, URL, or section).
-9. Fill `## Plan` only when implementation should be split into 2-3 coarse phases.
-   - Do not create a dedicated testing/verification phase.
-   - Each phase must include both implementation work and its own testing/verification.
+9. Fill `## Plan` only when implementation should be split into phases.
+   - Use a capability-based phase breakdown.
+   - Keep the plan compact and phase-based.
+   - Use markdown checkboxes for every phase and sub-item.
+   - Format as a short checklist, for example:
+     - [ ] Phase 1: Foo
+       - [ ] Implement: Foo
+       - [ ] Verify: Foo
+     - [ ] Phase 2: Bar
+       - [ ] Implement: Bar
+       - [ ] Verify: Bar
+     - [ ] Phase 3: Baz
+       - [ ] Implement: Baz
+       - [ ] Verify: Baz
+   - Prefer phases that each deliver one meaningful increment and remain easy to review.
+   - Good phase boundaries usually align with one user-visible workflow, one subsystem or integration boundary, one migration or rollout step, or one stabilization milestone.
+   - Each implementation phase must include both implementation work and its own immediate testing/verification.
+   - The final phase may focus on overall testing/verification, edge-case validation, regression coverage, and test coverage improvements.
    - A phase is complete only when its relevant tests pass.
    - Size each phase so a coding agent can implement and validate it within a single session.
+   - Write each phase so its wording clearly states the implementation content and the verification approach.
 10. Run `zest-dev update active designed`.
 11. Present the design and stop for implementation approval.
 

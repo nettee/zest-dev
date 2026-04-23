@@ -389,8 +389,8 @@ test('zest-dev create integration', async (t) => {
       assert.equal(typeof frontmatter.created, 'string');
       assert.ok(content.includes('## Overview'), 'should use packaged default template');
       assert.ok(
-        content.includes('do not create a testing-only phase'),
-        'packaged default template should forbid testing-only phases'
+        content.includes('Use markdown checkboxes for all phase items'),
+        'packaged default template should include phase checkbox guidance'
       );
       assert.ok(content.includes('### Implementation'), 'packaged default template should include Implementation notes section');
       assert.ok(content.includes('### Verification'), 'packaged default template should include Verification notes section');
