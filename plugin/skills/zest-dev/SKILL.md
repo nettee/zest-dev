@@ -68,7 +68,7 @@ Use this skill when the user:
 
 ### Questions and approvals
 - Ask targeted clarifying questions when requirements or architecture are underspecified.
-- Before implementation, get explicit user approval.
+- During quick-implement, get explicit user approval when transitioning from Design to Implement.
 - If the user says “whatever you think is best,” provide your recommendation and get confirmation when the choice is consequential.
 
 ## Entry Modes
@@ -127,7 +127,7 @@ Use when a spec exists and the team needs repository facts, patterns, and option
 Use when research or direct understanding is sufficient to make an implementation plan.
 
 ### Implement phase
-Use when the design is ready and the user approves coding.
+Use when the design is ready for coding.
 
 ## Canonical Phase Workflow Files
 
@@ -145,7 +145,7 @@ Use when the design is ready and the user approves coding.
 
 ### Implement
 - The canonical Implement workflow lives in `implement.md`.
-- Use it for approval-gated implementation, test writing, notes updates, and status advancement to `implemented` only when the full plan is complete.
+- Use it for implementation, test writing, notes updates, and status advancement to `implemented` only when the full plan is complete.
 
 ## Bridge Workflows
 
@@ -157,7 +157,7 @@ Use when the design is ready and the user approves coding.
 ### Quick Implement
 - Create or resume the active spec.
 - Run the remaining core phases in order.
-- Keep explicit approval checkpoints before coding.
+- Keep an explicit approval checkpoint when moving from Design to Implement.
 - Reuse the canonical phase rules from this skill instead of embedding separate thick instructions.
 
 ## Content Templates

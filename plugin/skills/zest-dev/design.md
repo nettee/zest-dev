@@ -53,7 +53,7 @@ Canonical workflow for designing an active change spec.
    - Size each phase so a coding agent can implement and validate it within a single session.
    - Write each phase so its wording clearly states the implementation content and the verification approach.
 10. Run `zest-dev update active designed`.
-11. Present the design and stop for implementation approval.
+11. Present the design and stop.
 
 ## Rule
 This is where decisions, trade-offs, and recommendations belong.

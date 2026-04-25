@@ -34,7 +34,7 @@ Each command routes into the main Zest Dev skill, which advances the spec throug
 
 ### Quick Implementation
 
-Run all stages end-to-end with approval checkpoints. Useful for straightforward tasks.
+Run all stages end-to-end with an approval checkpoint before implementation. Useful for straightforward tasks.
 
 Start from a description:
 
