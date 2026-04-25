@@ -157,7 +157,7 @@ Use when the design is ready for coding.
 ### Quick Implement
 - Create or resume the active spec.
 - Run the remaining core phases in order.
-- Keep an explicit approval checkpoint when moving from Design to Implement.
+- Keep explicit checkpoints for confirming new requirements and moving from Design to Implement.
 - Reuse the canonical phase rules from this skill instead of embedding separate thick instructions.
 
 ## Content Templates

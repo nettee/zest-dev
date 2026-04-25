@@ -1,5 +1,5 @@
 ---
-description: Run all remaining workflow stages end-to-end for simple tasks with an implementation approval checkpoint
+description: Run all remaining workflow stages end-to-end for simple tasks with approval checkpoints
 argument-hint: <description of feature or requirement>
 ---
 
@@ -10,7 +10,7 @@ Thin bridge entrypoint for running the remaining Zest Dev phases end-to-end.
 **Language rule:** Always respond in the user's language throughout the flow unless the user asks to switch languages.
 
 Handles two scenarios:
-- **New requirement**: No active change spec — creates a spec, fills Overview, then runs all stages.
+- **New requirement**: No active change spec — creates a spec, confirms requirements, then runs all stages.
 - **Existing spec**: An active change spec is already set — picks up from the appropriate stage based on its status.
 
 **User's description:** $ARGUMENTS
@@ -39,6 +39,12 @@ Use the Zest Dev skill's **New** phase to create the spec and fill Overview brie
 
 ---
 
+## Checkpoint 1: Confirm requirements
+
+If this command created a new spec, confirm the filled Overview with the user before moving into research.
+
+---
+
 ## Stage 1: Research
 
 Enter the Zest Dev skill's **Research** phase and let it run the canonical research workflow.
@@ -51,7 +57,7 @@ Enter the Zest Dev skill's **Design** phase and let it run the canonical design 
 
 ---
 
-## Checkpoint: Approve implementation
+## Checkpoint 2: Approve implementation
 
 After design is ready, present a brief summary and get explicit approval before entering the Implement phase.
 
