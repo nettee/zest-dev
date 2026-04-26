@@ -19,6 +19,7 @@ Canonical workflow for designing an active change spec.
 7. Synthesize one recommended architecture by default, including the matching test strategy.
 8. Fill `## Design` with:
    - Architecture Overview
+   - Prefer Mermaid for state transition diagrams, sequence diagrams, module diagrams, and other structured visuals; use ASCII only for quick sketches where Mermaid adds no clarity.
    - Design Decisions
    - Why this design
    - Implementation Steps
@@ -53,7 +54,7 @@ Canonical workflow for designing an active change spec.
    - Size each phase so a coding agent can implement and validate it within a single session.
    - Write each phase so its wording clearly states the implementation content and the verification approach.
 10. Run `zest-dev update active designed`.
-11. Present the design and stop for implementation approval.
+11. Present the design and stop.
 
 ## Rule
 This is where decisions, trade-offs, and recommendations belong.
