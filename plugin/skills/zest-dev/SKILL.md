@@ -214,18 +214,21 @@ Flow:
 
 List all meaningful design decisions and attach a fact source to each one. Reuse `## Research` sources when possible, and add new factual sources when needed.
 
-If `## Plan` is used, keep it compact and phase-based with markdown checkboxes. Example:
-- [ ] Phase 1: Foo
-  - [ ] Implement: Foo
-  - [ ] Verify: Foo
-- [ ] Phase 2: Bar
-  - [ ] Implement: Bar
-  - [ ] Verify: Bar
-- [ ] Phase 3: Baz
-  - [ ] Implement: Baz
-  - [ ] Verify: Baz
+If `## Plan` is used, keep it compact and step-based with markdown checkboxes. Example:
+- [ ] Step 1: Foo
+  - [ ] Substep 1.1 Implement: Foo foundation
+  - [ ] Substep 1.2 Implement: Foo integration
+  - [ ] Substep 1.3 Implement: Foo edge handling
+  - [ ] Substep 1.4 Verify: Foo automated coverage
+  - [ ] Substep 1.5 Verify: Foo manual workflow
+- [ ] Step 2: Bar
+  - [ ] Substep 2.1 Implement: Bar
+  - [ ] Substep 2.2 Verify: Bar
+- [ ] Step 3: Baz
+  - [ ] Substep 3.1 Implement: Baz
+  - [ ] Substep 3.2 Verify: Baz
 
-Use a capability-based breakdown with meaningful, easy-to-review increments. Good boundaries usually align with one user-visible workflow, one subsystem/integration boundary, one migration/rollout step, or one stabilization milestone. Each implementation phase must include implementation + immediate testing/verification; the final phase may focus on overall testing/verification, edge cases, regression coverage, and coverage improvements. A phase is complete only when its relevant tests pass. Size each phase for one coding-agent session, and write each phase to clearly state both implementation scope and verification approach.
+Use a capability-based breakdown with meaningful, easy-to-review increments. Good step boundaries usually align with one user-visible workflow, one subsystem/integration boundary, one migration/rollout step, or one stabilization milestone. Each step must include small, independent substeps for implementation and immediate testing/verification. Within each step, list implementation substeps before verification substeps. The final step may focus on overall testing/verification, edge cases, regression coverage, and coverage improvements. A step is complete only when its relevant tests pass. Size each step for one coding-agent session, and write each substep as one small, independent task.
 
 ### Notes
 ```markdown
