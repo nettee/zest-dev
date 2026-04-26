@@ -189,6 +189,8 @@ Every research finding must include a fact source from code, database artifacts,
 ### Architecture Overview
 [diagram]
 
+Prefer Mermaid for state transition diagrams, sequence diagrams, module diagrams, and other structured visuals; use ASCII only for quick sketches where Mermaid adds no clarity.
+
 ### Design Decisions
 - Decision: ... Source: `path/to/file:line` / `docs/path.md#section` / `migration_name.sql`
 

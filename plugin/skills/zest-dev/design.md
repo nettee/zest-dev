@@ -19,6 +19,7 @@ Canonical workflow for designing an active change spec.
 7. Synthesize one recommended architecture by default, including the matching test strategy.
 8. Fill `## Design` with:
    - Architecture Overview
+   - Prefer Mermaid for state transition diagrams, sequence diagrams, module diagrams, and other structured visuals; use ASCII only for quick sketches where Mermaid adds no clarity.
    - Design Decisions
    - Why this design
    - Implementation Steps
