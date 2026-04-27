@@ -19,26 +19,30 @@ created: "{date}"
 
 ## Plan
 
-<!-- Optional: Phase breakdown for complex features that need multiple implementation phases.
+<!-- Optional: Step breakdown for complex features that need multiple implementation steps.
      Decided during Design. Checked off during Implement.
-     Keep this section compact and phase-based.
-     Use markdown checkboxes for all phase items, for example:
-     - [ ] Phase 1: Foo
-       - [ ] Implement: Foo
-       - [ ] Verify: Foo
-     - [ ] Phase 2: Bar
-       - [ ] Implement: Bar
-       - [ ] Verify: Bar
-     - [ ] Phase 3: Baz
-       - [ ] Implement: Baz
-       - [ ] Verify: Baz
-     Use a capability-based phase breakdown with reviewable, meaningful increments.
+     Keep this section compact and step-based.
+     Use markdown checkboxes for all step and substep items, for example:
+     - [ ] Step 1: Foo
+       - [ ] Substep 1.1 Implement: Foo foundation
+       - [ ] Substep 1.2 Implement: Foo integration
+       - [ ] Substep 1.3 Implement: Foo edge handling
+       - [ ] Substep 1.4 Verify: Foo automated coverage
+       - [ ] Substep 1.5 Verify: Foo manual workflow
+     - [ ] Step 2: Bar
+       - [ ] Substep 2.1 Implement: Bar
+       - [ ] Substep 2.2 Verify: Bar
+     - [ ] Step 3: Baz
+       - [ ] Substep 3.1 Implement: Baz
+       - [ ] Substep 3.2 Verify: Baz
+     Use a capability-based step breakdown with reviewable, meaningful increments.
      Good boundaries align with one user-visible workflow, one subsystem/integration boundary, one migration/rollout step, or one stabilization milestone.
-     Each implementation phase must include implementation + immediate testing/verification.
-     The final phase may focus on overall testing/verification, edge cases, regression coverage, and coverage improvements.
-     A phase is complete only when relevant tests pass.
-     Size phases so one coding agent can implement + validate in a single session.
-     Write each phase to clearly state both implementation scope and verification approach. -->
+     Each step must include small, independent substeps for implementation and immediate testing/verification.
+     Within each step, list implementation substeps before verification substeps.
+     The final step may focus on overall testing/verification, edge cases, regression coverage, and coverage improvements.
+     A step is complete only when relevant tests pass.
+     Size steps so one coding agent can implement + validate in a single session.
+     Write each substep as one small, independent task. -->
 
 ## Notes
 
