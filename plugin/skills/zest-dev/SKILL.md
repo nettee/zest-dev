@@ -192,14 +192,14 @@ Keep sources compact: use the smallest useful line/range, merge same-file citati
 
 Prefer Mermaid for state transition diagrams, sequence diagrams, module diagrams, and other structured visuals; use ASCII only for quick sketches where Mermaid adds no clarity.
 
+### Change Scope
+- Area: ... Impact: ... Source: `path/to/file:line` / `docs/path.md#section` / `migration_name.sql`
+
 ### Design Decisions
 - Decision: ... Source: `path/to/file:line` / `docs/path.md#section` / `migration_name.sql`
 
 ### Why this design
 - ...
-
-### Implementation Steps
-1. ...
 
 ### Test Strategy
 - Phase/area: ... Validation: ... Source: `path/to/file:line`
@@ -212,6 +212,8 @@ Flow:
 ### File Structure
 - `path/to/file` - ...
 ```
+
+Use `### Change Scope` to describe affected modules, database/schema changes, architecture boundaries, API contracts, compatibility constraints, generated artifacts, and rollout impact. Execution sequencing belongs in `## Plan`.
 
 List all meaningful design decisions and attach a fact source to each one. Reuse `## Research` sources when possible, and add new factual sources when needed.
 

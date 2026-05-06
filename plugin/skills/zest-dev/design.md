@@ -20,14 +20,16 @@ Canonical workflow for designing an active change spec.
 8. Fill `## Design` with:
    - Architecture Overview
    - Prefer Mermaid for state transition diagrams, sequence diagrams, module diagrams, and other structured visuals; use ASCII only for quick sketches where Mermaid adds no clarity.
+   - Change Scope
    - Design Decisions
    - Why this design
-   - Implementation Steps
    - Test Strategy
    - Pseudocode
    - File Structure
    - Interfaces / APIs
    - Edge Cases
+   - Use Change Scope to describe affected modules, database/schema changes, architecture boundaries, API contracts, compatibility constraints, generated artifacts, and rollout impact.
+   - Put execution sequencing in `## Plan`.
    - List all design decisions.
    - Every design decision must cite its fact source inline or immediately adjacent to it.
    - Reuse sources already captured in `## Research` when possible; gather new factual sources when needed.
