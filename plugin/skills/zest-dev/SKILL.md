@@ -180,6 +180,7 @@ Use when the design is ready for coding.
 - `path/to/file:line` - ...
 
 Every research finding must include a fact source from code, database artifacts, or documentation.
+Keep sources compact: use the smallest useful line/range, merge same-file citations like `src/media.ts:770-811,829,855,877-890`, and move long evidence lists to Key References.
 ```
 
 ### Design

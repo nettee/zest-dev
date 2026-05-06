@@ -21,6 +21,9 @@ Canonical workflow for researching an active change spec.
    - Key References
    - Every finding must cite its fact source inline or immediately adjacent to it.
    - Valid fact sources include code (`path/to/file:line`), database artifacts (schema/table/migration/query reference), and documentation (doc path, URL, or section).
+   - Keep sources compact: cite the smallest useful evidence, usually 1 representative line or short range per finding.
+   - Merge same-file citations into ranges or grouped refs: `src/media.ts:770-811,829,855,877-890`.
+   - Move long evidence lists to `Key References`; keep inline `Source:` entries short.
 9. If the current status is `new`, run `zest-dev update active researched`.
 10. If this is a refresh for a later-phase spec, keep the current status and do not downgrade it.
 11. Summarize findings and point to the design phase.
