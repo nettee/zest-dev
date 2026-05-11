@@ -1,7 +1,7 @@
 ---
 id: 20260509-global-init-targets
 name: Global Init Targets
-status: designed
+status: implemented
 created: '2026-05-09'
 ---
 
@@ -206,33 +206,35 @@ Flow:
 
 ## Plan
 
-- [ ] Step 1: Refactor deployer around scope and target roots
-  - [ ] Substep 1.1 Implement: Add scope/target validation and path resolution helpers.
-  - [ ] Substep 1.2 Implement: Parameterize existing OpenCode and Codex deploy functions by base directory.
-  - [ ] Substep 1.3 Implement: Remove Codex command prompt deployment and keep Codex skill/subagent deployment.
-  - [ ] Substep 1.4 Verify: Run focused init tests for path resolution and invalid options.
-- [ ] Step 2: Update CLI behavior and result schema
-  - [ ] Substep 2.1 Implement: Add `--global`, `--local`, expanded `--target`, and help text.
-  - [ ] Substep 2.2 Implement: Return `scope`, `target`, and grouped `codex/opencode` deployment metadata.
-  - [ ] Substep 2.3 Verify: Assert default `init` equals `init --global` behavior.
-- [ ] Step 3: Add global and local integration coverage
-  - [ ] Substep 3.1 Implement: Isolate HOME/config roots in tests for global installs.
-  - [ ] Substep 3.2 Implement: Add assertions for Codex and OpenCode global outputs.
-  - [ ] Substep 3.3 Implement: Update local compatibility tests to use `init --local`.
-  - [ ] Substep 3.4 Verify: Run `pnpm test:local`.
-- [ ] Step 4: Stabilize package behavior
-  - [ ] Substep 4.1 Verify: Run `pnpm test:package`.
-  - [ ] Substep 4.2 Verify: Manually inspect generated YAML for default, target-specific, and local commands.
-  - [ ] Substep 4.3 Implement: Update docs/help text if test output reveals confusing command usage.
+- [x] Step 1: Refactor deployer around scope and target roots
+  - [x] Substep 1.1 Implement: Add scope/target validation and path resolution helpers.
+  - [x] Substep 1.2 Implement: Parameterize existing OpenCode and Codex deploy functions by base directory.
+  - [x] Substep 1.3 Implement: Remove Codex command prompt deployment and keep Codex skill/subagent deployment.
+  - [x] Substep 1.4 Verify: Run focused init tests for path resolution and invalid options.
+- [x] Step 2: Update CLI behavior and result schema
+  - [x] Substep 2.1 Implement: Add `--global`, `--local`, expanded `--target`, and help text.
+  - [x] Substep 2.2 Implement: Return `scope`, `target`, and grouped `codex/opencode` deployment metadata.
+  - [x] Substep 2.3 Verify: Assert default `init` equals `init --global` behavior.
+- [x] Step 3: Add global and local integration coverage
+  - [x] Substep 3.1 Implement: Isolate HOME/config roots in tests for global installs.
+  - [x] Substep 3.2 Implement: Add assertions for Codex and OpenCode global outputs.
+  - [x] Substep 3.3 Implement: Update local compatibility tests to use `init --local`.
+  - [x] Substep 3.4 Verify: Run `pnpm test:local`.
+- [x] Step 4: Stabilize package behavior
+  - [x] Substep 4.1 Verify: Run `pnpm test:package`.
+  - [x] Substep 4.2 Verify: Manually inspect generated YAML for default, target-specific, and local commands.
+  - [x] Substep 4.3 Implement: Update docs/help text if test output reveals confusing command usage.
 
 ## Notes
 
-<!-- Optional sections — add what's relevant. -->
-
 ### Implementation
 
-<!-- Files created/modified, decisions made during coding, deviations from design -->
+- `bin/zest-dev.js` - added `--global`, `--local`, scope-aware target defaults, expanded `--target all|opencode|codex`, and conflicting scope validation.
+- `lib/plugin-deployer.js` - refactored deployment around local/global target roots, added XDG-aware OpenCode global paths, Codex global paths, grouped result metadata, global path validation, scoped legacy OpenCode agent cleanup, and Codex legacy command prompt cleanup.
+- `test/test-integration.js` - updated init coverage for isolated global directories, local compatibility, target-specific installs, Codex command prompt removal, invalid options, and package-safe behavior.
 
 ### Verification
 
-<!-- How the feature was verified: tests written, manual testing steps, results -->
+- `pnpm test:local` - passed, 37 tests.
+- `pnpm test:package` - passed, 37 tests.
+- Manual YAML inspection passed for `init`, `init --target codex`, and `init --local` with isolated `HOME` and `XDG_CONFIG_HOME`.
