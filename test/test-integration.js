@@ -480,11 +480,14 @@ test('zest-dev status integration', async (t) => {
   setup();
 
   try {
+    const statusEnv = makeIsolatedGlobalEnv(path.join(TEST_DIR, 'status-env'));
+    const runStatus = () => runCommandWithEnv('status', TEST_DIR, statusEnv);
+
     runCreate('first-spec');
     runCreate('second-spec');
 
     await t.test('active_change is null when not set', () => {
-      const status = yaml.load(runCommand('status'));
+      const status = yaml.load(runStatus());
       assert.equal(status.specs_count, 2);
       assert.equal(status.active_change, null);
       assert.equal(status.agent_hints, undefined);
@@ -498,7 +501,7 @@ test('zest-dev status integration', async (t) => {
       assert.ok(secondSpecDir, 'second-spec directory should exist');
 
       runCommand(`set-active ${secondSpecDir}`);
-      const status = yaml.load(runCommand('status'));
+      const status = yaml.load(runStatus());
 
       assert.equal(status.specs_count, 2);
       assert.equal(typeof status.active_change, 'object');
@@ -513,7 +516,7 @@ test('zest-dev status integration', async (t) => {
       const missingSpecId = '19990101-removed-spec';
       createDanglingActiveSymlink(missingSpecId);
 
-      const status = yaml.load(runCommand('status'));
+      const status = yaml.load(runStatus());
 
       assert.equal(status.specs_count, 2);
       assert.deepEqual(status.active_change, {
@@ -533,7 +536,7 @@ test('zest-dev status integration', async (t) => {
       createDanglingActiveSymlink('19990101-removed-spec');
       runCommand(`set-active ${firstSpecDir}`);
 
-      const status = yaml.load(runCommand('status'));
+      const status = yaml.load(runStatus());
       assert.equal(status.active_change.id, firstSpecDir);
     });
 
@@ -552,7 +555,24 @@ test('zest-dev status integration', async (t) => {
       fs.mkdirSync(cursorCommandsDir, { recursive: true });
       fs.writeFileSync(path.join(cursorCommandsDir, 'zest-dev-new.md'), '# test', 'utf-8');
 
-      const status = yaml.load(runCommand('status'));
+      const status = yaml.load(runStatus());
+      assert.deepEqual(status.agent_hints, [
+        'Run `zest-dev init` to update deployed command markdown files.'
+      ]);
+    });
+
+    await t.test('agent hint appears when global OpenCode command markdown exists', () => {
+      const globalEnv = makeIsolatedGlobalEnv(path.join(TEST_DIR, 'global-hint-env'));
+      const globalCommandsDir = path.join(globalEnv.XDG_CONFIG_HOME, 'opencode', 'commands');
+      const cursorZestFile = path.join(TEST_DIR, '.cursor', 'commands', 'zest-dev-new.md');
+      if (fs.existsSync(cursorZestFile)) {
+        fs.unlinkSync(cursorZestFile);
+      }
+
+      fs.mkdirSync(globalCommandsDir, { recursive: true });
+      fs.writeFileSync(path.join(globalCommandsDir, 'zest-dev-new.md'), '# test', 'utf-8');
+
+      const status = yaml.load(runCommandWithEnv('status', TEST_DIR, globalEnv));
       assert.deepEqual(status.agent_hints, [
         'Run `zest-dev init` to update deployed command markdown files.'
       ]);
@@ -569,7 +589,7 @@ test('zest-dev status integration', async (t) => {
         fs.unlinkSync(cursorZestFile);
       }
 
-      const status = yaml.load(runCommand('status'));
+      const status = yaml.load(runStatus());
       assert.equal(status.agent_hints, undefined);
     });
   } finally {

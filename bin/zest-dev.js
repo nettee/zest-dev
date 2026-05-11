@@ -16,14 +16,18 @@ const {
   updateSpecStatus,
   createBranchFromActiveChangeSpec
 } = require('../lib/spec-manager');
-const { deployPlugin } = require('../lib/plugin-deployer');
+const { deployPlugin, getTargetPaths } = require('../lib/plugin-deployer');
 const { generatePrompt } = require('../lib/prompt-generator');
 
 const program = new Command();
-const DEPLOYED_COMMAND_DIRS = [
-  path.join(process.cwd(), '.cursor/commands'),
-  path.join(process.cwd(), '.opencode/commands')
-];
+
+function getDeployedCommandDirs() {
+  return [
+    path.join(process.cwd(), '.cursor/commands'),
+    path.join(process.cwd(), '.opencode/commands'),
+    getTargetPaths('global').opencode.commandsDir
+  ];
+}
 
 function isFzfAvailable() {
   const result = spawnSync('fzf', ['--version'], { stdio: 'ignore' });
@@ -84,7 +88,7 @@ async function selectSpecInteractively(specs) {
 }
 
 function hasDeployedCommandMarkdowns() {
-  return DEPLOYED_COMMAND_DIRS.some(dirPath => {
+  return getDeployedCommandDirs().some(dirPath => {
     if (!fs.existsSync(dirPath)) {
       return false;
     }
