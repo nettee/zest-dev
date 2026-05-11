@@ -16,17 +16,39 @@ const {
   updateSpecStatus,
   createBranchFromActiveChangeSpec
 } = require('../lib/spec-manager');
-const { deployPlugin, getTargetPaths } = require('../lib/plugin-deployer');
+const { deployPlugin } = require('../lib/plugin-deployer');
 const { generatePrompt } = require('../lib/prompt-generator');
 
 const program = new Command();
 
+function getOptionalGlobalOpenCodeCommandDir() {
+  const xdgConfigHome = process.env.XDG_CONFIG_HOME;
+  if (xdgConfigHome) {
+    return path.isAbsolute(xdgConfigHome)
+      ? path.join(xdgConfigHome, 'opencode', 'commands')
+      : null;
+  }
+
+  const homeDir = process.env.HOME || process.env.USERPROFILE;
+  if (!homeDir || !path.isAbsolute(homeDir)) {
+    return null;
+  }
+
+  return path.join(homeDir, '.config', 'opencode', 'commands');
+}
+
 function getDeployedCommandDirs() {
-  return [
+  const dirs = [
     path.join(process.cwd(), '.cursor/commands'),
-    path.join(process.cwd(), '.opencode/commands'),
-    getTargetPaths('global').opencode.commandsDir
+    path.join(process.cwd(), '.opencode/commands')
   ];
+
+  const globalOpenCodeCommandDir = getOptionalGlobalOpenCodeCommandDir();
+  if (globalOpenCodeCommandDir) {
+    dirs.push(globalOpenCodeCommandDir);
+  }
+
+  return dirs;
 }
 
 function isFzfAvailable() {

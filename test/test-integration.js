@@ -578,6 +578,14 @@ test('zest-dev status integration', async (t) => {
       ]);
     });
 
+    await t.test('status works when optional global OpenCode env is invalid', () => {
+      const status = yaml.load(runCommandWithEnv('status', TEST_DIR, {
+        HOME: '',
+        XDG_CONFIG_HOME: 'relative-config'
+      }));
+      assert.equal(status.specs_count, 2);
+    });
+
     await t.test('agent hint is not shown for non-zest markdown files', () => {
       const otherCommandsDir = path.join(TEST_DIR, '.opencode', 'commands');
       fs.mkdirSync(otherCommandsDir, { recursive: true });
