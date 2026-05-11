@@ -335,6 +335,7 @@ test('zest-dev init integration', async (t) => {
       const opencodeOnlyEnv = makeIsolatedGlobalEnv(opencodeOnlyDir);
       const opencodeOnly = yaml.load(runInitArgs('--target opencode', opencodeOnlyDir, opencodeOnlyEnv));
       assert.equal(opencodeOnly.target, 'opencode');
+      assert.equal(opencodeOnly.codex.baseDir, null);
       assert.ok(fs.existsSync(path.join(opencodeOnlyEnv.XDG_CONFIG_HOME, 'opencode/commands')));
       assert.equal(fs.existsSync(path.join(opencodeOnlyEnv.HOME, '.codex/agents')), false);
 
@@ -343,8 +344,31 @@ test('zest-dev init integration', async (t) => {
       const codexOnlyEnv = makeIsolatedGlobalEnv(codexOnlyDir);
       const codexOnly = yaml.load(runInitArgs('--target codex', codexOnlyDir, codexOnlyEnv));
       assert.equal(codexOnly.target, 'codex');
+      assert.equal(codexOnly.opencode.baseDir, null);
       assert.ok(fs.existsSync(path.join(codexOnlyEnv.HOME, '.codex/agents')));
       assert.equal(fs.existsSync(path.join(codexOnlyEnv.XDG_CONFIG_HOME, 'opencode/commands')), false);
+
+      const opencodeWithoutHomeDir = path.join(TEST_DIR, 'opencode-without-home');
+      setup(opencodeWithoutHomeDir);
+      const opencodeWithoutHomeEnv = {
+        HOME: '',
+        XDG_CONFIG_HOME: path.join(opencodeWithoutHomeDir, 'xdg-config')
+      };
+      const opencodeWithoutHome = yaml.load(runInitArgs('--target opencode', opencodeWithoutHomeDir, opencodeWithoutHomeEnv));
+      assert.equal(opencodeWithoutHome.target, 'opencode');
+      assert.ok(fs.existsSync(path.join(opencodeWithoutHomeEnv.XDG_CONFIG_HOME, 'opencode/commands')));
+
+      const codexWithRelativeXdgDir = path.join(TEST_DIR, 'codex-with-relative-xdg');
+      setup(codexWithRelativeXdgDir);
+      const codexWithRelativeXdgEnv = {
+        HOME: path.join(codexWithRelativeXdgDir, 'home'),
+        XDG_CONFIG_HOME: 'relative-config'
+      };
+      fs.mkdirSync(codexWithRelativeXdgEnv.HOME, { recursive: true });
+      const codexWithRelativeXdg = yaml.load(runInitArgs('--target codex', codexWithRelativeXdgDir, codexWithRelativeXdgEnv));
+      assert.equal(codexWithRelativeXdg.target, 'codex');
+      assert.ok(fs.existsSync(path.join(codexWithRelativeXdgEnv.HOME, '.codex/agents')));
+      assert.equal(fs.existsSync(path.join(codexWithRelativeXdgDir, 'relative-config')), false);
     });
 
     await t.test('invalid target fails before writes', () => {
