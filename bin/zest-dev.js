@@ -20,10 +20,36 @@ const { deployPlugin } = require('../lib/plugin-deployer');
 const { generatePrompt } = require('../lib/prompt-generator');
 
 const program = new Command();
-const DEPLOYED_COMMAND_DIRS = [
-  path.join(process.cwd(), '.cursor/commands'),
-  path.join(process.cwd(), '.opencode/commands')
-];
+
+function getOptionalGlobalOpenCodeCommandDir() {
+  const xdgConfigHome = process.env.XDG_CONFIG_HOME;
+  if (xdgConfigHome) {
+    return path.isAbsolute(xdgConfigHome)
+      ? path.join(xdgConfigHome, 'opencode', 'commands')
+      : null;
+  }
+
+  const homeDir = process.env.HOME || process.env.USERPROFILE;
+  if (!homeDir || !path.isAbsolute(homeDir)) {
+    return null;
+  }
+
+  return path.join(homeDir, '.config', 'opencode', 'commands');
+}
+
+function getDeployedCommandDirs() {
+  const dirs = [
+    path.join(process.cwd(), '.cursor/commands'),
+    path.join(process.cwd(), '.opencode/commands')
+  ];
+
+  const globalOpenCodeCommandDir = getOptionalGlobalOpenCodeCommandDir();
+  if (globalOpenCodeCommandDir) {
+    dirs.push(globalOpenCodeCommandDir);
+  }
+
+  return dirs;
+}
 
 function isFzfAvailable() {
   const result = spawnSync('fzf', ['--version'], { stdio: 'ignore' });
@@ -84,7 +110,7 @@ async function selectSpecInteractively(specs) {
 }
 
 function hasDeployedCommandMarkdowns() {
-  return DEPLOYED_COMMAND_DIRS.some(dirPath => {
+  return getDeployedCommandDirs().some(dirPath => {
     if (!fs.existsSync(dirPath)) {
       return false;
     }
@@ -216,11 +242,19 @@ program
 // zest-dev init
 program
   .command('init')
-  .description('Initialize plugin deployment for a target ecosystem')
-  .option('-t, --target <target>', 'Deployment target (opencode|codex)', 'opencode')
+  .description('Initialize plugin deployment for OpenCode and/or Codex')
+  .option('--global', 'Deploy to global user locations (default)')
+  .option('--local', 'Deploy to the current project directory')
+  .option('-t, --target <target>', 'Deployment target (all|opencode|codex)')
   .action((options) => {
     try {
-      const result = deployPlugin(options.target);
+      if (options.global && options.local) {
+        throw new Error('Cannot specify both --global and --local');
+      }
+
+      const scope = options.local ? 'local' : 'global';
+      const target = options.target || (scope === 'local' ? 'opencode' : 'all');
+      const result = deployPlugin({ scope, target });
       console.log(yaml.dump(result));
     } catch (error) {
       console.error('Error:', error.message);
