@@ -28,7 +28,10 @@ Canonical workflow for designing an active change spec.
    - Edge Cases
    - Verification Strategy
    - Use Design Summary to describe the overall design approach and rationale.
-   - Use Change Scope to describe affected modules, database/schema changes, architecture boundaries, API contracts, compatibility constraints, generated artifacts, file-level changes, and rollout impact.
+   - Use Change Scope as a two-part section:
+     - Impact Areas: high-level affected modules, database/schema changes, architecture boundaries, API contracts, compatibility constraints, generated artifacts, and rollout impact.
+     - Planned File Changes: concrete files or directories expected to change, plus a brief note about each planned modification.
+   - Do not add `Source:` citations inside Change Scope items.
    - Put execution sequencing in `## Plan`.
    - List all design decisions.
    - Every design decision must cite its fact source inline or immediately adjacent to it.
