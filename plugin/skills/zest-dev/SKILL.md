@@ -209,13 +209,16 @@ Flow:
 - Optional contracts between components.
 
 ### Change Scope
-- Area: ... Impact: ... Files: `path/to/file` Source: `path/to/file:line` / `docs/path.md#section` / `migration_name.sql`
+- Impact Areas:
+  - Area: ... Impact: ...
+- Planned File Changes:
+  - `path/to/file` - planned change
 
 ### Verification Strategy
 - Phase/area: ... Validation: ... Source: `path/to/file:line`
 ```
 
-`### System Structure`, `### System Procedure`, and `### Interfaces / APIs` are optional. Use `### Design Summary` to describe the overall design approach and rationale. Use `### Change Scope` to describe affected modules, database/schema changes, architecture boundaries, API contracts, compatibility constraints, generated artifacts, file-level changes, and rollout impact. Execution sequencing belongs in `## Plan`.
+`### System Structure`, `### System Procedure`, and `### Interfaces / APIs` are optional. Use `### Design Summary` to describe the overall design approach and rationale. Use `### Change Scope` as a two-part section: `Impact Areas` for high-level affected areas and `Planned File Changes` for concrete files/directories to modify. Do not include `Source:` citations inside Change Scope items. Execution sequencing belongs in `## Plan`.
 
 List all meaningful design decisions and attach a fact source to each one. Reuse `## Research` sources when possible, and add new factual sources when needed.
 
