@@ -169,9 +169,10 @@ Use when the design is ready for coding.
 ### Existing System
 - ... Source: `path/to/file:line` / `docs/path.md#section` / `migration_name.sql`
 
-### Available Approaches
-- **Option A**: ... Source: `path/to/file:line`
-- **Option B**: ... Source: `docs/path.md#section`
+### Design Inputs
+- Existing pattern: ... Source: `path/to/file:line`
+- Reference or best practice: ... Source: `docs/path.md#section`
+- Implementation consideration: ... Source: `path/to/file:line`
 
 ### Constraints & Dependencies
 - ... Source: `path/to/file:line`
@@ -181,6 +182,7 @@ Use when the design is ready for coding.
 
 Every research finding must include a fact source from code, database artifacts, or documentation.
 Keep sources compact: use the smallest useful line/range, merge same-file citations like `src/media.ts:770-811,829,855,877-890`, and move long evidence lists to Key References.
+Do not list competing options, rank alternatives, or recommend a choice in Research; capture design raw materials for the Design phase.
 ```
 
 ### Design
