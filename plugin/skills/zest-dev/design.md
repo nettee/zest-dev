@@ -18,17 +18,17 @@ Canonical workflow for designing an active change spec.
 6. Wait for answers before finalizing the architecture when the open questions are consequential.
 7. Synthesize one recommended architecture by default, including the matching test strategy.
 8. Fill `## Design` with:
-   - Architecture Overview
-   - Prefer Mermaid for state transition diagrams, sequence diagrams, module diagrams, and other structured visuals; use ASCII only for quick sketches where Mermaid adds no clarity.
-   - Change Scope
+   - Design Summary
    - Design Decisions
-   - Why this design
-   - Test Strategy
-   - Pseudocode
-   - File Structure
-   - Interfaces / APIs
+   - System Structure, optional
+   - Prefer Mermaid for state transition diagrams, sequence diagrams, module diagrams, and other structured visuals; use ASCII only for quick sketches where Mermaid adds no clarity.
+   - System Procedure, optional
+   - Interfaces / APIs, optional
+   - Change Scope
    - Edge Cases
-   - Use Change Scope to describe affected modules, database/schema changes, architecture boundaries, API contracts, compatibility constraints, generated artifacts, and rollout impact.
+   - Verification Strategy
+   - Use Design Summary to describe the overall design approach and rationale.
+   - Use Change Scope to describe affected modules, database/schema changes, architecture boundaries, API contracts, compatibility constraints, generated artifacts, file-level changes, and rollout impact.
    - Put execution sequencing in `## Plan`.
    - List all design decisions.
    - Every design decision must cite its fact source inline or immediately adjacent to it.
