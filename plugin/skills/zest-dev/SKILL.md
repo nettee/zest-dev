@@ -187,33 +187,33 @@ Keep sources compact: use the smallest useful line/range, merge same-file citati
 ```markdown
 ## Design
 
-### Architecture Overview
-[diagram]
-
-Prefer Mermaid for state transition diagrams, sequence diagrams, module diagrams, and other structured visuals; use ASCII only for quick sketches where Mermaid adds no clarity.
-
-### Change Scope
-- Area: ... Impact: ... Source: `path/to/file:line` / `docs/path.md#section` / `migration_name.sql`
+### Design Summary
+- Overall design approach and rationale.
 
 ### Design Decisions
 - Decision: ... Source: `path/to/file:line` / `docs/path.md#section` / `migration_name.sql`
 
-### Why this design
-- ...
+### System Structure
+[optional diagram]
 
-### Test Strategy
-- Phase/area: ... Validation: ... Source: `path/to/file:line`
+Prefer Mermaid for state transition diagrams, sequence diagrams, module diagrams, and other structured visuals; use ASCII only for quick sketches where Mermaid adds no clarity.
 
-### Pseudocode
+### System Procedure
 Flow:
   Step A
   Step B
 
-### File Structure
-- `path/to/file` - ...
+### Interfaces / APIs
+- Optional contracts between components.
+
+### Change Scope
+- Area: ... Impact: ... Files: `path/to/file` Source: `path/to/file:line` / `docs/path.md#section` / `migration_name.sql`
+
+### Verification Strategy
+- Phase/area: ... Validation: ... Source: `path/to/file:line`
 ```
 
-Use `### Change Scope` to describe affected modules, database/schema changes, architecture boundaries, API contracts, compatibility constraints, generated artifacts, and rollout impact. Execution sequencing belongs in `## Plan`.
+`### System Structure`, `### System Procedure`, and `### Interfaces / APIs` are optional. Use `### Design Summary` to describe the overall design approach and rationale. Use `### Change Scope` to describe affected modules, database/schema changes, architecture boundaries, API contracts, compatibility constraints, generated artifacts, file-level changes, and rollout impact. Execution sequencing belongs in `## Plan`.
 
 List all meaningful design decisions and attach a fact source to each one. Reuse `## Research` sources when possible, and add new factual sources when needed.
 
