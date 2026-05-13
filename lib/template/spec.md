@@ -11,7 +11,7 @@ created: "{date}"
 
 ## Research
 
-<!-- What have we found out? What are the alternatives considered? -->
+<!-- What facts, existing patterns, references, and constraints can inform the design? -->
 
 ## Design
 

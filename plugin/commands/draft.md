@@ -40,7 +40,7 @@ After the spec is created and the inferred status is persisted, present next-ste
 
 **If status is `new`:**
 ```
-1. Research — Explore the codebase and identify available approaches
+1. Research — Explore the codebase and identify existing patterns and design inputs
 2. Design — Jump straight to architecture (skip research if not needed)
 3. Research then Design — Do both in sequence
 4. Stop here — I'll continue manually when ready
