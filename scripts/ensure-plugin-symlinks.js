@@ -16,6 +16,14 @@ function ensureDirectory(name, dirPath) {
   }
 }
 
+function createPluginSymlink(linkPath, targetPath) {
+  const symlinkTarget = process.platform === 'win32'
+    ? targetPath
+    : path.relative(pluginDir, targetPath);
+  const symlinkType = process.platform === 'win32' ? 'junction' : 'dir';
+  fs.symlinkSync(symlinkTarget, linkPath, symlinkType);
+}
+
 function ensurePluginSymlink(linkName, targetName) {
   ensureDirectory(targetName, path.join(rootDir, targetName));
   ensureDirectory('plugin', pluginDir);
@@ -34,7 +42,9 @@ function ensurePluginSymlink(linkName, targetName) {
 
   if (stat) {
     if (!stat.isSymbolicLink()) {
-      throw new Error(`Expected ${linkPath} to be a symlink, found non-symlink`);
+      fs.rmSync(linkPath, { recursive: true, force: true });
+      createPluginSymlink(linkPath, targetPath);
+      return;
     }
 
     const actualTarget = fs.realpathSync(linkPath);
@@ -46,11 +56,7 @@ function ensurePluginSymlink(linkName, targetName) {
     return;
   }
 
-  const symlinkTarget = process.platform === 'win32'
-    ? targetPath
-    : path.relative(pluginDir, targetPath);
-  const symlinkType = process.platform === 'win32' ? 'junction' : 'dir';
-  fs.symlinkSync(symlinkTarget, linkPath, symlinkType);
+  createPluginSymlink(linkPath, targetPath);
 }
 
 links.forEach(([linkName, targetName]) => ensurePluginSymlink(linkName, targetName));
