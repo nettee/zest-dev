@@ -1,13 +1,13 @@
 ---
 name: brainstorming
-description: "Use ONLY when the user explicitly asks to brainstorm, use brainstorming, run a brainstorming session, explore an idea before implementation, or manually invokes the brainstorming skill. Does not auto-trigger for ordinary feature requests."
+description: "Use ONLY when the user explicitly asks to brainstorm, use brainstorming."
 ---
 
 # Brainstorming Ideas Into Designs
 
-Help turn ideas into fully formed designs and specs through natural collaborative dialogue.
+Help turn ideas into Zest Dev specs through natural collaborative dialogue, covering the equivalent of Zest Dev's new, research, and design phases.
 
-Start by understanding the current project context, then ask questions one at a time to refine the idea. Once you understand what you're building, present the design and get user approval.
+Start by understanding the current project context, then ask questions one at a time to refine the idea. Once you understand what you're building, present the design and get user approval, then capture the result in a Zest Dev change spec advanced to `designed`.
 
 <HARD-GATE>
 When this skill is active, do NOT invoke any implementation skill, write any code, scaffold any project, or take any implementation action until you have presented a design and the user has approved it. This applies to EVERY brainstorming session regardless of perceived simplicity.
@@ -26,10 +26,10 @@ You MUST create a task for each of these items and complete them in order:
 3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
 4. **Propose 2-3 approaches** — with trade-offs and your recommendation
 5. **Present design** — in sections scaled to their complexity, get user approval after each section
-6. **Write design doc** — save to `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md` and commit
+6. **Write Zest Dev spec** — use the `zest-dev` CLI to create or update a change spec in the standard Zest Dev spec location; write Overview, Research, Design, and Plan content
 7. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
 8. **User reviews written spec** — ask user to review the spec file before proceeding
-9. **Transition to implementation** — invoke writing-plans skill to create implementation plan
+9. **Mark designed** — after approval, use the `zest-dev` CLI to advance the spec status to `designed`
 
 ## Process Flow
 
@@ -42,10 +42,10 @@ digraph brainstorming {
     "Propose 2-3 approaches" [shape=box];
     "Present design sections" [shape=box];
     "User approves design?" [shape=diamond];
-    "Write design doc" [shape=box];
+    "Write Zest Dev spec" [shape=box];
     "Spec self-review\n(fix inline)" [shape=box];
     "User reviews spec?" [shape=diamond];
-    "Invoke writing-plans skill" [shape=doublecircle];
+    "Update Zest Dev spec to designed" [shape=doublecircle];
 
     "Explore project context" -> "Visual questions ahead?";
     "Visual questions ahead?" -> "Offer Visual Companion\n(own message, no other content)" [label="yes"];
@@ -55,15 +55,15 @@ digraph brainstorming {
     "Propose 2-3 approaches" -> "Present design sections";
     "Present design sections" -> "User approves design?";
     "User approves design?" -> "Present design sections" [label="no, revise"];
-    "User approves design?" -> "Write design doc" [label="yes"];
-    "Write design doc" -> "Spec self-review\n(fix inline)";
+    "User approves design?" -> "Write Zest Dev spec" [label="yes"];
+    "Write Zest Dev spec" -> "Spec self-review\n(fix inline)";
     "Spec self-review\n(fix inline)" -> "User reviews spec?";
-    "User reviews spec?" -> "Write design doc" [label="changes requested"];
-    "User reviews spec?" -> "Invoke writing-plans skill" [label="approved"];
+    "User reviews spec?" -> "Write Zest Dev spec" [label="changes requested"];
+    "User reviews spec?" -> "Update Zest Dev spec to designed" [label="approved"];
 }
 ```
 
-**The terminal state is invoking writing-plans.** Do NOT invoke frontend-design, mcp-builder, or any other implementation skill. The ONLY skill you invoke after brainstorming is writing-plans.
+**The terminal state is a Zest Dev change spec at `designed`.** Do NOT invoke implementation skills, write implementation code, or start implementation work as part of this skill.
 
 ## The Process
 
@@ -106,12 +106,11 @@ digraph brainstorming {
 
 ## After the Design
 
-**Documentation:**
+**Zest Dev spec:**
 
-- Write the validated design (spec) to `docs/superpowers/specs/YYYY-MM-DD-<topic>-design.md`
-  - (User preferences for spec location override this default)
+- Create or update the relevant change spec in Zest Dev's standard spec directory.
+- Write concise content for **Overview**, **Research**, **Design** and **Plan** sections.
 - Use elements-of-style:writing-clearly-and-concisely skill if available
-- Commit the design document to git
 
 **Spec Self-Review:**
 After writing the spec document, look at it with fresh eyes:
@@ -124,16 +123,16 @@ After writing the spec document, look at it with fresh eyes:
 Fix any issues inline. No need to re-review — just fix and move on.
 
 **User Review Gate:**
-After the spec review loop passes, ask the user to review the written spec before proceeding:
+After the spec review loop passes, ask the user to review the written spec before marking it designed:
 
-> "Spec written and committed to `<path>`. Please review it and let me know if you want to make any changes before we start writing out the implementation plan."
+> "Spec written to `<path>`. Please review it and let me know if you want any changes before I mark it designed."
 
-Wait for the user's response. If they request changes, make them and re-run the spec review loop. Only proceed once the user approves.
+Wait for the user's response. If they request changes, make them and re-run the spec review loop. Only use the `zest-dev` CLI to advance the spec status to `designed` once the user approves.
 
-**Implementation:**
+**Completion:**
 
-- Invoke the writing-plans skill to create a detailed implementation plan
-- Do NOT invoke any other skill. writing-plans is the next step.
+- Use the `zest-dev` CLI to update the spec status to `designed`.
+- Do NOT invoke any implementation skill or start implementation work.
 
 ## Key Principles
 
