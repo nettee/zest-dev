@@ -101,7 +101,17 @@ codex "$(zest-dev prompt summarize-chat)"
 codex "$(zest-dev prompt summarize-pr 123)"
 ```
 
-`zest-dev prompt` supports the actual command files in `plugin/commands/`. The legacy alias `summarize` maps to `summarize-chat` for compatibility.
+`zest-dev prompt` supports the actual command files in `commands/`. The legacy alias `summarize` maps to `summarize-chat` for compatibility.
+
+### Resource Layout
+
+Zest Dev's editor-facing resources are stored in top-level directories:
+
+- `commands/` - thin command prompts
+- `skills/` - workflow and helper skills
+- `agents/` - reusable subagent definitions
+
+The `plugin/` directory is a Claude Code compatibility layer. It keeps plugin metadata under `plugin/.claude-plugin/`, while `plugin/commands`, `plugin/skills`, and `plugin/agents` are symlinks to the top-level source directories.
 
 ### Project Structure
 

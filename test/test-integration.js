@@ -128,6 +128,24 @@ function extractFrontmatter(content, filename) {
   return frontmatter;
 }
 
+function assertPluginResourceSymlinkAt(rootDir, name) {
+  const pluginPath = path.join(rootDir, 'plugin', name);
+  const topLevelPath = path.join(rootDir, name);
+  const stat = fs.lstatSync(pluginPath);
+
+  assert.ok(stat.isSymbolicLink(), `plugin/${name} should be a symlink`);
+  assert.equal(fs.realpathSync(pluginPath), fs.realpathSync(topLevelPath));
+}
+
+function getPackagedCliRoot() {
+  if (!PACKAGE_CLI_BIN) {
+    return null;
+  }
+
+  const realCliBin = fs.realpathSync(PACKAGE_CLI_BIN);
+  return path.join(path.dirname(realCliBin), '..');
+}
+
 function createDanglingActiveSymlink(targetId, testDir = TEST_DIR) {
   const activeLinkPath = path.join(testDir, 'specs/change/active');
 
@@ -145,6 +163,19 @@ test('zest-dev init integration', async (t) => {
   setup();
 
   try {
+    await t.test('plugin resource directories are compatibility symlinks', () => {
+      for (const name of ['commands', 'skills', 'agents']) {
+        assertPluginResourceSymlinkAt(path.join(__dirname, '..'), name);
+      }
+    });
+
+    await t.test('packaged plugin resource directories are compatibility symlinks', { skip: !PACKAGE_CLI_BIN }, () => {
+      const packageRoot = getPackagedCliRoot();
+      for (const name of ['commands', 'skills', 'agents']) {
+        assertPluginResourceSymlinkAt(packageRoot, name);
+      }
+    });
+
     const globalEnv = makeIsolatedGlobalEnv();
     const fakeHome = globalEnv.HOME;
     const fakeXdgConfigHome = globalEnv.XDG_CONFIG_HOME;
