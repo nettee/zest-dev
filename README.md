@@ -10,6 +10,22 @@ Assuming `zest-dev` is already installed and available in PATH, initialize the e
 zest-dev init
 ```
 
+### Local Development Setup
+
+When developing this repository locally, install dependencies and link the CLI into your global PATH:
+
+```bash
+npm install
+npm link
+```
+
+`npm link` makes the global `zest-dev` command point at this checkout, so local source changes are picked up immediately:
+
+```bash
+zest-dev --help
+zest-dev init
+```
+
 ## Usage Workflow
 
 Zest Dev uses a **thick skill / thin command** model:
