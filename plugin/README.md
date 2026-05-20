@@ -10,7 +10,8 @@ This plugin integrates the Zest Dev methodology into command- and prompt-driven 
 
 - the `Zest Dev` skill is the canonical workflow source
 - detailed phase workflows live under the `Zest Dev` skill
-- commands in `plugin/commands/` are thin entrypoints and compatibility shims
+- commands in `commands/` are thin entrypoints and compatibility shims
+- `plugin/commands`, `plugin/skills`, and `plugin/agents` are symlinks for Claude Code plugin compatibility
 - the `zest-dev` CLI manages spec lifecycle and prompt generation
 
 ## Features
@@ -79,4 +80,4 @@ Chat and brainstorm first, then formalize and proceed:
 
 ## Prompt Compatibility
 
-`zest-dev prompt <command>` generates prompt text from the thin command files. It supports the real command set in `plugin/commands/`, plus a compatibility alias from `summarize` to `summarize-chat`.
+`zest-dev prompt <command>` generates prompt text from the thin command files. It supports the real command set in `commands/`, plus a compatibility alias from `summarize` to `summarize-chat`.

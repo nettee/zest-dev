@@ -21,13 +21,18 @@
   },
   "files": [
     "bin/",
+    "commands/",
+    "skills/",
+    "agents/",
     "lib/",
+    "scripts/",
     "plugin/",
     "index.js",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
+    "postinstall": "node scripts/ensure-plugin-symlinks.js",
     "test": "node --test test/test-integration.js",
     "test:local": "node --test test/test-integration.js",
     "test:package": "node test/setup-package-env.js setup && ZEST_DEV_CLI_PATH=$(pwd)/test-package-env node --test test/test-integration.js; STATUS=$?; node test/setup-package-env.js cleanup; exit $STATUS"

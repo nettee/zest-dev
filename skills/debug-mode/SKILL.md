@@ -83,14 +83,15 @@ Set up the debug infrastructure:
 1. Create the debug directory and copy the server script:
 
 ```bash
-mkdir -p .debug-mode && cp "$(find ~/.claude/plugins -path '*/debug-mode/server.js' -print -quit 2>/dev/null || find .claude-plugin -path '*/debug-mode/server.js' -print -quit 2>/dev/null || find plugin/skills -path '*/debug-mode/server.js' -print -quit 2>/dev/null)" .debug-mode/server.js
+SERVER_PATH="$(find skills -path '*/debug-mode/server.js' -print -quit 2>/dev/null)"; [ -n "$SERVER_PATH" ] || SERVER_PATH="$(find plugin/skills -path '*/debug-mode/server.js' -print -quit 2>/dev/null)"; [ -n "$SERVER_PATH" ] || SERVER_PATH="$(find .cursor/skills -path '*/debug-mode/server.js' -print -quit 2>/dev/null)"; [ -n "$SERVER_PATH" ] || SERVER_PATH="$(find .opencode/skills -path '*/debug-mode/server.js' -print -quit 2>/dev/null)"; [ -n "$SERVER_PATH" ] || SERVER_PATH="$(find ~/.claude/plugins -path '*/debug-mode/server.js' -print -quit 2>/dev/null)"; [ -n "$SERVER_PATH" ] || SERVER_PATH="$(find .claude-plugin -path '*/debug-mode/server.js' -print -quit 2>/dev/null)"; [ -n "$SERVER_PATH" ] || { echo 'debug-mode server.js not found' >&2; exit 1; }; mkdir -p .debug-mode && cp "$SERVER_PATH" .debug-mode/server.js
 ```
 
 If the copy command fails, look for `server.js` in these locations (in order):
+- `skills/debug-mode/server.js` (source repo)
+- `plugin/skills/debug-mode/server.js` (Claude Code plugin compatibility symlink)
 - `~/.claude/plugins/*/skills/debug-mode/server.js` (Claude Code plugin installation)
 - `.cursor/skills/debug-mode/server.js` (Cursor deployment)
 - `.opencode/skills/debug-mode/server.js` (OpenCode deployment)
-- `plugin/skills/debug-mode/server.js` (source repo)
 
 2. Add `.debug-mode/` to `.gitignore` if not already present:
 
