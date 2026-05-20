@@ -29,7 +29,7 @@ You MUST create a task for each of these items and complete them in order:
 6. **Write Zest Dev spec** — use the `zest-dev` CLI to create or update a change spec in the standard Zest Dev spec location; write Overview, Research, Design, and Plan content
 7. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
 8. **User reviews written spec** — ask user to review the spec file before proceeding
-9. **Mark designed** — after approval, use the `zest-dev` CLI to advance the spec status to `designed`
+9. **Mark designed** — after approval, check the current spec status and use the `zest-dev` CLI to advance it to `designed` only when needed
 
 ## Process Flow
 
@@ -127,11 +127,13 @@ After the spec review loop passes, ask the user to review the written spec befor
 
 > "Spec written to `<path>`. Please review it and let me know if you want any changes before I mark it designed."
 
-Wait for the user's response. If they request changes, make them and re-run the spec review loop. Only use the `zest-dev` CLI to advance the spec status to `designed` once the user approves.
+Wait for the user's response. If they request changes, make them and re-run the spec review loop. Once the user approves, check the current spec status first, then use the `zest-dev` CLI to advance the spec to `designed` only if it is not already `designed`.
 
 **Completion:**
 
-- Use the `zest-dev` CLI to update the spec status to `designed`.
+- Check the current spec status first.
+- If the spec is not already `designed`, use the `zest-dev` CLI to update it to `designed`.
+- If the spec is already `designed`, skip the status update and finish the skill cleanly.
 - Do NOT invoke any implementation skill or start implementation work.
 
 ## Key Principles
