@@ -2,15 +2,15 @@
 
 Use this template when dispatching a spec document reviewer subagent.
 
-**Purpose:** Verify the spec is complete, consistent, and ready for implementation planning.
+**Purpose:** Verify the spec is complete, consistent, and ready to mark `designed`.
 
-**Dispatch after:** Spec document is written to docs/superpowers/specs/
+**Dispatch after:** Zest Dev change spec content is written in the standard `specs/change/` location.
 
 ```
 Task tool (general-purpose):
   description: "Review spec document"
   prompt: |
-    You are a spec document reviewer. Verify this spec is complete and ready for planning.
+    You are a spec document reviewer. Verify this spec is complete and ready to mark `designed`.
 
     **Spec to review:** [SPEC_FILE_PATH]
 
@@ -26,7 +26,7 @@ Task tool (general-purpose):
 
     ## Calibration
 
-    **Only flag issues that would cause real problems during implementation planning.**
+    **Only flag issues that would cause real problems when marking the spec designed or later implementing it.**
     A missing section, a contradiction, or a requirement so ambiguous it could be
     interpreted two different ways — those are issues. Minor wording improvements,
     stylistic preferences, and "sections less detailed than others" are not.
