@@ -26,7 +26,7 @@ You MUST create a task for each of these items and complete them in order:
 3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
 4. **Propose 2-3 approaches** — with trade-offs and your recommendation
 5. **Present design** — in sections scaled to their complexity, get user approval after each section
-6. **Write Zest Dev spec** — use the `zest-dev` CLI to create or update a change spec in the standard Zest Dev spec location; write Overview, Research, Design, and Plan content
+6. **Write Zest Dev spec** — use the `zest-dev` CLI to create or update a change spec in the standard Zest Dev spec location; when creating a new spec, immediately set it active with `zest-dev set-active <spec-id>`; write Overview, Research, Design, and Plan content
 7. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
 8. **User reviews written spec** — ask user to review the spec file before proceeding
 9. **Mark designed** — after approval, check the current spec status and use the `zest-dev` CLI to advance it to `designed` only when needed
@@ -63,7 +63,7 @@ digraph brainstorming {
 }
 ```
 
-**The terminal state is a Zest Dev change spec at `designed`.** Do NOT invoke implementation skills, write implementation code, or start implementation work as part of this skill.
+**The terminal state is the active Zest Dev change spec at `designed`.** Do NOT invoke implementation skills, write implementation code, or start implementation work as part of this skill.
 
 ## The Process
 
@@ -109,6 +109,7 @@ digraph brainstorming {
 **Zest Dev spec:**
 
 - Create or update the relevant change spec in Zest Dev's standard spec directory.
+- If you create a new spec with `zest-dev create <slug>`, immediately set the created spec active with `zest-dev set-active <spec-id>` before editing or advancing it.
 - Write concise content for **Overview**, **Research**, **Design** and **Plan** sections.
 - Use elements-of-style:writing-clearly-and-concisely skill if available
 
@@ -132,6 +133,7 @@ Wait for the user's response. If they request changes, make them and re-run the 
 **Completion:**
 
 - Check the current spec status first.
+- Confirm the spec is active; if not, run `zest-dev set-active <spec-id>` before updating status.
 - If the spec is not already `designed`, use the `zest-dev` CLI to update it to `designed`.
 - If the spec is already `designed`, skip the status update and finish the skill cleanly.
 - Do NOT invoke any implementation skill or start implementation work.
