@@ -28,8 +28,7 @@ You MUST create a task for each of these items and complete them in order:
 5. **Present design** — in sections scaled to their complexity, get user approval after each section
 6. **Write Zest Dev spec** — use the `zest-dev` CLI to create or update a change spec in the standard Zest Dev spec location; when creating a new spec, immediately set it active with `zest-dev set-active <spec-id>`; write Overview, Research, Design, and Plan content
 7. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
-8. **User reviews written spec** — ask user to review the spec file before proceeding
-9. **Mark designed** — after approval, check the current spec status and use the `zest-dev` CLI to advance it to `designed` only when needed
+8. **Mark designed** — check the current spec status and use the `zest-dev` CLI to advance it to `designed` only when needed
 
 ## Process Flow
 
@@ -44,7 +43,6 @@ digraph brainstorming {
     "User approves design?" [shape=diamond];
     "Write Zest Dev spec" [shape=box];
     "Spec self-review\n(fix inline)" [shape=box];
-    "User reviews spec?" [shape=diamond];
     "Update Zest Dev spec to designed" [shape=doublecircle];
 
     "Explore project context" -> "Visual questions ahead?";
@@ -57,9 +55,7 @@ digraph brainstorming {
     "User approves design?" -> "Present design sections" [label="no, revise"];
     "User approves design?" -> "Write Zest Dev spec" [label="yes"];
     "Write Zest Dev spec" -> "Spec self-review\n(fix inline)";
-    "Spec self-review\n(fix inline)" -> "User reviews spec?";
-    "User reviews spec?" -> "Write Zest Dev spec" [label="changes requested"];
-    "User reviews spec?" -> "Update Zest Dev spec to designed" [label="approved"];
+    "Spec self-review\n(fix inline)" -> "Update Zest Dev spec to designed";
 }
 ```
 
@@ -122,13 +118,6 @@ After writing the spec document, look at it with fresh eyes:
 4. **Ambiguity check:** Could any requirement be interpreted two different ways? If so, pick one and make it explicit.
 
 Fix any issues inline. No need to re-review — just fix and move on.
-
-**User Review Gate:**
-After the spec review loop passes, ask the user to review the written spec before marking it designed:
-
-> "Spec written to `<path>`. Please review it and let me know if you want any changes before I mark it designed."
-
-Wait for the user's response. If they request changes, make them and re-run the spec review loop. Once the user approves, check the current spec status first, then use the `zest-dev` CLI to advance the spec to `designed` only if it is not already `designed`.
 
 **Completion:**
 
