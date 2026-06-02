@@ -14,8 +14,9 @@ Canonical workflow for implementing an active change spec.
 5. Implement the feature following the plan, design, and repository conventions.
 6. Write or update tests alongside the implementation, not afterward.
 7. Run relevant tests during implementation, fix issues, and continue until the relevant tests pass.
-8. After each completed plan step or substep, mark the corresponding `## Plan` checkbox as `[x]` only when that item is complete and relevant tests pass.
+8. After each completed plan step, mark the corresponding `## Notes` → `### Progress` checkbox as `[x]` only when that step is complete and relevant tests pass.
 9. Fill `## Notes` with brief:
+    - `### Progress`
     - `### Implementation`
     - `### Verification`
 10. If the full spec is complete, run `zest-dev update active implemented`.

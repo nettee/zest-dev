@@ -132,7 +132,7 @@ Use when a spec exists and the team needs repository facts, patterns, and option
 Use when research or direct understanding is sufficient to choose an implementation design.
 
 ### Plan phase
-Use when the design is ready to turn into an implementation checklist.
+Use when the design is ready to turn into issue-scale implementation steps.
 
 ### Implement phase
 Use when the plan is ready for coding.
@@ -153,7 +153,7 @@ Use when the plan is ready for coding.
 
 ### Plan
 - The canonical Plan workflow lives in `plan.md`.
-- Use it for implementation checklist shaping and status advancement to `planned`.
+- Use it for issue-scale step shaping and status advancement to `planned`.
 
 ### Implement
 - The canonical Implement workflow lives in `implement.md`.

@@ -269,6 +269,14 @@ test('zest-dev init integration', async (t) => {
 
       const planPhase = fs.readFileSync(path.join(globalOpenCodeSkillsDir, 'zest-dev/plan.md'), 'utf-8');
       assert.ok(planPhase.includes('If the spec started as `designed`, run `zest-dev update active planned`.'));
+      assert.ok(planPhase.includes('Use the slicing spirit of Matt Pocock\'s registered `to-issues` skill as a reference for scale and sequencing.'));
+      assert.ok(planPhase.includes('Do not create GitHub issues or external issue-tracker entries unless the user explicitly asks for that.'));
+      assert.ok(planPhase.includes('Do not use markdown checkboxes in `## Plan`.'));
+      assert.ok(planPhase.includes('Use the heading `### Progress`.'));
+
+      const implementPhase = fs.readFileSync(path.join(globalOpenCodeSkillsDir, 'zest-dev/implement.md'), 'utf-8');
+      assert.ok(implementPhase.includes('mark the corresponding `## Notes` → `### Progress` checkbox as `[x]`'));
+      assert.equal(implementPhase.includes('mark the corresponding `## Plan` checkbox'), false);
 
       const codexSkillFile = fs.readFileSync(path.join(globalCodexSkillsDir, 'SKILL.md'), 'utf-8');
       assert.ok(codexSkillFile.includes('This skill is the **canonical workflow source**'));

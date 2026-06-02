@@ -3,7 +3,7 @@
 Canonical workflow for planning implementation of an active change spec.
 
 ## When to use
-- The design is ready to turn into an implementation checklist
+- The design is ready to turn into implementation steps
 - A thin `plan` command routes here
 
 ## Workflow
@@ -13,37 +13,60 @@ Canonical workflow for planning implementation of an active change spec.
    - If the status is `new` or `researched`, suggest design first unless the implementation approach is already sufficiently decided.
    - If the status is `designed`, continue.
    - If the status is `planned` or `implemented`, confirm that the user wants to revise the existing plan before continuing.
-4. Identify implementation increments, immediate verification points, edge-case validation, and any dependencies between steps.
+4. Identify implementation steps using issue-scale slicing:
+   - Use the slicing spirit of Matt Pocock's registered `to-issues` skill as a reference for scale and sequencing.
+   - Do not create GitHub issues or external issue-tracker entries unless the user explicitly asks for that.
+   - Treat each Plan step as the spec-local counterpart to an issue-sized vertical slice.
+   - Prefer thin vertical slices that can be implemented independently and verified meaningfully.
+   - Avoid splitting only by horizontal layers such as schema, backend, UI, docs, or tests unless that layer is genuinely the whole change.
+   - Mark steps as `HITL` when they need user review, product judgment, or approval before continuing.
+   - Mark steps as `AFK` when an agent can implement them independently from the written spec and repository context.
+   - Capture dependencies between steps.
 5. Ask the user clarifying questions when needed.
 6. Wait for answers before finalizing the plan when the open questions are consequential.
-7. Fill `## Plan` with a compact capability-based checklist:
-   - Use markdown checkboxes for every step and substep.
-   - Prefer steps that each deliver one meaningful increment and remain easy to review.
-   - Good step boundaries usually align with one user-visible workflow, one subsystem or integration boundary, one migration or rollout step, or one stabilization milestone.
-   - Each step must include small, independent substeps for implementation work and immediate testing/verification.
-   - Within each step, list implementation substeps before verification substeps.
-   - The final step may focus on overall testing/verification, edge-case validation, regression coverage, and test coverage improvements.
-   - A step is complete only when its relevant tests pass.
-   - Size each step so a coding agent can implement and validate it within a single session.
-   - Write each substep as one small, independent task.
-   - Format as a short checklist, for example:
+7. Fill `## Plan` with compact structured steps:
+   - Do not use markdown checkboxes in `## Plan`.
+   - Keep the step label as `Step 1`, `Step 2`, and so on.
+   - Prefer steps that each deliver one meaningful vertical slice and remain easy to review.
+   - Good step boundaries usually align with one user-visible workflow, one subsystem integration boundary, one migration or rollout step, or one stabilization milestone.
+   - Each step should be issue-scale: large enough to matter, small enough for a coding agent to implement and validate in one focused session.
+   - Keep fields brief. Do not turn each step into a second design document.
+   - Include `Type`, `Goal`, `Scope`, and `Depends on`.
+   - Use `Depends on: None` when the step has no dependency.
+   - Add acceptance criteria only when they are necessary to remove ambiguity.
+   - Format as structured prose, for example:
+      ```markdown
+      ### Step 1: Foo
+
+      Type: AFK
+      Goal: Deliver the smallest useful end-to-end Foo behavior.
+      Scope: Update the Foo command path and its integration tests.
+      Depends on: None
+
+      ### Step 2: Bar
+
+      Type: HITL
+      Goal: Choose and apply the Bar user-facing behavior.
+      Scope: Confirm the behavior with the user, then update Bar prompts and docs.
+      Depends on: Step 1
+      ```
+8. Add or update `## Notes` with a thin progress checklist:
+   - Use the heading `### Progress`.
+   - Add one checkbox per Plan step.
+   - Keep each checklist item to the step title only.
+   - This checklist is for implementation progress tracking, not for describing the plan.
+   - Format:
+      ```markdown
+      ### Progress
+
       - [ ] Step 1: Foo
-        - [ ] Substep 1.1 Implement: Foo foundation
-        - [ ] Substep 1.2 Implement: Foo integration
-        - [ ] Substep 1.3 Implement: Foo edge handling
-        - [ ] Substep 1.4 Verify: Foo automated coverage
-        - [ ] Substep 1.5 Verify: Foo manual workflow
       - [ ] Step 2: Bar
-        - [ ] Substep 2.1 Implement: Bar
-        - [ ] Substep 2.2 Verify: Bar
-      - [ ] Step 3: Baz
-        - [ ] Substep 3.1 Implement: Baz
-        - [ ] Substep 3.2 Verify: Baz
-8. Update status based on the starting state:
+      ```
+9. Update status based on the starting state:
    - If the spec started as `designed`, run `zest-dev update active planned`.
    - If the spec started as `planned`, skip the update and keep the status as-is.
    - If the spec started as `implemented`, skip the update and keep the status as-is while revising the plan.
-9. Present the plan and stop.
+10. Present the plan and stop.
 
 ## Rule
-This is where implementation sequencing and verification checkpoints belong.
+This is where Design becomes issue-scale spec-local implementation steps. Do not publish issues unless the user explicitly asks for that.
