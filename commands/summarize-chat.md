@@ -29,7 +29,7 @@ Based on the conversation, determine the spec status:
 - **"new"**: Only discussed the problem and goals, no exploration yet
 - **"researched"**: Explored codebase, evaluated options, identified approach
 - **"designed"**: Clarified requirements, designed architecture with trade-offs
-- **"planned"**: Created an implementation checklist from the design
+- **"planned"**: Created issue-scale implementation steps from the design
 - **"implemented"**: Actually wrote code, tested it, and reviewed quality
 
 **If status is vague or unclear**, use the question tool to ask:
@@ -39,7 +39,7 @@ Based on the conversation, determine the spec status:
   - **new**: Problem identified, no exploration
   - **researched**: Codebase explored, options evaluated
   - **designed**: Architecture designed, approach chosen
-  - **planned**: Implementation checklist created
+  - **planned**: Issue-scale implementation steps created
   - **implemented**: Code written, tested, reviewed
 
 **Step 3: Create Spec via CLI**
@@ -80,13 +80,14 @@ Fill sections based on the status:
 
 **If status is "planned" or later - Fill Plan section:**
 - Follow the canonical Plan rules from the Zest Dev skill
-- Use capability-based steps that deliver meaningful, reviewable increments
-- Each step must include small, independent substeps for implementation and immediate verification
-- List implementation substeps before verification substeps
-- The final step may focus on overall testing/verification and coverage improvements
-- Each step is complete only when relevant tests pass
+- Use `Step 1`, `Step 2`, and so on for issue-scale vertical slices
+- Reference the slicing spirit of Matt Pocock's registered `to-issues` skill, but keep the output inside `## Plan`
+- Do not create GitHub issues or external issue-tracker entries unless the user explicitly asks for that
+- Do not use markdown checkboxes in `## Plan`
+- Add or update `## Notes` → `### Progress` with one thin checkbox per Plan step
 
 **If status is "implemented" - Fill Notes section:**
+- `### Progress`: Step completion checkboxes
 - `### Implementation`: What was built, files changed, and design deviations
 - `### Verification`: Tests written/run, results, manual validation, and relevant fix-and-rerun notes
 - Only treat work as implemented when the relevant tests were actually run and passed

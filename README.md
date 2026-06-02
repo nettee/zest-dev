@@ -154,4 +154,5 @@ Create a custom spec template at `.zest-dev/template/spec.md`.
 ## References
 
 - [OpenSpec](https://github.com/Fission-AI/OpenSpec/blob/main/docs/concepts.md) - Inspired by its current-spec methodology, where specs act as the source of truth for how a system currently behaves and changes are managed separately until they are merged back.
-- [Matt Pocock Skills: `tdd`](https://github.com/mattpocock/skills/tree/main/skills/engineering/tdd) - References its test-driven development methodology built around a red-green-refactor loop and small vertical slices.
+- [Matt Pocock Skills: `to-issues`](https://github.com/mattpocock/skills/tree/main/skills/engineering/to-issues) - References its issue-scale vertical-slice planning style for breaking design work into Zest Dev Plan steps.
+- [Matt Pocock Skills: `tdd`](https://github.com/mattpocock/skills/tree/main/skills/engineering/tdd) - References its test-driven implementation methodology for coding work, separate from Plan step slicing.
