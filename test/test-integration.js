@@ -268,7 +268,7 @@ test('zest-dev init integration', async (t) => {
       assert.ok(designPhase.includes('If the status is `designed`, `planned`, or `implemented`, confirm that the user wants to revise the existing design before continuing.'));
 
       const planPhase = fs.readFileSync(path.join(globalOpenCodeSkillsDir, 'zest-dev/plan.md'), 'utf-8');
-      assert.ok(planPhase.includes('Run `zest-dev update active planned`.'));
+      assert.ok(planPhase.includes('If the spec started as `designed`, run `zest-dev update active planned`.'));
 
       const codexSkillFile = fs.readFileSync(path.join(globalCodexSkillsDir, 'SKILL.md'), 'utf-8');
       assert.ok(codexSkillFile.includes('This skill is the **canonical workflow source**'));
