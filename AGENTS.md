@@ -18,6 +18,7 @@ This repository's custom command prompts are designed for **OpenCode / oh-my-ope
 - When referring to a skill in prompts or command docs, refer to it by its registered skill name (for example `Zest Dev`), not by repository or deployed file paths.
 - Keep workflow process, writing rules, and reusable content templates in skills. The main `Zest Dev` skill should describe the overall flow and route to phase files; phase files should carry concrete section-writing guidance, following progressive disclosure.
 - Keep command prompts thin. Commands should provide a simple entry prompt and route intent into the relevant skill workflow; they should not duplicate detailed process, rules, or templates.
+- Keep the CLI-created spec template thin. `lib/template/spec.md` should create top-level sections with brief placeholders only; concrete section-writing guidance belongs in the `Zest Dev` skill phase files.
 
 ### Prompt format constraints
 

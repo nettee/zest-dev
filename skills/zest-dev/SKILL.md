@@ -162,8 +162,6 @@ Use when the design is ready for coding.
 
 ## Content Guidance Ownership
 
-The CLI-created spec template should stay thin: it creates top-level sections and brief placeholders only.
-
 Concrete section-writing guidance lives in the phase files:
 - `new.md` defines how to write `## Overview`.
 - `research.md` defines how to write `## Research`.
