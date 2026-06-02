@@ -19,7 +19,7 @@ created: "{date}"
 
 ## Plan
 
-<!-- Optional implementation step breakdown, decided during Design and updated during Implement. -->
+<!-- Optional implementation step breakdown, created during Plan and updated during Implement. -->
 
 ## Notes
 

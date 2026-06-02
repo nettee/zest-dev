@@ -42,11 +42,12 @@ Work through a feature spec one phase at a time, with human review between each 
 /zest-dev:new "My new feature"   # Create a spec and set it as active
 /zest-dev:research              # Research requirements and explore the codebase
 /zest-dev:design                # Clarify requirements and design the architecture
-/zest-dev:implement             # Build the feature following the design
+/zest-dev:plan                  # Create the implementation plan
+/zest-dev:implement             # Build the feature following the plan
 /zest-dev:archive               # Agent-guided merge into specs/current, then unset active
 ```
 
-Each command routes into the main Zest Dev skill, which advances the spec through `new → researched → designed → implemented`.
+Each command routes into the main Zest Dev skill, which advances the spec through `new → researched → designed → planned → implemented`.
 
 ### Quick Implementation
 
@@ -95,7 +96,7 @@ Archive is intentionally **not** a public CLI subcommand. Use `/zest-dev:archive
 
 ### Status Transitions
 
-Valid status values: `new`, `researched`, `designed`, `implemented`
+Valid status values: `new`, `researched`, `designed`, `planned`, `implemented`
 
 - Forward-only transitions (skipping is allowed): e.g. `new → designed` is valid
 - Backward transitions fail: e.g. `implemented → designed`
@@ -109,6 +110,7 @@ For editors that don't support project-level commands, use `zest-dev prompt` to 
 codex "$(zest-dev prompt new 'some description')"
 codex "$(zest-dev prompt research)"
 codex "$(zest-dev prompt design)"
+codex "$(zest-dev prompt plan)"
 codex "$(zest-dev prompt implement)"
 codex "$(zest-dev prompt archive)"
 codex "$(zest-dev prompt draft)"

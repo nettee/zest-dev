@@ -1,5 +1,5 @@
 ---
-description: Build feature following the design
+description: Build feature following the plan
 argument-hint: [optional implementation scope or phase hint]
 ---
 

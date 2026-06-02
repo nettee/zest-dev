@@ -28,6 +28,14 @@ _Avoid_: workflow source, template, writing guide
 A post-hoc command that captures an existing chat or pull request into a Spec. It is not part of the core Zest Dev workflow phases.
 _Avoid_: workflow phase, phase file
 
+**Plan Phase**:
+A core workflow phase that turns an approved Design into the Spec's Plan section. It does not produce Design content.
+_Avoid_: design step, planning note
+
+**Planned Status**:
+A Spec lifecycle milestone meaning the Spec's Design and Plan sections are ready for implementation.
+_Avoid_: designed, ready
+
 **CLI**:
 The `zest-dev` command-line tool that manages Spec lifecycle operations such as creating, showing, activating, and updating Specs.
 _Avoid_: workflow engine, writing guide
@@ -37,3 +45,11 @@ _Avoid_: workflow engine, writing guide
 Developer: "The Spec Template should only create the empty sections."
 
 Maintainer: "Right. The main Skill routes the workflow, the Phase File explains how to fill the relevant sections, the Command only routes the request, and the CLI creates the Spec from the Spec Template."
+
+Developer: "Should the Design Phase also write the implementation checklist?"
+
+Maintainer: "No. The Design Phase records decisions and trade-offs; the Plan Phase turns that Design into a checklist."
+
+Developer: "When is a Spec ready for implementation?"
+
+Maintainer: "When it reaches Planned Status: the Design is decided, and the Plan checklist is ready to execute."

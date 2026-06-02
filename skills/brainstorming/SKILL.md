@@ -5,17 +5,17 @@ description: "Use ONLY when the user explicitly asks to brainstorm, use brainsto
 
 # Brainstorming Ideas Into Designs
 
-Help turn ideas into Zest Dev specs through natural collaborative dialogue, covering the equivalent of Zest Dev's new, research, and design phases.
+Help turn ideas into Zest Dev specs through natural collaborative dialogue, covering the equivalent of Zest Dev's new, research, design, and plan phases.
 
-Start by understanding the current project context, then ask questions one at a time to refine the idea. Once you understand what you're building, present the design and get user approval, then capture the result in a Zest Dev change spec advanced to `designed`.
+Start by understanding the current project context, then ask questions one at a time to refine the idea. Once you understand what you're building, present the design and plan for user approval, then capture the result in a Zest Dev change spec advanced to `planned`.
 
 <HARD-GATE>
-When this skill is active, do NOT invoke any implementation skill, write any code, scaffold any project, or take any implementation action until you have presented a design and the user has approved it. This applies to EVERY brainstorming session regardless of perceived simplicity.
+When this skill is active, do NOT invoke any implementation skill, write any code, scaffold any project, or take any implementation action until you have presented a design and plan and the user has approved them. This applies to EVERY brainstorming session regardless of perceived simplicity.
 </HARD-GATE>
 
 ## Anti-Pattern: "This Is Too Simple To Need A Design"
 
-Every active brainstorming session goes through this process. A todo list, a single-function utility, a config change — all of them can still hide assumptions when the user has explicitly asked to brainstorm. The design can be short (a few sentences for truly simple projects), but you MUST present it and get approval.
+Every active brainstorming session goes through this process. A todo list, a single-function utility, a config change — all of them can still hide assumptions when the user has explicitly asked to brainstorm. The design and plan can be short (a few sentences for truly simple projects), but you MUST present them and get approval.
 
 ## Checklist
 
@@ -25,10 +25,10 @@ You MUST create a task for each of these items and complete them in order:
 2. **Offer visual companion** (if topic will involve visual questions) — this is its own message, not combined with a clarifying question. See the Visual Companion section below.
 3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
 4. **Propose 2-3 approaches** — with trade-offs and your recommendation
-5. **Present design** — in sections scaled to their complexity, get user approval after each section
+5. **Present design and plan** — in sections scaled to their complexity, get user approval after each section
 6. **Write Zest Dev spec** — use the `zest-dev` CLI to create or update a change spec in the standard Zest Dev spec location; when creating a new spec, immediately set it active with `zest-dev set-active <spec-id>`; write Overview, Research, Design, and Plan content
 7. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
-8. **Mark designed** — check the current spec status and use the `zest-dev` CLI to advance it to `designed` only when needed
+8. **Mark planned** — check the current spec status and use the `zest-dev` CLI to advance it to `planned` only when needed
 
 ## Process Flow
 
@@ -39,27 +39,27 @@ digraph brainstorming {
     "Offer Visual Companion\n(own message, no other content)" [shape=box];
     "Ask clarifying questions" [shape=box];
     "Propose 2-3 approaches" [shape=box];
-    "Present design sections" [shape=box];
-    "User approves design?" [shape=diamond];
+    "Present design and plan sections" [shape=box];
+    "User approves design and plan?" [shape=diamond];
     "Write Zest Dev spec" [shape=box];
     "Spec self-review\n(fix inline)" [shape=box];
-    "Update Zest Dev spec to designed" [shape=doublecircle];
+    "Update Zest Dev spec to planned" [shape=doublecircle];
 
     "Explore project context" -> "Visual questions ahead?";
     "Visual questions ahead?" -> "Offer Visual Companion\n(own message, no other content)" [label="yes"];
     "Visual questions ahead?" -> "Ask clarifying questions" [label="no"];
     "Offer Visual Companion\n(own message, no other content)" -> "Ask clarifying questions";
     "Ask clarifying questions" -> "Propose 2-3 approaches";
-    "Propose 2-3 approaches" -> "Present design sections";
-    "Present design sections" -> "User approves design?";
-    "User approves design?" -> "Present design sections" [label="no, revise"];
-    "User approves design?" -> "Write Zest Dev spec" [label="yes"];
+    "Propose 2-3 approaches" -> "Present design and plan sections";
+    "Present design and plan sections" -> "User approves design and plan?";
+    "User approves design and plan?" -> "Present design and plan sections" [label="no, revise"];
+    "User approves design and plan?" -> "Write Zest Dev spec" [label="yes"];
     "Write Zest Dev spec" -> "Spec self-review\n(fix inline)";
-    "Spec self-review\n(fix inline)" -> "Update Zest Dev spec to designed";
+    "Spec self-review\n(fix inline)" -> "Update Zest Dev spec to planned";
 }
 ```
 
-**The terminal state is the active Zest Dev change spec at `designed`.** Do NOT invoke implementation skills, write implementation code, or start implementation work as part of this skill.
+**The terminal state is the active Zest Dev change spec at `planned`.** Do NOT invoke implementation skills, write implementation code, or start implementation work as part of this skill.
 
 ## The Process
 
@@ -123,8 +123,8 @@ Fix any issues inline. No need to re-review — just fix and move on.
 
 - Check the current spec status first.
 - Confirm the spec is active; if not, run `zest-dev set-active <spec-id>` before updating status.
-- If the spec is not already `designed`, use the `zest-dev` CLI to update it to `designed`.
-- If the spec is already `designed`, skip the status update and finish the skill cleanly.
+- If the spec is not already `planned`, use the `zest-dev` CLI to update it to `planned`.
+- If the spec is already `planned`, skip the status update and finish the skill cleanly.
 - Do NOT invoke any implementation skill or start implementation work.
 
 ## Key Principles

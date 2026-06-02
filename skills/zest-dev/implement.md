@@ -3,15 +3,15 @@
 Canonical workflow for implementing an active change spec.
 
 ## When to use
-- The design is ready for coding
+- The plan is ready for coding
 - A thin `implement` command routes here
 
 ## Workflow
-1. Run `zest-dev status` and verify an active change spec exists with status `designed`.
+1. Run `zest-dev status` and verify an active change spec exists with status `planned`.
 2. Run `zest-dev show active` and read the full spec.
 3. Read all relevant implementation files before coding.
 4. Create a task list.
-5. Implement the feature following the design and repository conventions.
+5. Implement the feature following the plan, design, and repository conventions.
 6. Write or update tests alongside the implementation, not afterward.
 7. Run relevant tests during implementation, fix issues, and continue until the relevant tests pass.
 8. After each completed plan step or substep, mark the corresponding `## Plan` checkbox as `[x]` only when that item is complete and relevant tests pass.

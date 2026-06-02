@@ -27,6 +27,7 @@ const EXPECTED_COMMANDS = [
   'zest-dev-draft.md',
   'zest-dev-implement.md',
   'zest-dev-new.md',
+  'zest-dev-plan.md',
   'zest-dev-quick-implement.md',
   'zest-dev-research.md',
   'zest-dev-summarize-chat.md',
@@ -36,11 +37,12 @@ const THIN_COMMANDS = [
   'zest-dev-new.md',
   'zest-dev-research.md',
   'zest-dev-design.md',
+  'zest-dev-plan.md',
   'zest-dev-implement.md',
   'zest-dev-draft.md',
   'zest-dev-quick-implement.md'
 ];
-const SKILL_PHASE_FILES = ['new.md', 'research.md', 'design.md', 'implement.md'];
+const SKILL_PHASE_FILES = ['new.md', 'research.md', 'design.md', 'plan.md', 'implement.md'];
 const CODEX_SUBAGENTS = ['code-architect.toml', 'code-explorer.toml', 'code-reviewer.toml'];
 const LANGUAGE_ALIGNMENT_RULES = [
   'Respond in the user\'s language by default, if user\'s language is not English.',
@@ -237,7 +239,7 @@ test('zest-dev init integration', async (t) => {
       assert.equal(frontmatter['allowed-tools'], undefined);
       assert.equal(Object.keys(frontmatter).length, 1);
 
-      for (const file of ['zest-dev-new.md', 'zest-dev-research.md', 'zest-dev-design.md', 'zest-dev-implement.md']) {
+      for (const file of ['zest-dev-new.md', 'zest-dev-research.md', 'zest-dev-design.md', 'zest-dev-plan.md', 'zest-dev-implement.md']) {
         const body = fs.readFileSync(path.join(globalOpenCodeCommandsDir, file), 'utf-8');
         assert.ok(body.includes('$ARGUMENTS'));
       }
@@ -263,7 +265,10 @@ test('zest-dev init integration', async (t) => {
       assert.ok(researchPhase.includes('Summarize your understanding of the request and confirm it with the user'));
 
       const designPhase = fs.readFileSync(path.join(globalOpenCodeSkillsDir, 'zest-dev/design.md'), 'utf-8');
-      assert.ok(designPhase.includes('If the status is `designed` or `implemented`, confirm that the user wants to revise the existing design before continuing.'));
+      assert.ok(designPhase.includes('If the status is `designed`, `planned`, or `implemented`, confirm that the user wants to revise the existing design before continuing.'));
+
+      const planPhase = fs.readFileSync(path.join(globalOpenCodeSkillsDir, 'zest-dev/plan.md'), 'utf-8');
+      assert.ok(planPhase.includes('Run `zest-dev update active planned`.'));
 
       const codexSkillFile = fs.readFileSync(path.join(globalCodexSkillsDir, 'SKILL.md'), 'utf-8');
       assert.ok(codexSkillFile.includes('This skill is the **canonical workflow source**'));
@@ -479,7 +484,7 @@ test('zest-dev create integration', async (t) => {
       assert.ok(content.includes('## Plan'), 'should include Plan section');
       assert.ok(content.includes('## Notes'), 'should include Notes section');
       assert.ok(
-        content.includes('Optional implementation step breakdown, decided during Design and updated during Implement.'),
+        content.includes('Optional implementation step breakdown, created during Plan and updated during Implement.'),
         'packaged default template should keep Plan guidance brief'
       );
       assert.equal(content.includes('Use markdown checkboxes for all step and substep items'), false);
@@ -709,8 +714,8 @@ test('zest-dev update integration', async (t) => {
 
     await t.test('fails on invalid target status', () => {
       assert.throws(
-        () => runUpdate(firstSpecId, 'planned'),
-        /Invalid status "planned"\. Valid: new, researched, designed, implemented/
+        () => runUpdate(firstSpecId, 'ready'),
+        /Invalid status "ready"\. Valid: new, researched, designed, planned, implemented/
       );
     });
 
@@ -724,6 +729,20 @@ test('zest-dev update integration', async (t) => {
       assert.equal(updateActive.ok, true);
       assert.equal(updateActive.spec.id, aliasSpecId);
       assert.equal(updateActive.spec.status, 'implemented');
+    });
+
+    await t.test('allows planned status before implemented', () => {
+      const plannedSpecId = yaml.load(runCreate('planned-spec')).spec.id;
+      const plannedResult = yaml.load(runUpdate(plannedSpecId, 'planned'));
+      assert.equal(plannedResult.ok, true);
+      assert.equal(plannedResult.spec.status, 'planned');
+      assert.equal(plannedResult.status.from, 'new');
+      assert.equal(plannedResult.status.to, 'planned');
+
+      const implementedResult = yaml.load(runUpdate(plannedSpecId, 'implemented'));
+      assert.equal(implementedResult.ok, true);
+      assert.equal(implementedResult.status.from, 'planned');
+      assert.equal(implementedResult.status.to, 'implemented');
     });
   } finally {
     cleanup();
@@ -757,11 +776,15 @@ test('zest-dev prompt supports actual command set and summarize alias', () => {
     assert.ok(quickPrompt.includes('Thin bridge entrypoint'));
     assert.ok(quickPrompt.includes('test feature'));
 
+    const planPrompt = runCommand('prompt plan');
+    assert.ok(planPrompt.includes('Run Zest Dev **Plan** phase workflow.'));
+
     const draftPrompt = runCommand('prompt draft');
     assert.ok(draftPrompt.includes('Bridge entrypoint into the Zest Dev skill.'));
     assert.ok(draftPrompt.includes('guide the user to `/implement` as the next explicit step'));
     assert.ok(draftPrompt.includes('run `zest-dev update active researched`'));
     assert.ok(draftPrompt.includes('run `zest-dev update active designed`'));
+    assert.ok(draftPrompt.includes('run `zest-dev update active planned`'));
 
     const summarizeAliasPrompt = runCommand('prompt summarize');
     const summarizeChatPrompt = runCommand('prompt summarize-chat');

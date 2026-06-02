@@ -29,15 +29,17 @@ Based on the conversation, determine the spec status:
 - **"new"**: Only discussed the problem and goals, no exploration yet
 - **"researched"**: Explored codebase, evaluated options, identified approach
 - **"designed"**: Clarified requirements, designed architecture with trade-offs
+- **"planned"**: Created an implementation checklist from the design
 - **"implemented"**: Actually wrote code, tested it, and reviewed quality
 
 **If status is vague or unclear**, use the question tool to ask:
 - "What status should this spec be in?"
-- Options: new, researched, designed, implemented
+- Options: new, researched, designed, planned, implemented
 - Provide brief description:
   - **new**: Problem identified, no exploration
   - **researched**: Codebase explored, options evaluated
   - **designed**: Architecture designed, approach chosen
+  - **planned**: Implementation checklist created
   - **implemented**: Code written, tested, reviewed
 
 **Step 3: Create Spec via CLI**
@@ -75,7 +77,14 @@ Fill sections based on the status:
 - Follow the canonical Design rules from the Zest Dev skill
 - List all meaningful design decisions and attach fact sources
 - Include the matching test strategy alongside the implementation design
-- If a `## Plan` step breakdown is added, use capability-based steps that deliver meaningful, reviewable increments; each step must include small, independent substeps for implementation and immediate verification; list implementation substeps before verification substeps; the final step may focus on overall testing/verification and coverage improvements; each step is complete only when relevant tests pass
+
+**If status is "planned" or later - Fill Plan section:**
+- Follow the canonical Plan rules from the Zest Dev skill
+- Use capability-based steps that deliver meaningful, reviewable increments
+- Each step must include small, independent substeps for implementation and immediate verification
+- List implementation substeps before verification substeps
+- The final step may focus on overall testing/verification and coverage improvements
+- Each step is complete only when relevant tests pass
 
 **If status is "implemented" - Fill Notes section:**
 - `### Implementation`: What was built, files changed, and design deviations
@@ -88,6 +97,7 @@ Use `zest-dev update` for status transitions (do not edit frontmatter manually):
 - If inferred status is `new`: skip status update (new spec is already `new`)
 - If inferred status is `researched`: execute `zest-dev update active researched`
 - If inferred status is `designed`: execute `zest-dev update active designed`
+- If inferred status is `planned`: execute `zest-dev update active planned`
 - If inferred status is `implemented`: execute `zest-dev update active implemented`
 
 **Step 6: Add Notes Section**

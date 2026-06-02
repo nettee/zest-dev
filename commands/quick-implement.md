@@ -57,19 +57,25 @@ Enter the Zest Dev skill's **Design** phase and let it run the canonical design 
 
 ---
 
-## Checkpoint 2: Approve implementation
+## Stage 3: Plan
 
-After design is ready, present a brief summary and get explicit approval before entering the Implement phase.
+Enter the Zest Dev skill's **Plan** phase and let it run the canonical plan workflow.
 
 ---
 
-## Stage 3: Implement
+## Checkpoint 2: Approve implementation
+
+After the plan is ready, present a brief summary and get explicit approval before entering the Implement phase.
+
+---
+
+## Stage 4: Implement
 
 Enter the Zest Dev skill's **Implement** phase and let it run the canonical implementation workflow.
 
 ---
 
-## Stage 4: Final review
+## Stage 5: Final review
 
 After implementation, review the result, address critical issues, and confirm what status the spec reached.
 
