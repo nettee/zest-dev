@@ -474,11 +474,16 @@ test('zest-dev create integration', async (t) => {
       assert.equal(frontmatter.status, 'new');
       assert.equal(typeof frontmatter.created, 'string');
       assert.ok(content.includes('## Overview'), 'should use packaged default template');
+      assert.ok(content.includes('## Research'), 'should include Research section');
+      assert.ok(content.includes('## Design'), 'should include Design section');
+      assert.ok(content.includes('## Plan'), 'should include Plan section');
+      assert.ok(content.includes('## Notes'), 'should include Notes section');
       assert.ok(
-        content.includes('Use markdown checkboxes for all step and substep items'),
-        'packaged default template should include step and substep checkbox guidance'
+        content.includes('Optional implementation step breakdown, decided during Design and updated during Implement.'),
+        'packaged default template should keep Plan guidance brief'
       );
-      assert.ok(content.includes('Substep 1.1 Implement'), 'packaged default template should include substep example');
+      assert.equal(content.includes('Use markdown checkboxes for all step and substep items'), false);
+      assert.equal(content.includes('Substep 1.1 Implement'), false);
       assert.ok(content.includes('### Implementation'), 'packaged default template should include Implementation notes section');
       assert.ok(content.includes('### Verification'), 'packaged default template should include Verification notes section');
       assert.equal(content.includes('Phase 3: Test and verify'), false);
