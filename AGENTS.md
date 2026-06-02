@@ -16,6 +16,8 @@ This repository's custom command prompts are designed for **OpenCode / oh-my-ope
 - For user interaction, say **ask the user directly** or **use the question tool** rather than Claude-specific names.
 - For codebase work, describe the goal (read files, search code, inspect references, run shell commands) rather than enumerating a Claude-only tool contract.
 - When referring to a skill in prompts or command docs, refer to it by its registered skill name (for example `Zest Dev`), not by repository or deployed file paths.
+- Keep workflow process, writing rules, and reusable content templates in skills. The main `Zest Dev` skill should describe the overall flow and route to phase files; phase files should carry concrete section-writing guidance, following progressive disclosure.
+- Keep command prompts thin. Commands should provide a simple entry prompt and route intent into the relevant skill workflow; they should not duplicate detailed process, rules, or templates.
 
 ### Prompt format constraints
 

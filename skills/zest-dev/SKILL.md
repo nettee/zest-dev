@@ -160,95 +160,15 @@ Use when the design is ready for coding.
 - Keep explicit checkpoints for confirming new requirements and moving from Design to Implement.
 - Reuse the canonical phase rules from this skill instead of embedding separate thick instructions.
 
-## Content Templates
+## Content Guidance Ownership
 
-### Research
-```markdown
-## Research
+The CLI-created spec template should stay thin: it creates top-level sections and brief placeholders only.
 
-### Existing System
-- ... Source: `path/to/file:line` / `docs/path.md#section` / `migration_name.sql`
-
-### Design Inputs
-- Existing pattern: ... Source: `path/to/file:line`
-- Reference or best practice: ... Source: `docs/path.md#section`
-- Implementation consideration: ... Source: `path/to/file:line`
-
-### Constraints & Dependencies
-- ... Source: `path/to/file:line`
-
-### Key References
-- `path/to/file:line` - ...
-
-Every research finding must include a fact source from code, database artifacts, or documentation.
-Keep sources compact: use the smallest useful line/range, merge same-file citations like `src/media.ts:770-811,829,855,877-890`, and move long evidence lists to Key References.
-Do not list competing options, rank alternatives, or recommend a choice in Research; capture design raw materials for the Design phase.
-```
-
-### Design
-```markdown
-## Design
-
-### Design Summary
-- Overall design approach and rationale.
-
-### Design Decisions
-- Decision: ... Source: `path/to/file:line` / `docs/path.md#section` / `migration_name.sql`
-
-### System Structure
-[optional diagram]
-
-Prefer Mermaid for state transition diagrams, sequence diagrams, module diagrams, and other structured visuals; use ASCII only for quick sketches where Mermaid adds no clarity.
-
-### System Procedure
-Flow:
-  Step A
-  Step B
-
-### Interfaces / APIs
-- Optional contracts between components.
-
-### Change Scope
-- Impact Areas:
-  - Area: ... Impact: ...
-- Planned File Changes:
-  - `path/to/file` - planned change
-
-### Verification Strategy
-- Phase/area: ... Validation: ... Source: `path/to/file:line`
-```
-
-`### System Structure`, `### System Procedure`, and `### Interfaces / APIs` are optional. Use `### Design Summary` to describe the overall design approach and rationale. Use `### Change Scope` as a two-part section: `Impact Areas` for high-level affected areas and `Planned File Changes` for concrete files/directories to modify. Do not include `Source:` citations inside Change Scope items. Execution sequencing belongs in `## Plan`.
-
-List all meaningful design decisions and attach a fact source to each one. Reuse `## Research` sources when possible, and add new factual sources when needed.
-
-If `## Plan` is used, keep it compact and step-based with markdown checkboxes. Example:
-- [ ] Step 1: Foo
-  - [ ] Substep 1.1 Implement: Foo foundation
-  - [ ] Substep 1.2 Implement: Foo integration
-  - [ ] Substep 1.3 Implement: Foo edge handling
-  - [ ] Substep 1.4 Verify: Foo automated coverage
-  - [ ] Substep 1.5 Verify: Foo manual workflow
-- [ ] Step 2: Bar
-  - [ ] Substep 2.1 Implement: Bar
-  - [ ] Substep 2.2 Verify: Bar
-- [ ] Step 3: Baz
-  - [ ] Substep 3.1 Implement: Baz
-  - [ ] Substep 3.2 Verify: Baz
-
-Use a capability-based breakdown with meaningful, easy-to-review increments. Good step boundaries usually align with one user-visible workflow, one subsystem/integration boundary, one migration/rollout step, or one stabilization milestone. Each step must include small, independent substeps for implementation and immediate testing/verification. Within each step, list implementation substeps before verification substeps. The final step may focus on overall testing/verification, edge cases, regression coverage, and coverage improvements. A step is complete only when its relevant tests pass. Size each step for one coding-agent session, and write each substep as one small, independent task.
-
-### Notes
-```markdown
-## Notes
-
-### Implementation
-- `path/to/file` - what changed
-
-### Verification
-- Tests run and results
-- Manual validation and outcomes
-```
+Concrete section-writing guidance lives in the phase files:
+- `new.md` defines how to write `## Overview`.
+- `research.md` defines how to write `## Research`.
+- `design.md` defines how to write `## Design` and optional `## Plan`.
+- `implement.md` defines how to update `## Plan` and write `## Notes`.
 
 ## Guardrails
 
