@@ -39,7 +39,10 @@ Canonical workflow for planning implementation of an active change spec.
       - [ ] Step 3: Baz
         - [ ] Substep 3.1 Implement: Baz
         - [ ] Substep 3.2 Verify: Baz
-8. Run `zest-dev update active planned`.
+8. Update status based on the starting state:
+   - If the spec started as `designed`, run `zest-dev update active planned`.
+   - If the spec started as `planned`, skip the update and keep the status as-is.
+   - If the spec started as `implemented`, skip the update and keep the status as-is while revising the plan.
 9. Present the plan and stop.
 
 ## Rule
