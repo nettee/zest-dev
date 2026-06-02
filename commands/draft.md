@@ -15,4 +15,6 @@ If the highest reached status is `researched`, run `zest-dev update active resea
 
 If the highest reached status is `designed`, run `zest-dev update active designed`.
 
-If the spec is already `designed`, guide the user to `/implement` as the next explicit step.
+If the highest reached status is `planned`, run `zest-dev update active planned`.
+
+If the spec is already `planned`, guide the user to `/implement` as the next explicit step.

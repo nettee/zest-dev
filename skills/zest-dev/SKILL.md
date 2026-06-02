@@ -14,6 +14,7 @@ This skill is the **canonical workflow source** for planned feature work:
 - `new`
 - `research`
 - `design`
+- `plan`
 - `implement`
 
 Commands should stay thin. They exist as explicit entrypoints and compatibility shims. The actual phase logic lives here.
@@ -22,6 +23,7 @@ To keep this file concise, the detailed workflows live in sibling phase docs:
 - `new.md`
 - `research.md`
 - `design.md`
+- `plan.md`
 - `implement.md`
 
 **Core principle:** keep workflow intelligence in the skill, keep commands lightweight.
@@ -31,7 +33,7 @@ To keep this file concise, the detailed workflows live in sibling phase docs:
 Use this skill when the user:
 - asks to create a spec or write a spec
 - mentions Zest Dev or spec-driven development
-- asks to enter a workflow phase such as new, research, design, or implement
+- asks to enter a workflow phase such as new, research, design, plan, or implement
 - wants to continue an active change spec
 - uses a thin command that explicitly routes into this skill
 
@@ -41,7 +43,7 @@ Use this skill when the user:
 - Always respond in the user's language unless the user asks to switch languages.
 
 ### Source of truth
-- Treat this skill as the workflow source for the four core phases.
+- Treat this skill as the workflow source for the five core phases.
 - Treat commands as wrappers that declare intent and hand off to this skill.
 
 ### CLI boundaries
@@ -52,6 +54,7 @@ Use this skill when the user:
   - `new`
   - `researched`
   - `designed`
+  - `planned`
   - `implemented`
 
 ### Spec writing principles
@@ -68,7 +71,7 @@ Use this skill when the user:
 
 ### Questions and approvals
 - Ask targeted clarifying questions when requirements or architecture are underspecified.
-- During quick-implement, get explicit user approval when transitioning from Design to Implement.
+- During quick-implement, get explicit user approval when transitioning from Plan to Implement.
 - If the user says “whatever you think is best,” provide your recommendation and get confirmation when the choice is consequential.
 
 ## Entry Modes
@@ -79,6 +82,7 @@ Examples:
 - `/zest-dev:new`
 - `/zest-dev:research`
 - `/zest-dev:design`
+- `/zest-dev:plan`
 - `/zest-dev:implement`
 
 Interpret the command as a request to run the corresponding phase in this skill.
@@ -89,6 +93,7 @@ Examples:
 - “create a spec for this”
 - “research this change”
 - “design the architecture”
+- “plan the implementation”
 - “implement the active spec”
 
 Infer the intended phase from user intent and current spec status.
@@ -112,7 +117,7 @@ User intent or thin command
 Valid progression:
 
 ```text
-new → researched → designed → implemented
+new → researched → designed → planned → implemented
 ```
 
 ## Phase Routing
@@ -124,10 +129,13 @@ Use when there is no spec yet and the user wants to formalize a requirement.
 Use when a spec exists and the team needs repository facts, patterns, and options.
 
 ### Design phase
-Use when research or direct understanding is sufficient to make an implementation plan.
+Use when research or direct understanding is sufficient to choose an implementation design.
+
+### Plan phase
+Use when the design is ready to turn into an implementation checklist.
 
 ### Implement phase
-Use when the design is ready for coding.
+Use when the plan is ready for coding.
 
 ## Canonical Phase Workflow Files
 
@@ -141,7 +149,11 @@ Use when the design is ready for coding.
 
 ### Design
 - The canonical Design workflow lives in `design.md`.
-- Use it for clarifications, architecture synthesis, plan shaping, and status advancement to `designed`.
+- Use it for clarifications, architecture synthesis, design decisions, and status advancement to `designed`.
+
+### Plan
+- The canonical Plan workflow lives in `plan.md`.
+- Use it for implementation checklist shaping and status advancement to `planned`.
 
 ### Implement
 - The canonical Implement workflow lives in `implement.md`.
@@ -157,7 +169,7 @@ Use when the design is ready for coding.
 ### Quick Implement
 - Create or resume the active spec.
 - Run the remaining core phases in order.
-- Keep explicit checkpoints for confirming new requirements and moving from Design to Implement.
+- Keep explicit checkpoints for confirming new requirements and moving from Plan to Implement.
 - Reuse the canonical phase rules from this skill instead of embedding separate thick instructions.
 
 ## Content Guidance Ownership
@@ -165,7 +177,8 @@ Use when the design is ready for coding.
 Concrete section-writing guidance lives in the phase files:
 - `new.md` defines how to write `## Overview`.
 - `research.md` defines how to write `## Research`.
-- `design.md` defines how to write `## Design` and optional `## Plan`.
+- `design.md` defines how to write `## Design`.
+- `plan.md` defines how to write `## Plan`.
 - `implement.md` defines how to update `## Plan` and write `## Notes`.
 
 ## Guardrails
