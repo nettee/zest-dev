@@ -65,7 +65,7 @@ Enter the Zest Dev skill's **Plan** phase and let it run the canonical plan work
 
 ## Checkpoint 2: Approve implementation
 
-After the plan is ready, present a brief summary and get explicit approval before entering the Implement phase.
+After the plan is ready, use the Plan phase's AFK/HITL step summary and get explicit approval before entering the Implement phase.
 
 ---
 
