@@ -66,7 +66,10 @@ Canonical workflow for planning implementation of an active change spec.
    - If the spec started as `designed`, run `zest-dev update active planned`.
    - If the spec started as `planned`, skip the update and keep the status as-is.
    - If the spec started as `implemented`, skip the update and keep the status as-is while revising the plan.
-10. Present the plan and stop.
+10. Present the plan and stop:
+   - Report every Plan step's `Type` as `AFK` or `HITL`.
+   - For each `HITL` step, tell the user what needs to be discussed, reviewed, judged, or approved in conversation before implementation continues.
+   - If all steps are `AFK`, say that no user action is required before implementation.
 
 ## Rule
 This is where Design becomes issue-scale spec-local implementation steps. Do not publish issues unless the user explicitly asks for that.

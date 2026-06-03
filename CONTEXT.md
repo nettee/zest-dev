@@ -36,6 +36,18 @@ _Avoid_: design step, planning note
 A Spec lifecycle milestone meaning the Spec's Design and Plan sections are ready for implementation.
 _Avoid_: designed, ready
 
+**Plan Step**:
+One issue-scale implementation slice inside a Spec's Plan section. A Plan Step has a Type that describes whether the next implementer can proceed independently or needs human input.
+_Avoid_: task, ticket
+
+**AFK Plan Step**:
+A Plan Step that an agent can implement independently from the written Spec and repository context.
+_Avoid_: automatic step, background task
+
+**HITL Plan Step**:
+A Plan Step that needs user review, product judgment, or approval before continuing. The Plan Phase completion response should tell the user what needs to be discussed in conversation.
+_Avoid_: manual step, blocked step
+
 **CLI**:
 The `zest-dev` command-line tool that manages Spec lifecycle operations such as creating, showing, activating, and updating Specs.
 _Avoid_: workflow engine, writing guide
@@ -53,3 +65,7 @@ Maintainer: "No. The Design Phase records decisions and trade-offs; the Plan Pha
 Developer: "When is a Spec ready for implementation?"
 
 Maintainer: "When it reaches Planned Status: the Design is decided, and the Plan checklist is ready to execute."
+
+Developer: "Can an agent start Step 2 without me?"
+
+Maintainer: "Only if Step 2 is an AFK Plan Step. If it is a HITL Plan Step, the Plan Phase completion response should tell you what we need to discuss first."

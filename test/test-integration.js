@@ -273,6 +273,8 @@ test('zest-dev init integration', async (t) => {
       assert.ok(planPhase.includes('Do not create GitHub issues or external issue-tracker entries unless the user explicitly asks for that.'));
       assert.ok(planPhase.includes('Do not use markdown checkboxes in `## Plan`.'));
       assert.ok(planPhase.includes('Use the heading `### Progress`.'));
+      assert.ok(planPhase.includes('Report every Plan step\'s `Type` as `AFK` or `HITL`.'));
+      assert.ok(planPhase.includes('For each `HITL` step, tell the user what needs to be discussed, reviewed, judged, or approved in conversation before implementation continues.'));
 
       const implementPhase = fs.readFileSync(path.join(globalOpenCodeSkillsDir, 'zest-dev/implement.md'), 'utf-8');
       assert.ok(implementPhase.includes('try to use the registered `tdd` skill'));
@@ -785,6 +787,7 @@ test('zest-dev prompt supports actual command set and summarize alias', () => {
     const quickPrompt = runCommand('prompt quick-implement test feature');
     assert.ok(quickPrompt.includes('Thin bridge entrypoint'));
     assert.ok(quickPrompt.includes('test feature'));
+    assert.ok(quickPrompt.includes('use the Plan phase\'s AFK/HITL step summary'));
 
     const planPrompt = runCommand('prompt plan');
     assert.ok(planPrompt.includes('Run Zest Dev **Plan** phase workflow.'));
