@@ -275,6 +275,8 @@ test('zest-dev init integration', async (t) => {
       assert.ok(planPhase.includes('Use the heading `### Progress`.'));
 
       const implementPhase = fs.readFileSync(path.join(globalOpenCodeSkillsDir, 'zest-dev/implement.md'), 'utf-8');
+      assert.ok(implementPhase.includes('try to use the registered `tdd` skill'));
+      assert.ok(implementPhase.includes('judge applicability from the spec, plan step, and files being changed'));
       assert.ok(implementPhase.includes('mark the corresponding `## Notes` → `### Progress` checkbox as `[x]`'));
       assert.equal(implementPhase.includes('mark the corresponding `## Plan` checkbox'), false);
 
