@@ -161,6 +161,52 @@ function createDanglingActiveSymlink(targetId, testDir = TEST_DIR) {
   fs.symlinkSync(targetId, activeLinkPath);
 }
 
+function createActiveSpecWithBody(slug, body, testDir = TEST_DIR) {
+  const result = yaml.load(runCreate(slug, testDir));
+  const specPath = path.join(testDir, result.spec.path);
+  fs.writeFileSync(specPath, body, 'utf-8');
+  runCommand(`set-active ${result.spec.id}`, testDir);
+  return { id: result.spec.id, path: specPath };
+}
+
+function makeFakeRalphEnv(testDir = TEST_DIR) {
+  const fakeBinDir = path.join(testDir, 'fake-bin');
+  const logPath = path.join(testDir, 'ralph-args.log');
+  const fakeRalphPath = path.join(fakeBinDir, 'ralph');
+
+  fs.mkdirSync(fakeBinDir, { recursive: true });
+  fs.writeFileSync(
+    fakeRalphPath,
+    `#!/usr/bin/env node
+const fs = require('fs');
+if (process.argv[2] !== '--add-task' || process.argv.length !== 4) {
+  console.error('unexpected ralph args: ' + process.argv.slice(2).join(' '));
+  process.exit(2);
+}
+fs.appendFileSync(process.env.RALPH_LOG_PATH, JSON.stringify(process.argv[3]) + '\\n');
+fs.mkdirSync('.ralph', { recursive: true });
+fs.appendFileSync('.ralph/ralph-tasks.md', '- [ ] ' + process.argv[3] + '\\n');
+console.log('Added task: ' + process.argv[3]);
+`,
+    'utf-8'
+  );
+  fs.chmodSync(fakeRalphPath, 0o755);
+
+  return {
+    PATH: `${fakeBinDir}${path.delimiter}${process.env.PATH}`,
+    RALPH_LOG_PATH: logPath
+  };
+}
+
+function readFakeRalphTasks(testDir = TEST_DIR) {
+  const logPath = path.join(testDir, 'ralph-args.log');
+  return fs.readFileSync(logPath, 'utf-8')
+    .trim()
+    .split('\n')
+    .filter(Boolean)
+    .map(line => JSON.parse(line));
+}
+
 test('zest-dev init integration', async (t) => {
   setup();
 
@@ -755,6 +801,146 @@ test('zest-dev update integration', async (t) => {
       assert.equal(implementedResult.ok, true);
       assert.equal(implementedResult.status.from, 'planned');
       assert.equal(implementedResult.status.to, 'implemented');
+    });
+  } finally {
+    cleanup();
+  }
+});
+
+test('zest-dev ralph integration', async (t) => {
+  setup();
+
+  try {
+    await t.test('converts unfinished active Progress items into Ralph tasks and task.md', () => {
+      const spec = createActiveSpecWithBody('ralph-progress', `---
+id: test-ralph-progress
+name: Ralph Progress
+status: planned
+created: '2026-06-04'
+---
+
+## Overview
+
+Test spec.
+
+## Notes
+
+### Progress
+
+- [ ] Step 1: Parse active Progress into task text
+- [x] Step 2: Already complete
+- [ ] Step 3: Write implement prompt file
+
+### Implementation
+
+`);
+      const staleFile = path.join(TEST_DIR, '.ralph', 'stale.txt');
+      fs.mkdirSync(path.dirname(staleFile), { recursive: true });
+      fs.writeFileSync(staleFile, 'stale', 'utf-8');
+
+      const env = makeFakeRalphEnv();
+      const output = yaml.load(runCommandWithEnv('ralph', TEST_DIR, env));
+      const tasks = readFakeRalphTasks();
+
+      assert.equal(output.ok, true);
+      assert.equal(output.spec.id, spec.id);
+      assert.deepEqual(tasks, [
+        'Step 1: Parse active Progress into task text',
+        'Step 3: Write implement prompt file',
+        'Make sure all tasks are done in ralph loops, and then create PR'
+      ]);
+      assert.deepEqual(output.tasks_added, tasks);
+      assert.equal(fs.existsSync(staleFile), false, 'existing .ralph state should be removed before adding tasks');
+      assert.equal(
+        fs.readFileSync(path.join(TEST_DIR, 'task.md'), 'utf-8'),
+        runCommand('prompt implement')
+      );
+    });
+
+    await t.test('creates only the fixed final task when all Progress items are complete', () => {
+      cleanup();
+      setup();
+      createActiveSpecWithBody('ralph-complete-progress', `---
+id: test-ralph-complete-progress
+name: Ralph Complete Progress
+status: planned
+created: '2026-06-04'
+---
+
+## Notes
+
+### Progress
+
+- [x] Step 1: Done
+- [X] Step 2: Also done
+`);
+
+      const env = makeFakeRalphEnv();
+      runCommandWithEnv('ralph', TEST_DIR, env);
+
+      assert.deepEqual(readFakeRalphTasks(), [
+        'Make sure all tasks are done in ralph loops, and then create PR'
+      ]);
+    });
+
+    await t.test('fails when no active spec exists', () => {
+      cleanup();
+      setup();
+
+      const failed = runCommandExpectFailure('ralph');
+
+      assert.equal(failed.failed, true);
+      assert.ok(failed.output.includes('No active change spec set'));
+      assert.equal(fs.existsSync(path.join(TEST_DIR, 'task.md')), false);
+    });
+
+    await t.test('fails when Progress is missing', () => {
+      cleanup();
+      setup();
+      createActiveSpecWithBody('ralph-missing-progress', `---
+id: test-ralph-missing-progress
+name: Ralph Missing Progress
+status: planned
+created: '2026-06-04'
+---
+
+## Notes
+
+### Implementation
+
+`);
+
+      const failed = runCommandExpectFailure('ralph', TEST_DIR, makeFakeRalphEnv());
+
+      assert.equal(failed.failed, true);
+      assert.ok(failed.output.includes('Active spec is missing ## Notes -> ### Progress'));
+      assert.equal(fs.existsSync(path.join(TEST_DIR, '.ralph')), false);
+      assert.equal(fs.existsSync(path.join(TEST_DIR, 'task.md')), false);
+    });
+
+    await t.test('fails on unsupported Progress syntax', () => {
+      cleanup();
+      setup();
+      createActiveSpecWithBody('ralph-malformed-progress', `---
+id: test-ralph-malformed-progress
+name: Ralph Malformed Progress
+status: planned
+created: '2026-06-04'
+---
+
+## Notes
+
+### Progress
+
+- [/] Step 1: In progress is not supported
+`);
+
+      const failed = runCommandExpectFailure('ralph', TEST_DIR, makeFakeRalphEnv());
+
+      assert.equal(failed.failed, true);
+      assert.ok(failed.output.includes('Unsupported Progress line: - [/] Step 1: In progress is not supported'));
+      assert.equal(fs.existsSync(path.join(TEST_DIR, '.ralph')), false);
+      assert.equal(fs.existsSync(path.join(TEST_DIR, 'task.md')), false);
     });
   } finally {
     cleanup();

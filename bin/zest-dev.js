@@ -18,6 +18,7 @@ const {
 } = require('../lib/spec-manager');
 const { deployPlugin } = require('../lib/plugin-deployer');
 const { generatePrompt } = require('../lib/prompt-generator');
+const { setupRalphFromActiveSpec } = require('../lib/ralph-setup');
 
 const program = new Command();
 
@@ -255,6 +256,20 @@ program
       const scope = options.local ? 'local' : 'global';
       const target = options.target || (scope === 'local' ? 'opencode' : 'all');
       const result = deployPlugin({ scope, target });
+      console.log(yaml.dump(result));
+    } catch (error) {
+      console.error('Error:', error.message);
+      process.exit(1);
+    }
+  });
+
+// zest-dev ralph
+program
+  .command('ralph')
+  .description('Convert active spec Progress items into Ralph tasks')
+  .action(() => {
+    try {
+      const result = setupRalphFromActiveSpec(process.cwd());
       console.log(yaml.dump(result));
     } catch (error) {
       console.error('Error:', error.message);
