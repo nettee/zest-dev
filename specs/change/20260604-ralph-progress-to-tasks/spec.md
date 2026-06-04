@@ -168,9 +168,10 @@ Depends on: Step 2, Step 3
 
 - Added `lib/ralph-setup.js` to parse active Spec `## Notes` -> `### Progress`, fail on malformed/missing Progress input, clear `.ralph/`, call `ralph --add-task`, and overwrite `task.md` with `generatePrompt("implement")`.
 - Added `zest-dev ralph` CLI wiring in `bin/zest-dev.js` using the existing YAML output and fail-fast error style.
-- Added integration coverage with a fake `ralph` executable for success, completed-only Progress, missing active Spec, missing Progress, malformed Progress, `.ralph` cleanup, and `task.md` generation.
+- Added integration coverage with a fake `ralph` executable for success, all-complete Progress fail-fast behavior, missing active Spec, missing Progress, malformed Progress, `.ralph` cleanup, and `task.md` generation.
 
 ### Verification
 
 - `pnpm test:local` - passed, 47 pass / 1 skip.
 - `pnpm test:package` - passed, 48 pass.
+- Manual case check with `/Users/william/projects/vela-wt-model-priority/specs/change/20260604-runtime-catalog-route-weights-config/spec.md`: original all-complete Progress fails fast; temporary unchecked copy generates three Step tasks plus the fixed PR task.
