@@ -19,7 +19,8 @@ Canonical workflow for planning implementation of an active change spec.
    - Treat each Plan step as the spec-local counterpart to an issue-sized vertical slice.
    - Prefer thin vertical slices that can be implemented independently and verified meaningfully.
    - Avoid splitting only by horizontal layers such as schema, backend, UI, docs, or tests unless that layer is genuinely the whole change.
-   - Mark steps as `HITL` when they need user review, product judgment, or approval before continuing.
+   - Mark steps as `HITL` only when continuing requires human decision-making, human-only or dangerous execution, or human validation before the agent can safely proceed.
+   - Do not mark a step as `HITL` merely because the output is documentation, runbook text, an operator-facing procedure, or a workflow that humans will later execute.
    - Mark steps as `AFK` when an agent can implement them independently from the written spec and repository context.
    - Capture dependencies between steps.
 5. Ask the user clarifying questions when needed.
