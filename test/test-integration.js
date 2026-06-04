@@ -850,10 +850,17 @@ Test spec.
         'Make sure all tasks are done in ralph loops, and then create PR'
       ]);
       assert.deepEqual(output.tasks_added, tasks);
+      assert.equal(Object.hasOwn(output, 'ralph_results'), false);
       assert.equal(fs.existsSync(staleFile), false, 'existing .ralph state should be removed before adding tasks');
+      const prompt = runCommand('prompt implement');
+
+      assert.deepEqual(output.task_md, {
+        path: 'task.md',
+        content: prompt
+      });
       assert.equal(
         fs.readFileSync(path.join(TEST_DIR, 'task.md'), 'utf-8'),
-        runCommand('prompt implement')
+        prompt
       );
     });
 
