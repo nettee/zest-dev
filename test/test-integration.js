@@ -857,7 +857,7 @@ Test spec.
       );
     });
 
-    await t.test('creates only the fixed final task when all Progress items are complete', () => {
+    await t.test('fails when all Progress items are complete', () => {
       cleanup();
       setup();
       createActiveSpecWithBody('ralph-complete-progress', `---
@@ -875,12 +875,12 @@ created: '2026-06-04'
 - [X] Step 2: Also done
 `);
 
-      const env = makeFakeRalphEnv();
-      runCommandWithEnv('ralph', TEST_DIR, env);
+      const failed = runCommandExpectFailure('ralph', TEST_DIR, makeFakeRalphEnv());
 
-      assert.deepEqual(readFakeRalphTasks(), [
-        'Make sure all tasks are done in ralph loops, and then create PR'
-      ]);
+      assert.equal(failed.failed, true);
+      assert.ok(failed.output.includes('Active spec Progress section has no unfinished checkbox items'));
+      assert.equal(fs.existsSync(path.join(TEST_DIR, '.ralph')), false);
+      assert.equal(fs.existsSync(path.join(TEST_DIR, 'task.md')), false);
     });
 
     await t.test('fails when no active spec exists', () => {
