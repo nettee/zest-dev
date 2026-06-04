@@ -40,6 +40,14 @@ _Avoid_: designed, ready
 One issue-scale implementation slice inside a Spec's Plan section. A Plan Step has a Type that describes whether the next implementer can proceed independently or needs human input.
 _Avoid_: task, ticket
 
+**Progress Checklist**:
+A thin completion checklist in a Spec's Notes section, with one checkbox per Plan Step. It tracks implementation completion; it is not the implementation plan itself.
+_Avoid_: plan, task list
+
+**Ralph Task**:
+A markdown checkbox item consumed by Ralph Tasks Mode from `.ralph/ralph-tasks.md`. It is generated from a Progress Checklist item when Zest Dev hands planned work to Ralph.
+_Avoid_: Plan Step, Progress item
+
 **AFK Plan Step**:
 A Plan Step that an agent can implement independently from the written Spec and repository context.
 _Avoid_: automatic step, background task
@@ -69,3 +77,7 @@ Maintainer: "When it reaches Planned Status: the Design is decided, and the Plan
 Developer: "Can an agent start Step 2 without me?"
 
 Maintainer: "Only if Step 2 is an AFK Plan Step. If it is a HITL Plan Step, the Plan Phase completion response should tell you what we need to discuss first."
+
+Developer: "Can we send the Progress Checklist to Ralph?"
+
+Maintainer: "Yes. The Progress Checklist records which Plan Steps are complete; `zest-dev ralph` can convert its unchecked items into Ralph Tasks for Ralph Tasks Mode."
