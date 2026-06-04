@@ -1,7 +1,7 @@
 ---
 id: 20260604-ralph-progress-to-tasks
 name: Ralph Progress To Tasks
-status: planned
+status: implemented
 created: '2026-06-04'
 ---
 
@@ -159,15 +159,18 @@ Depends on: Step 2, Step 3
 
 ### Progress
 
-- [ ] Step 1: Parse active Progress into task text
-- [ ] Step 2: Execute Ralph setup workflow
-- [ ] Step 3: Write implement prompt file
-- [ ] Step 4: Integrate CLI tests and command help
+- [x] Step 1: Parse active Progress into task text
+- [x] Step 2: Execute Ralph setup workflow
+- [x] Step 3: Write implement prompt file
+- [x] Step 4: Integrate CLI tests and command help
 
 ### Implementation
 
-<!-- Files created/modified, decisions made during coding, deviations from design -->
+- Added `lib/ralph-setup.js` to parse active Spec `## Notes` -> `### Progress`, fail on malformed/missing Progress input, clear `.ralph/`, call `ralph --add-task`, and overwrite `task.md` with `generatePrompt("implement")`.
+- Added `zest-dev ralph` CLI wiring in `bin/zest-dev.js` using the existing YAML output and fail-fast error style.
+- Added integration coverage with a fake `ralph` executable for success, completed-only Progress, missing active Spec, missing Progress, malformed Progress, `.ralph` cleanup, and `task.md` generation.
 
 ### Verification
 
-<!-- How the feature was verified: tests written, manual testing steps, results -->
+- `pnpm test:local` - passed, 47 pass / 1 skip.
+- `pnpm test:package` - passed, 48 pass.
