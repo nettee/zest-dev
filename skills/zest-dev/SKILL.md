@@ -18,6 +18,7 @@ This skill is the **canonical workflow source** for planned feature work:
 - `implement`
 - `compound`
 - `archive`
+- `summarize-chat`
 - `summarize-pr`
 
 Commands should stay thin. They exist as explicit entrypoints and compatibility shims. The actual phase logic lives here.
@@ -30,6 +31,7 @@ To keep this file concise, the detailed workflows live in sibling phase docs:
 - `implement.md`
 - `compound.md`
 - `archive.md`
+- `summarize-chat.md`
 - `summarize-pr.md`
 
 **Core principle:** keep workflow intelligence in the skill, keep commands lightweight.
@@ -42,6 +44,7 @@ Use this skill when the user:
 - asks to enter a workflow phase such as new, research, design, plan, or implement
 - asks to preserve durable project knowledge from the current session
 - asks to archive an implemented spec into `specs/current/`
+- asks to summarize a coding session or chat into a spec
 - asks to summarize a GitHub PR into a spec
 - wants to continue an active change spec
 - uses a thin command that explicitly routes into this skill
@@ -95,6 +98,7 @@ Examples:
 - `/zest-dev:implement`
 - `/zest-dev:compound`
 - `/zest-dev:archive`
+- `/zest-dev:summarize-chat`
 - `/zest-dev:summarize-pr`
 
 Interpret the command as a request to run the corresponding phase in this skill.
@@ -158,6 +162,9 @@ Use when an implemented active change spec should be merged into `specs/current/
 ### Summarize PR workflow
 Use when a completed GitHub PR should be captured as a post-hoc implemented spec.
 
+### Summarize Chat workflow
+Use when the current coding session or chat should be captured as a post-hoc spec at the highest justified status.
+
 ## Canonical Phase Workflow Files
 
 ### New
@@ -188,6 +195,10 @@ Use when a completed GitHub PR should be captured as a post-hoc implemented spec
 - The canonical Archive workflow lives in `archive.md`.
 - Use it to verify the active spec is `implemented`, merge its content into `specs/current/`, and then run `zest-dev unset-active`.
 
+### Summarize Chat
+- The canonical Summarize Chat workflow lives in `summarize-chat.md`.
+- Use it to infer or confirm the highest justified spec status from the conversation, create and activate a spec, fill only the sections supported by the chat, and mark `implemented` only when completed and verified work is actually evidenced.
+
 ### Summarize PR
 - The canonical Summarize PR workflow lives in `summarize-pr.md`.
 - Use it to fetch PR metadata, create and activate a spec, fill it from the PR, and mark it `implemented` only after the spec content is written.
@@ -212,6 +223,10 @@ Use when a completed GitHub PR should be captured as a post-hoc implemented spec
 ### Archive
 - Reuse the canonical Archive workflow from `archive.md`.
 - Keep the command thin by routing the merge and `unset-active` behavior into this skill.
+
+### Summarize Chat
+- Reuse the canonical Summarize Chat workflow from `summarize-chat.md`.
+- Keep the command thin by routing status inference, spec creation, and section-writing discipline into this skill.
 
 ### Summarize PR
 - Reuse the canonical Summarize PR workflow from `summarize-pr.md`.

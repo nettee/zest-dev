@@ -305,6 +305,7 @@ test('zest-dev init integration', async (t) => {
       assert.ok(skillContent.includes('Commands should stay thin'));
       assert.ok(skillContent.includes('The canonical Compound workflow lives in `compound.md`.'));
       assert.ok(skillContent.includes('The canonical Archive workflow lives in `archive.md`.'));
+      assert.ok(skillContent.includes('The canonical Summarize Chat workflow lives in `summarize-chat.md`.'));
       assert.ok(skillContent.includes('The canonical Summarize PR workflow lives in `summarize-pr.md`.'));
 
       for (const file of SKILL_PHASE_FILES) {
@@ -318,6 +319,11 @@ test('zest-dev init integration', async (t) => {
       const archiveWorkflow = fs.readFileSync(path.join(globalOpenCodeSkillsDir, 'zest-dev/archive.md'), 'utf-8');
       assert.ok(archiveWorkflow.includes('verify the active spec status is `implemented`'));
       assert.ok(archiveWorkflow.includes('run `zest-dev unset-active`'));
+
+      const summarizeChatWorkflow = fs.readFileSync(path.join(globalOpenCodeSkillsDir, 'zest-dev/summarize-chat.md'), 'utf-8');
+      assert.ok(summarizeChatWorkflow.includes('Infer the highest justified spec status'));
+      assert.ok(summarizeChatWorkflow.includes('Run `zest-dev set-active <spec-id>`.'));
+      assert.ok(summarizeChatWorkflow.includes('Run `zest-dev show active`'));
 
       const summarizePrWorkflow = fs.readFileSync(path.join(globalOpenCodeSkillsDir, 'zest-dev/summarize-pr.md'), 'utf-8');
       assert.ok(summarizePrWorkflow.includes('gh pr view <pr-number> --json title,body,state,files,commits'));
@@ -1044,6 +1050,13 @@ test('zest-dev prompt supports actual command set and summarize alias', () => {
     const summarizeAliasPrompt = runCommand('prompt summarize');
     const summarizeChatPrompt = runCommand('prompt summarize-chat');
     assert.equal(summarizeAliasPrompt, summarizeChatPrompt);
+    assert.ok(summarizeChatPrompt.includes('Follow the Zest Dev summarize-chat workflow'));
+    assert.equal(summarizeChatPrompt.trim().includes('\n'), false);
+
+    runInitArgs('--local');
+    const deployedSummarizeChat = readCommand('.opencode', 'zest-dev-summarize-chat.md');
+    assert.ok(stripFrontmatter(deployedSummarizeChat).includes('Follow the Zest Dev summarize-chat workflow'));
+    assert.equal(deployedSummarizeChat.includes('**Step 1:'), false);
   } finally {
     cleanup();
   }
