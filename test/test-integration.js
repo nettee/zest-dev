@@ -44,11 +44,6 @@ const THIN_COMMANDS = [
 ];
 const SKILL_PHASE_FILES = ['new.md', 'research.md', 'design.md', 'plan.md', 'implement.md'];
 const CODEX_SUBAGENTS = ['code-architect.toml', 'code-explorer.toml', 'code-reviewer.toml'];
-const LANGUAGE_ALIGNMENT_RULES = [
-  'Respond in the user\'s language by default, if user\'s language is not English.',
-  'Always respond in the user\'s language throughout the flow unless the user asks to switch languages.'
-];
-
 function cleanup(testDir = TEST_DIR) {
   if (fs.existsSync(testDir)) {
     fs.rmSync(testDir, { recursive: true, force: true });
@@ -128,6 +123,10 @@ function extractFrontmatter(content, filename) {
   const frontmatter = yaml.load(match[1]);
   assert.equal(typeof frontmatter, 'object', `${filename} frontmatter should be an object`);
   return frontmatter;
+}
+
+function stripFrontmatter(content) {
+  return content.replace(/^---\n[\s\S]*?\n---\n?/, '').trim();
 }
 
 function assertPluginResourceSymlinkAt(rootDir, name) {
@@ -275,7 +274,9 @@ test('zest-dev init integration', async (t) => {
     await t.test('default global init preserves opencode content rules', () => {
       for (const file of EXPECTED_COMMANDS) {
         const content = fs.readFileSync(path.join(globalOpenCodeCommandsDir, file), 'utf-8');
-        assert.ok(LANGUAGE_ALIGNMENT_RULES.some(rule => content.includes(rule)));
+        const body = stripFrontmatter(content);
+        assert.ok(body.length > 0, `${file} should have a body`);
+        assert.equal(body.includes('\n'), false, `${file} body should be a single sentence`);
       }
 
       const content = fs.readFileSync(path.join(globalOpenCodeCommandsDir, 'zest-dev-new.md'), 'utf-8');
@@ -959,14 +960,13 @@ test('zest-dev prompt archive integration', () => {
 
   try {
     const prompt = runCommand('prompt archive');
-    assert.ok(prompt.includes('Archive Active Change Spec'));
-    assert.ok(prompt.includes('zest-dev show active'));
-    assert.ok(prompt.includes('zest-dev unset-active'));
+    assert.ok(prompt.includes('Follow the Zest Dev archive flow'));
+    assert.equal(prompt.trim().includes('\n'), false);
     assert.equal(prompt.includes('zest-dev archive active --no-merge'), false);
 
     runInitArgs('--local');
     const deployedArchive = readCommand('.opencode', 'zest-dev-archive.md');
-    assert.ok(deployedArchive.includes('zest-dev unset-active'));
+    assert.ok(stripFrontmatter(deployedArchive).includes('Follow the Zest Dev archive flow'));
     assert.equal(deployedArchive.includes('zest-dev archive active --no-merge'), false);
   } finally {
     cleanup();
@@ -978,19 +978,17 @@ test('zest-dev prompt supports actual command set and summarize alias', () => {
 
   try {
     const quickPrompt = runCommand('prompt quick-implement test feature');
-    assert.ok(quickPrompt.includes('Thin bridge entrypoint'));
+    assert.ok(quickPrompt.includes('Follow the remaining Zest Dev flow end-to-end'));
     assert.ok(quickPrompt.includes('test feature'));
-    assert.ok(quickPrompt.includes('use the Plan phase\'s AFK/HITL step summary'));
+    assert.equal(quickPrompt.trim().includes('\n'), false);
 
     const planPrompt = runCommand('prompt plan');
-    assert.ok(planPrompt.includes('Run Zest Dev **Plan** phase workflow.'));
+    assert.ok(planPrompt.includes('advance the active spec to planned'));
+    assert.equal(planPrompt.trim().includes('\n'), false);
 
     const draftPrompt = runCommand('prompt draft');
-    assert.ok(draftPrompt.includes('Bridge entrypoint into the Zest Dev skill.'));
-    assert.ok(draftPrompt.includes('guide the user to `/implement` as the next explicit step'));
-    assert.ok(draftPrompt.includes('run `zest-dev update active researched`'));
-    assert.ok(draftPrompt.includes('run `zest-dev update active designed`'));
-    assert.ok(draftPrompt.includes('run `zest-dev update active planned`'));
+    assert.ok(draftPrompt.includes('capture this discussion into a spec at the highest justified status'));
+    assert.equal(draftPrompt.trim().includes('\n'), false);
 
     const summarizeAliasPrompt = runCommand('prompt summarize');
     const summarizeChatPrompt = runCommand('prompt summarize-chat');
@@ -1005,15 +1003,14 @@ test('zest-dev prompt implement supports incremental phases', () => {
 
   try {
     const prompt = runCommand('prompt implement');
-    assert.ok(prompt.includes('Run Zest Dev **Implement** phase workflow.'));
-    assert.equal(prompt.includes('**Step 1:'), false);
-    assert.equal(prompt.includes('Treat this command as a request'), false);
+    assert.ok(prompt.includes('advance the active spec to implemented'));
+    assert.equal(prompt.trim().includes('\n'), false);
 
     runInitArgs('--local');
     const deployedImplement = readCommand('.opencode', 'zest-dev-implement.md');
-    assert.ok(deployedImplement.includes('Run Zest Dev **Implement** phase workflow.'));
-    assert.equal(deployedImplement.includes('**Step 1:'), false);
-    assert.equal(deployedImplement.includes('Treat this command as a request'), false);
+    const deployedBody = stripFrontmatter(deployedImplement);
+    assert.ok(deployedBody.includes('advance the active spec to implemented'));
+    assert.equal(deployedBody.includes('\n'), false);
   } finally {
     cleanup();
   }
