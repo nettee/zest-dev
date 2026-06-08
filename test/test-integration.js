@@ -661,6 +661,47 @@ test('zest-dev status integration', async (t) => {
       assert.ok(fs.existsSync(path.join(TEST_DIR, 'specs/change', secondSpecDir, 'steps.md')));
     });
 
+    await t.test('legacy README-backed spec remains readable and updatable', () => {
+      const legacySpecId = '20240101-legacy-spec';
+      const legacySpecDir = path.join(TEST_DIR, 'specs/change', legacySpecId);
+      const legacyReadmePath = path.join(legacySpecDir, 'README.md');
+
+      fs.mkdirSync(legacySpecDir, { recursive: true });
+      fs.writeFileSync(
+        legacyReadmePath,
+        `---
+id: "${legacySpecId}"
+name: "Legacy Spec"
+status: designed
+created: "2024-01-01"
+---
+
+## Overview
+`,
+        'utf-8'
+      );
+
+      runCommand(`set-active ${legacySpecId}`);
+
+      const status = yaml.load(runStatus());
+      assert.equal(status.specs_count, 3);
+      assert.equal(status.active_change.id, legacySpecId);
+      assert.equal(status.active_change.path, path.join('specs/change', legacySpecId, 'README.md'));
+      assert.equal(status.active_change.status, 'designed');
+
+      const updateResult = yaml.load(runCommand(`update ${legacySpecId} implemented`));
+      assert.equal(updateResult.ok, true);
+      assert.equal(updateResult.spec.id, legacySpecId);
+      assert.equal(updateResult.status.from, 'designed');
+      assert.equal(updateResult.status.to, 'implemented');
+
+      const updatedContent = fs.readFileSync(legacyReadmePath, 'utf-8');
+      const updatedFrontmatter = extractFrontmatter(updatedContent, `specs/change/${legacySpecId}/README.md`);
+      assert.equal(updatedFrontmatter.status, 'implemented');
+
+      fs.rmSync(legacySpecDir, { recursive: true, force: true });
+    });
+
     await t.test('status shows dangling active symlink with null fields', () => {
       const missingSpecId = '19990101-removed-spec';
       createDanglingActiveSymlink(missingSpecId);
