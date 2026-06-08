@@ -931,6 +931,45 @@ See [steps.md](./steps.md).
       );
     });
 
+    await t.test('falls back to legacy Notes Progress items for active planned specs', () => {
+      cleanup();
+      setup();
+      createActiveSpecWithBody('ralph-legacy-progress', `---
+id: test-ralph-legacy-progress
+name: Ralph Legacy Progress
+status: planned
+created: '2026-06-04'
+---
+
+## Overview
+
+Legacy spec.
+
+## Notes
+
+### Progress
+
+- [ ] Step 1: Preserve legacy Ralph handoff
+- [x] Step 2: Already complete
+- [ ] Step 3: Keep split layout support
+
+### Decisions
+
+- Use the split spec layout for new specs.
+`);
+
+      const output = yaml.load(runCommandWithEnv('ralph', TEST_DIR, makeFakeRalphEnv()));
+      const tasks = readFakeRalphTasks();
+
+      assert.equal(output.ok, true);
+      assert.deepEqual(tasks, [
+        'Step 1: Preserve legacy Ralph handoff',
+        'Step 3: Keep split layout support',
+        'Make sure all tasks are done in ralph loops, and then create PR'
+      ]);
+      assert.deepEqual(output.tasks_added, tasks);
+    });
+
     await t.test('fails when all Progress items are complete', () => {
       cleanup();
       setup();
