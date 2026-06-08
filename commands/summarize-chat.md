@@ -50,30 +50,30 @@ Example: "Plugin deployment script" → "plugin-deployment-script"
 Execute: `zest-dev create <spec-slug>`
 
 This will:
-- Create the spec file in `specs/change/`
+- Create the split spec layout in `specs/change/`
 - Generate unique ID and frontmatter
-- Initialize empty sections
+- Initialize the main spec file and supporting files
 
 **Step 4: Fill Spec Sections**
 
-Read the created spec file from `specs/change/`.
+Read the created main `spec.md`, `design.md`, and `implementation.md` files from `specs/change/`.
 
 Fill sections based on the status:
 
-**For all statuses - Fill Overview section:**
+**For all statuses - Fill `spec.md` → Overview section:**
 - **Problem Statement**: What problem was being solved and why it matters
 - **Goals**: What the feature should accomplish
 - **Scope**: What's included and what's excluded
 - **Constraints**: Technical limitations or requirements
 - **Success Criteria**: How to measure success
 
-**If status is "researched" or later - Fill Research section:**
+**If status is "researched" or later - Fill `design.md` → Research section:**
 - Follow the canonical Research rules from the Zest Dev skill
 - Facts only; do not backfill design recommendations into Research
 - Every finding must include a fact source from code, database artifacts, or documentation
 - Reuse sources already present in the conversation/worklog when possible
 
-**If status is "designed" or later - Fill Design section:**
+**If status is "designed" or later - Fill `design.md` → Design section:**
 - Follow the canonical Design rules from the Zest Dev skill
 - List all meaningful design decisions and attach fact sources
 - Include the matching test strategy alongside the implementation design
@@ -84,12 +84,12 @@ Fill sections based on the status:
 - Reference the slicing spirit of Matt Pocock's registered `to-issues` skill, but keep the output inside `## Plan`
 - Do not create GitHub issues or external issue-tracker entries unless the user explicitly asks for that
 - Do not use markdown checkboxes in `## Plan`
-- Add or update `## Notes` → `### Progress` with one thin checkbox per Plan step
+- Add or update `spec.md` → `## Progress` with one thin checkbox per Plan step
 
-**If status is "implemented" - Fill Notes section:**
-- `### Progress`: Step completion checkboxes
-- `### Implementation`: What was built, files changed, and design deviations
-- `### Verification`: Tests written/run, results, manual validation, and relevant fix-and-rerun notes
+**If status is "implemented" - Fill implementation records:**
+- `spec.md` → `## Progress`: Step completion checkboxes
+- `implementation.md` → `## Implementation`: What was built, files changed, and design deviations
+- `implementation.md` → `## Verification`: Tests written/run, results, manual validation, and relevant fix-and-rerun notes
 - Only treat work as implemented when the relevant tests were actually run and passed
 
 **Step 5: Update Spec Status**
@@ -101,9 +101,9 @@ Use `zest-dev update` for status transitions (do not edit frontmatter manually):
 - If inferred status is `planned`: execute `zest-dev update active planned`
 - If inferred status is `implemented`: execute `zest-dev update active implemented`
 
-**Step 6: Add Notes Section**
+**Step 6: Add Implementation Context**
 
-Add relevant notes:
+Add relevant implementation context:
 - Design decisions and their rationale
 - Challenges encountered and how they were solved
 - Alternative approaches considered and why they weren't chosen
@@ -138,7 +138,7 @@ User has been coding a deployment script:
 2. Created spec: `zest-dev create plugin-deployment-script`
 3. Filled all sections from Overview through Implementation
 4. Marked implementation tasks as `[x]` completed
-5. Added Implementation Summary with file changes and test results
+5. Added implementation summary with file changes and test results
 6. Set status to "implemented"
 7. Added notes about design decisions and future enhancements
 

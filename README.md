@@ -138,18 +138,17 @@ project/
 ├── specs/
 │   ├── change/
 │       ├── 20260224-init-project/
-│       │   └── spec.md
+│       │   ├── spec.md
+│       │   ├── design.md
+│       │   └── implementation.md
 │       ├── 20260225-feature-name/
-│       │   └── spec.md
+│       │   ├── spec.md
+│       │   ├── design.md
+│       │   └── implementation.md
 │       └── active -> 20260225-feature-name (symlink)
 │   └── current/
 │       └── implementation.md
-└── .zest-dev/
-    └── template/
-        └── spec.md
 ```
-
-Create a custom spec template at `.zest-dev/template/spec.md`.
 
 ## References
 

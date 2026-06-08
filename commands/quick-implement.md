@@ -81,7 +81,7 @@ After implementation, review the result, address critical issues, and confirm wh
 
 ---
 
-## Important Notes
+## Important Guidance
 
 - This command is intentionally thin.
 - It reuses the Zest Dev skill's canonical phase workflows.
