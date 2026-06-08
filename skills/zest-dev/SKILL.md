@@ -16,6 +16,8 @@ This skill is the **canonical workflow source** for planned feature work:
 - `design`
 - `plan`
 - `implement`
+- `archive`
+- `summarize-pr`
 
 Commands should stay thin. They exist as explicit entrypoints and compatibility shims. The actual phase logic lives here.
 
@@ -25,6 +27,8 @@ To keep this file concise, the detailed workflows live in sibling phase docs:
 - `design.md`
 - `plan.md`
 - `implement.md`
+- `archive.md`
+- `summarize-pr.md`
 
 **Core principle:** keep workflow intelligence in the skill, keep commands lightweight.
 
@@ -34,6 +38,8 @@ Use this skill when the user:
 - asks to create a spec or write a spec
 - mentions Zest Dev or spec-driven development
 - asks to enter a workflow phase such as new, research, design, plan, or implement
+- asks to archive an implemented spec into `specs/current/`
+- asks to summarize a GitHub PR into a spec
 - wants to continue an active change spec
 - uses a thin command that explicitly routes into this skill
 
@@ -84,6 +90,8 @@ Examples:
 - `/zest-dev:design`
 - `/zest-dev:plan`
 - `/zest-dev:implement`
+- `/zest-dev:archive`
+- `/zest-dev:summarize-pr`
 
 Interpret the command as a request to run the corresponding phase in this skill.
 
@@ -100,7 +108,7 @@ Infer the intended phase from user intent and current spec status.
 
 ### 3. Bridge entry
 
-Composite commands such as `draft` and `quick-implement` should use this skill's core phases instead of re-describing thick workflows themselves.
+Composite commands such as `draft`, `quick-implement`, `archive`, and `summarize-pr` should use this skill's workflows instead of re-describing thick workflows themselves.
 
 ## Workflow Overview
 
@@ -137,6 +145,12 @@ Use when the design is ready to turn into issue-scale implementation steps.
 ### Implement phase
 Use when the plan is ready for coding.
 
+### Archive workflow
+Use when an implemented active change spec should be merged into `specs/current/` and then unset.
+
+### Summarize PR workflow
+Use when a completed GitHub PR should be captured as a post-hoc implemented spec.
+
 ## Canonical Phase Workflow Files
 
 ### New
@@ -159,6 +173,14 @@ Use when the plan is ready for coding.
 - The canonical Implement workflow lives in `implement.md`.
 - Use it for implementation, test writing, notes updates, and status advancement to `implemented` only when the full plan is complete.
 
+### Archive
+- The canonical Archive workflow lives in `archive.md`.
+- Use it to verify the active spec is `implemented`, merge its content into `specs/current/`, and then run `zest-dev unset-active`.
+
+### Summarize PR
+- The canonical Summarize PR workflow lives in `summarize-pr.md`.
+- Use it to fetch PR metadata, create and activate a spec, fill it from the PR, and mark it `implemented` only after the spec content is written.
+
 ## Bridge Workflows
 
 ### Draft
@@ -171,6 +193,14 @@ Use when the plan is ready for coding.
 - Run the remaining core phases in order.
 - Keep explicit checkpoints for confirming new requirements and moving from Plan to Implement.
 - Reuse the canonical phase rules from this skill instead of embedding separate thick instructions.
+
+### Archive
+- Reuse the canonical Archive workflow from `archive.md`.
+- Keep the command thin by routing the merge and `unset-active` behavior into this skill.
+
+### Summarize PR
+- Reuse the canonical Summarize PR workflow from `summarize-pr.md`.
+- Keep the command thin by routing GitHub fetch, spec creation, and implemented-status guidance into this skill.
 
 ## Content Guidance Ownership
 

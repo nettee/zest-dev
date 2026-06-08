@@ -303,10 +303,20 @@ test('zest-dev init integration', async (t) => {
       const skillContent = fs.readFileSync(opencodeSkillPath, 'utf-8');
       assert.ok(skillContent.includes('This skill is the **canonical workflow source**'));
       assert.ok(skillContent.includes('Commands should stay thin'));
+      assert.ok(skillContent.includes('The canonical Archive workflow lives in `archive.md`.'));
+      assert.ok(skillContent.includes('The canonical Summarize PR workflow lives in `summarize-pr.md`.'));
 
       for (const file of SKILL_PHASE_FILES) {
         assert.ok(fs.existsSync(path.join(globalOpenCodeSkillsDir, 'zest-dev', file)));
       }
+
+      const archiveWorkflow = fs.readFileSync(path.join(globalOpenCodeSkillsDir, 'zest-dev/archive.md'), 'utf-8');
+      assert.ok(archiveWorkflow.includes('verify the active spec status is `implemented`'));
+      assert.ok(archiveWorkflow.includes('run `zest-dev unset-active`'));
+
+      const summarizePrWorkflow = fs.readFileSync(path.join(globalOpenCodeSkillsDir, 'zest-dev/summarize-pr.md'), 'utf-8');
+      assert.ok(summarizePrWorkflow.includes('gh pr view <pr-number> --json title,body,state,files,commits'));
+      assert.ok(summarizePrWorkflow.includes('run `zest-dev update active implemented`'));
 
       const researchPhase = fs.readFileSync(path.join(globalOpenCodeSkillsDir, 'zest-dev/research.md'), 'utf-8');
       assert.ok(researchPhase.includes('Summarize your understanding of the request and confirm it with the user'));
@@ -968,6 +978,24 @@ test('zest-dev prompt archive integration', () => {
     const deployedArchive = readCommand('.opencode', 'zest-dev-archive.md');
     assert.ok(stripFrontmatter(deployedArchive).includes('Follow the Zest Dev archive flow'));
     assert.equal(deployedArchive.includes('zest-dev archive active --no-merge'), false);
+  } finally {
+    cleanup();
+  }
+});
+
+test('zest-dev prompt summarize-pr integration', () => {
+  setup();
+
+  try {
+    const prompt = runCommand('prompt summarize-pr 123');
+    assert.ok(prompt.includes('Follow the Zest Dev summarize-pr workflow'));
+    assert.ok(prompt.includes('123'));
+    assert.equal(prompt.trim().includes('\n'), false);
+
+    runInitArgs('--local');
+    const deployedPrompt = readCommand('.opencode', 'zest-dev-summarize-pr.md');
+    assert.ok(stripFrontmatter(deployedPrompt).includes('Follow the Zest Dev summarize-pr workflow'));
+    assert.equal(deployedPrompt.includes('**Step 1:'), false);
   } finally {
     cleanup();
   }
