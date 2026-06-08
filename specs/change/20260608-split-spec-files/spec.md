@@ -76,7 +76,7 @@ Change each new Spec from a single large `spec.md` into a small review-oriented 
 - Decision: Preserve the main Spec's workflow section order. `## Research` and `## Design` remain in their original positions in `spec.md`, but each section contains only a link to `design.md`. Source: user decision; `lib/template/spec.md:8-24`; `skills/zest-dev/SKILL.md:177-182`
 - Decision: Keep separate `## Research` and `## Design` sections inside `design.md` so factual research and design decisions remain distinct even though they share one supporting file. Source: user decision; `skills/zest-dev/research.md:17-27`; `skills/zest-dev/design.md:24-39`
 - Decision: Remove `Notes` as a section name everywhere in the new layout. Main `spec.md` gets a `## Implementation` section that references `steps.md`; implementation and verification process detail is fused inside step-specific sections in that supporting file. Source: user decision; `lib/template/spec.md:24-30`; `skills/zest-dev/implement.md:17-21`
-- Decision: Main `spec.md` should not use bare link text such as `[Design and research](./design.md)`. Supporting-file references should read naturally, such as `详见 design.md`. Source: user decision; `lib/template/spec.md:12-30`
+- Decision: Main `spec.md` should not use bare link text such as `[Design and research](./design.md)`. Supporting-file references should read naturally in English, such as `See design.md`. Source: user decision; `lib/template/spec.md:12-30`
 
 ### System Structure
 
@@ -103,11 +103,11 @@ created: "<date>"
 
 ## Research
 
-详见 [design.md](./design.md)。
+See [design.md](./design.md).
 
 ## Design
 
-详见 [design.md](./design.md)。
+See [design.md](./design.md).
 
 ## Plan
 
@@ -115,7 +115,7 @@ created: "<date>"
 
 ## Implementation
 
-详见 [steps.md](./steps.md)。
+See [steps.md](./steps.md).
 ```
 
 Supporting file responsibilities:
@@ -206,4 +206,4 @@ Depends on: Step 2, Step 3
 
 ## Implementation
 
-详见 [steps.md](./steps.md)。
+See [steps.md](./steps.md).

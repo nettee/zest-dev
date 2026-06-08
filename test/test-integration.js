@@ -545,12 +545,12 @@ test('zest-dev create integration', async (t) => {
       assert.equal(typeof frontmatter.created, 'string');
       assert.ok(content.includes('## Overview'), 'should use packaged default template');
       assert.ok(content.includes('## Research'), 'should include Research section');
-      assert.ok(content.includes('详见 [design.md](./design.md)。'), 'should reference design file naturally');
+      assert.ok(content.includes('See [design.md](./design.md).'), 'should reference design file naturally');
       assert.ok(content.includes('## Design'), 'should include Design section');
       assert.ok(content.includes('## Plan'), 'should include Plan section');
       assert.ok(content.includes('## Progress'), 'should include Progress section');
       assert.ok(content.includes('## Implementation'), 'should include Implementation section');
-      assert.ok(content.includes('详见 [steps.md](./steps.md)。'), 'should reference steps file naturally');
+      assert.ok(content.includes('See [steps.md](./steps.md).'), 'should reference steps file naturally');
       assert.equal(
         content.includes('Optional completion checklist, created during Plan and updated during Implement.'),
         false,
@@ -898,7 +898,7 @@ Test spec.
 
 ## Implementation
 
-详见 [steps.md](./steps.md)。
+See [steps.md](./steps.md).
 
 `);
       const staleFile = path.join(TEST_DIR, '.ralph', 'stale.txt');
@@ -978,7 +978,7 @@ created: '2026-06-04'
 
 ## Implementation
 
-详见 [steps.md](./steps.md)。
+See [steps.md](./steps.md).
 
 `);
 

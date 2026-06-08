@@ -11,11 +11,11 @@ created: "{date}"
 
 ## Research
 
-详见 [design.md](./design.md)。
+See [design.md](./design.md).
 
 ## Design
 
-详见 [design.md](./design.md)。
+See [design.md](./design.md).
 
 ## Plan
 
@@ -25,4 +25,4 @@ created: "{date}"
 
 ## Implementation
 
-详见 [steps.md](./steps.md)。
+See [steps.md](./steps.md).
