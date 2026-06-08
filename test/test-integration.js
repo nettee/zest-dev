@@ -4,6 +4,7 @@ const assert = require('node:assert/strict');
 const { test } = require('node:test');
 const { execSync } = require('child_process');
 const yaml = require('js-yaml');
+const { FINAL_RALPH_TASK } = require('../lib/ralph-setup');
 
 const PACKAGE_CLI_BIN = process.env.ZEST_DEV_CLI_PATH
   ? path.join(
@@ -914,7 +915,7 @@ See [steps.md](./steps.md).
       assert.deepEqual(tasks, [
         'Step 1: Parse active Progress into task text',
         'Step 3: Write implement prompt file',
-        'Make sure all tasks are done in ralph loops, and then create PR'
+        FINAL_RALPH_TASK
       ]);
       assert.deepEqual(output.tasks_added, tasks);
       assert.equal('ralph_results' in output, false);
@@ -965,7 +966,7 @@ Legacy spec.
       assert.deepEqual(tasks, [
         'Step 1: Preserve legacy Ralph handoff',
         'Step 3: Keep split layout support',
-        'Make sure all tasks are done in ralph loops, and then create PR'
+        FINAL_RALPH_TASK
       ]);
       assert.deepEqual(output.tasks_added, tasks);
     });
