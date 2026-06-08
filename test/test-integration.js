@@ -303,12 +303,17 @@ test('zest-dev init integration', async (t) => {
       const skillContent = fs.readFileSync(opencodeSkillPath, 'utf-8');
       assert.ok(skillContent.includes('This skill is the **canonical workflow source**'));
       assert.ok(skillContent.includes('Commands should stay thin'));
+      assert.ok(skillContent.includes('The canonical Compound workflow lives in `compound.md`.'));
       assert.ok(skillContent.includes('The canonical Archive workflow lives in `archive.md`.'));
       assert.ok(skillContent.includes('The canonical Summarize PR workflow lives in `summarize-pr.md`.'));
 
       for (const file of SKILL_PHASE_FILES) {
         assert.ok(fs.existsSync(path.join(globalOpenCodeSkillsDir, 'zest-dev', file)));
       }
+
+      const compoundWorkflow = fs.readFileSync(path.join(globalOpenCodeSkillsDir, 'zest-dev/compound.md'), 'utf-8');
+      assert.ok(compoundWorkflow.includes('Run `zest-dev status`'));
+      assert.ok(compoundWorkflow.includes('specs/solutions/'));
 
       const archiveWorkflow = fs.readFileSync(path.join(globalOpenCodeSkillsDir, 'zest-dev/archive.md'), 'utf-8');
       assert.ok(archiveWorkflow.includes('verify the active spec status is `implemented`'));
@@ -978,6 +983,24 @@ test('zest-dev prompt archive integration', () => {
     const deployedArchive = readCommand('.opencode', 'zest-dev-archive.md');
     assert.ok(stripFrontmatter(deployedArchive).includes('Follow the Zest Dev archive flow'));
     assert.equal(deployedArchive.includes('zest-dev archive active --no-merge'), false);
+  } finally {
+    cleanup();
+  }
+});
+
+test('zest-dev prompt compound integration', () => {
+  setup();
+
+  try {
+    const prompt = runCommand('prompt compound cache invalidation');
+    assert.ok(prompt.includes('Follow the Zest Dev compound workflow'));
+    assert.ok(prompt.includes('cache invalidation'));
+    assert.equal(prompt.trim().includes('\n'), false);
+
+    runInitArgs('--local');
+    const deployedPrompt = readCommand('.opencode', 'zest-dev-compound.md');
+    assert.ok(stripFrontmatter(deployedPrompt).includes('Follow the Zest Dev compound workflow'));
+    assert.equal(deployedPrompt.includes('## Step 1:'), false);
   } finally {
     cleanup();
   }

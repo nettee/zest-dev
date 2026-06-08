@@ -16,6 +16,7 @@ This skill is the **canonical workflow source** for planned feature work:
 - `design`
 - `plan`
 - `implement`
+- `compound`
 - `archive`
 - `summarize-pr`
 
@@ -27,6 +28,7 @@ To keep this file concise, the detailed workflows live in sibling phase docs:
 - `design.md`
 - `plan.md`
 - `implement.md`
+- `compound.md`
 - `archive.md`
 - `summarize-pr.md`
 
@@ -38,6 +40,7 @@ Use this skill when the user:
 - asks to create a spec or write a spec
 - mentions Zest Dev or spec-driven development
 - asks to enter a workflow phase such as new, research, design, plan, or implement
+- asks to preserve durable project knowledge from the current session
 - asks to archive an implemented spec into `specs/current/`
 - asks to summarize a GitHub PR into a spec
 - wants to continue an active change spec
@@ -90,6 +93,7 @@ Examples:
 - `/zest-dev:design`
 - `/zest-dev:plan`
 - `/zest-dev:implement`
+- `/zest-dev:compound`
 - `/zest-dev:archive`
 - `/zest-dev:summarize-pr`
 
@@ -108,7 +112,7 @@ Infer the intended phase from user intent and current spec status.
 
 ### 3. Bridge entry
 
-Composite commands such as `draft`, `quick-implement`, `archive`, and `summarize-pr` should use this skill's workflows instead of re-describing thick workflows themselves.
+Composite commands such as `draft`, `quick-implement`, `compound`, `archive`, and `summarize-pr` should use this skill's workflows instead of re-describing thick workflows themselves.
 
 ## Workflow Overview
 
@@ -145,6 +149,9 @@ Use when the design is ready to turn into issue-scale implementation steps.
 ### Implement phase
 Use when the plan is ready for coding.
 
+### Compound workflow
+Use when useful session knowledge should be written into `specs/solutions/` or attached to a change spec as a permanent record.
+
 ### Archive workflow
 Use when an implemented active change spec should be merged into `specs/current/` and then unset.
 
@@ -173,6 +180,10 @@ Use when a completed GitHub PR should be captured as a post-hoc implemented spec
 - The canonical Implement workflow lives in `implement.md`.
 - Use it for implementation, test writing, notes updates, and status advancement to `implemented` only when the full plan is complete.
 
+### Compound
+- The canonical Compound workflow lives in `compound.md`.
+- Use it to inspect spec state, choose the right permanent destination, and write a concise knowledge document without inventing details.
+
 ### Archive
 - The canonical Archive workflow lives in `archive.md`.
 - Use it to verify the active spec is `implemented`, merge its content into `specs/current/`, and then run `zest-dev unset-active`.
@@ -193,6 +204,10 @@ Use when a completed GitHub PR should be captured as a post-hoc implemented spec
 - Run the remaining core phases in order.
 - Keep explicit checkpoints for confirming new requirements and moving from Plan to Implement.
 - Reuse the canonical phase rules from this skill instead of embedding separate thick instructions.
+
+### Compound
+- Reuse the canonical Compound workflow from `compound.md`.
+- Keep the command thin by routing storage-choice and durable-document guidance into this skill.
 
 ### Archive
 - Reuse the canonical Archive workflow from `archive.md`.
