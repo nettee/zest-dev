@@ -13,8 +13,12 @@ The review-oriented `spec.md` file inside a Spec. It keeps the workflow section 
 _Avoid_: full spec, source of truth file
 
 **Spec Supporting File**:
-A Markdown file inside a Spec directory that carries lower-review-frequency workflow detail, such as design research or implementation notes.
+A Markdown file inside a Spec directory that carries lower-review-frequency workflow detail, such as design research or step-by-step implementation records.
 _Avoid_: appendix, attachment
+
+**Steps File**:
+The `steps.md` Spec Supporting File that records implementation and verification by Plan Step. It does not split implementation and verification into separate global sections.
+_Avoid_: implementation log, verification log
 
 **Spec Template**:
 The built-in Markdown skeletons used by the CLI to create a new Spec layout. They define initial sections with brief placeholders, not examples, subsection templates, or detailed writing guidance.

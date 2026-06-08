@@ -179,7 +179,7 @@ Concrete section-writing guidance lives in the phase files:
 - `research.md` defines how to write `design.md` → `## Research`.
 - `design.md` defines how to write `design.md` → `## Design`.
 - `plan.md` defines how to write `spec.md` → `## Plan` and `## Progress`.
-- `implement.md` defines how to update `spec.md` → `## Progress` and write `implementation.md`.
+- `implement.md` defines how to update `spec.md` → `## Progress` and write `steps.md`.
 
 ## Guardrails
 

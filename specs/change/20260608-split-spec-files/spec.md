@@ -61,21 +61,22 @@ Success criteria:
 
 ### Design Summary
 
-Change each new Spec from a single large `spec.md` into a small review-oriented main file plus supporting Markdown files in the same Spec directory. The main `spec.md` remains the lifecycle and review entrypoint, preserves the familiar workflow section order, and uses links where detail moves out. Research and Design move together into `design.md`; implementation and verification notes move into `implementation.md`; Progress becomes a top-level peer of Plan in the main file.
+Change each new Spec from a single large `spec.md` into a small review-oriented main file plus supporting Markdown files in the same Spec directory. The main `spec.md` remains the lifecycle and review entrypoint, preserves the familiar workflow section order, and uses natural-language links where detail moves out. Research and Design move together into `design.md`; implementation and verification records move into `steps.md` and are organized by Plan step; Progress becomes a top-level peer of Plan in the main file.
 
 ### Design Decisions
 
 - Decision: Treat `spec.md` as the review entrypoint, not the complete storage location for every workflow detail. It must keep frontmatter and Overview, and should stay concise for review. Source: user decision; https://github.com/nettee/zest-dev/issues/74; `CONTEXT.md:7-17`
 - Decision: Keep Plan and Progress in the main `spec.md`, with Progress promoted out of Notes to a Plan-level peer because both are necessary during implementation handoff. Source: user decision; `skills/zest-dev/plan.md:28-65`; `lib/ralph-setup.js:27-67,91-106`
 - Decision: Move both Research and Design into `design.md`, because after planning these are low-frequency review material. Source: user decision; `skills/zest-dev/research.md:17-27`; `skills/zest-dev/design.md:24-39`
-- Decision: Move implementation and verification notes into lowercase `implementation.md`, keeping execution history separate from review-critical content. Source: user decision; `lib/template/spec.md:24-34`; `.zest-dev/template/spec.md:47-57`
+- Decision: Move implementation and verification records into lowercase `steps.md`, keeping execution history separate from review-critical content and aligning each record section with the corresponding Plan step. Source: user decision; `lib/template/spec.md:24-30`; `lib/template/steps.md:1-5`
 - Decision: Remove custom Spec template support and always use the built-in template layout. This avoids preserving a user-defined single-file layout that contradicts the new canonical split layout. Source: user decision; `lib/spec-manager.js:206-220`; `test/test-integration.js:557-596`
 - Decision: Do not automatically migrate old single-file Specs and do not preserve compatibility for old layouts in this change. New Specs use the new layout; existing historical Specs are not part of the supported workflow surface for this feature. Source: user decision; `README.md:134-152`; `lib/spec-manager.js:136-148`
 - Decision: Treat only the main `spec.md` as required by CLI lifecycle operations. Supporting files are created by the normal new-Spec flow and linked from the main Spec, but commands do not need special missing-file validation beyond the files they actually read or write. Source: user decision; `lib/spec-manager.js:154-181,322-357`
 - Decision: Do not enhance `zest-dev show` to list supporting files. The main `spec.md` remains the only entrypoint, and supporting files are discovered through links from `spec.md` to preserve progressive disclosure. Source: user decision; `bin/zest-dev.js:149-161`; `lib/spec-manager.js:154-181`
 - Decision: Preserve the main Spec's workflow section order. `## Research` and `## Design` remain in their original positions in `spec.md`, but each section contains only a link to `design.md`. Source: user decision; `lib/template/spec.md:8-24`; `skills/zest-dev/SKILL.md:177-182`
 - Decision: Keep separate `## Research` and `## Design` sections inside `design.md` so factual research and design decisions remain distinct even though they share one supporting file. Source: user decision; `skills/zest-dev/research.md:17-27`; `skills/zest-dev/design.md:24-39`
-- Decision: Remove `Notes` as a section name everywhere in the new layout. Main `spec.md` gets a `## Implementation` section that links to `implementation.md`; implementation and verification process detail lives in that supporting file. Source: user decision; `lib/template/spec.md:24-34`; `skills/zest-dev/implement.md:17-18`
+- Decision: Remove `Notes` as a section name everywhere in the new layout. Main `spec.md` gets a `## Implementation` section that references `steps.md`; implementation and verification process detail is fused inside step-specific sections in that supporting file. Source: user decision; `lib/template/spec.md:24-30`; `skills/zest-dev/implement.md:17-21`
+- Decision: Main `spec.md` should not use bare link text such as `[Design and research](./design.md)`. Supporting-file references should read naturally, such as `详见 design.md`. Source: user decision; `lib/template/spec.md:12-30`
 
 ### System Structure
 
@@ -85,7 +86,7 @@ New Spec directory layout:
 specs/change/<YYYYMMDD-slug>/
 ├── spec.md
 ├── design.md
-└── implementation.md
+└── steps.md
 ```
 
 Main `spec.md` layout:
@@ -102,11 +103,11 @@ created: "<date>"
 
 ## Research
 
-[Design and research](./design.md)
+详见 [design.md](./design.md)。
 
 ## Design
 
-[Design and research](./design.md)
+详见 [design.md](./design.md)。
 
 ## Plan
 
@@ -114,12 +115,12 @@ created: "<date>"
 
 ## Implementation
 
-[Implementation notes](./implementation.md)
+详见 [steps.md](./steps.md)。
 ```
 
 Supporting file responsibilities:
 - `design.md`: `## Research` for facts and fact sources, followed by `## Design` for decisions, trade-offs, and verification strategy.
-- `implementation.md`: implementation notes, files changed, deviations from design, and verification results.
+- `steps.md`: one section per Plan step, combining implementation notes, files changed, deviations from design, and verification results for that step.
 
 ### Interfaces / APIs
 
@@ -130,7 +131,7 @@ Supporting file responsibilities:
   - New phase: Overview in `spec.md`.
   - Research and Design phases: `design.md`.
   - Plan phase: Plan and Progress in `spec.md`.
-  - Implement phase: Progress in `spec.md`, implementation/verification detail in `implementation.md`.
+  - Implement phase: Progress in `spec.md`, implementation/verification detail by Plan step in `steps.md`.
 
 ### Change Scope
 
@@ -142,9 +143,9 @@ Impact Areas:
 - The `Notes` section name is removed from templates, skills, command guidance, README examples, tests, and glossary language for the new workflow.
 
 Planned File Changes:
-- `lib/spec-manager.js`: remove custom template lookup; create built-in `spec.md`, `design.md`, and `implementation.md`; keep lifecycle status updates on main `spec.md`.
+- `lib/spec-manager.js`: remove custom template lookup; create built-in `spec.md`, `design.md`, and `steps.md`; keep lifecycle status updates on main `spec.md`.
 - `lib/template/spec.md`: replace single-file template content with the concise main Spec template.
-- Add built-in supporting templates under `lib/template/` for `design.md` and `implementation.md`.
+- Add built-in supporting templates under `lib/template/` for `design.md` and `steps.md`.
 - `.zest-dev/template/spec.md`: remove the repository custom template override.
 - `skills/zest-dev/*.md`: update phase instructions for the new file locations and source discipline.
 - `commands/summarize-chat.md` and `commands/summarize-pr.md`: update capture guidance for split files.
@@ -156,7 +157,7 @@ Planned File Changes:
 
 - Existing single-file Specs may still exist in the repository and in user projects, but this change does not provide automatic migration or compatibility behavior for them.
 - Missing supporting files do not need proactive CLI validation because `spec.md` remains the only required lifecycle file.
-- `implementation.md` uses lowercase by user decision; tests should lock the exact filename to avoid accidental drift.
+- `steps.md` uses lowercase by user decision; tests should lock the exact filename to avoid accidental drift.
 
 ### Verification Strategy
 
@@ -171,7 +172,7 @@ Planned File Changes:
 ### Step 1: Generate Split Spec Layout
 
 Type: AFK
-Goal: Make new Specs use the built-in split layout with `spec.md`, `design.md`, and `implementation.md`.
+Goal: Make new Specs use the built-in split layout with `spec.md`, `design.md`, and `steps.md`.
 Scope: Update template files, remove custom template override behavior, and update create-related tests/docs.
 Depends on: None
 
@@ -179,7 +180,7 @@ Depends on: None
 
 Type: AFK
 Goal: Make Zest Dev phases and summarize commands write to the new section locations.
-Scope: Update `skills/zest-dev/*.md`, summarize command guidance, and deployed-content assertions so Research/Design go to `design.md`, Plan/Progress stay in `spec.md`, and implementation detail goes to `implementation.md`.
+Scope: Update `skills/zest-dev/*.md`, summarize command guidance, and deployed-content assertions so Research/Design go to `design.md`, Plan/Progress stay in `spec.md`, and implementation detail goes to `steps.md`.
 Depends on: Step 1
 
 ### Step 3: Update Progress Consumers
@@ -205,4 +206,4 @@ Depends on: Step 2, Step 3
 
 ## Implementation
 
-[Implementation notes](./implementation.md)
+详见 [steps.md](./steps.md)。

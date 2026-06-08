@@ -11,11 +11,11 @@ created: "{date}"
 
 ## Research
 
-[Design and research](./design.md)
+详见 [design.md](./design.md)。
 
 ## Design
 
-[Design and research](./design.md)
+详见 [design.md](./design.md)。
 
 ## Plan
 
@@ -25,4 +25,4 @@ created: "{date}"
 
 ## Implementation
 
-[Implementation notes](./implementation.md)
+详见 [steps.md](./steps.md)。

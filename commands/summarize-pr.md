@@ -26,13 +26,12 @@ zest-dev create <spec-slug>
 
 **Step 3: Fill split spec files**
 
-Read the created `spec.md`, `design.md`, and `implementation.md` files and fill sections. Keep content concise — omit subsections where there's insufficient context rather than padding with guesses.
+Read the created `spec.md`, `design.md`, and `steps.md` files and fill sections. Keep content concise — omit subsections where there's insufficient context rather than padding with guesses.
 
 - **`spec.md` → Overview**: What the PR does and why (from title + body). Skip subsections with no data.
 - **`design.md` → Design**: Key approach and files changed. Only if design context is available in the PR.
 - **`spec.md` → Progress**: Tasks as completed checkboxes.
-- **`implementation.md` → Implementation**: Files modified with line counts and implementation notes. Always fill this for real PRs.
-- **`implementation.md` → Verification**: Testing notes from the PR.
+- **`steps.md`**: One section per Plan step, combining files modified, implementation notes, and verification notes. Always fill this for real PRs.
 
 **Step 4: Update status**
 

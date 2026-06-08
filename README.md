@@ -140,14 +140,14 @@ project/
 │       ├── 20260224-init-project/
 │       │   ├── spec.md
 │       │   ├── design.md
-│       │   └── implementation.md
+│       │   └── steps.md
 │       ├── 20260225-feature-name/
 │       │   ├── spec.md
 │       │   ├── design.md
-│       │   └── implementation.md
+│       │   └── steps.md
 │       └── active -> 20260225-feature-name (symlink)
 │   └── current/
-│       └── implementation.md
+│       └── steps.md
 ```
 
 ## References

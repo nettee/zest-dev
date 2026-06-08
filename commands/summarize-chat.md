@@ -56,7 +56,7 @@ This will:
 
 **Step 4: Fill Spec Sections**
 
-Read the created main `spec.md`, `design.md`, and `implementation.md` files from `specs/change/`.
+Read the created main `spec.md`, `design.md`, and `steps.md` files from `specs/change/`.
 
 Fill sections based on the status:
 
@@ -88,8 +88,7 @@ Fill sections based on the status:
 
 **If status is "implemented" - Fill implementation records:**
 - `spec.md` → `## Progress`: Step completion checkboxes
-- `implementation.md` → `## Implementation`: What was built, files changed, and design deviations
-- `implementation.md` → `## Verification`: Tests written/run, results, manual validation, and relevant fix-and-rerun notes
+- `steps.md`: One section per Plan step, combining what was built, files changed, design deviations, tests run, and validation results for that step
 - Only treat work as implemented when the relevant tests were actually run and passed
 
 **Step 5: Update Spec Status**

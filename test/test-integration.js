@@ -529,14 +529,14 @@ test('zest-dev create integration', async (t) => {
       const specDir = path.join(CREATE_TEST_DIR, `specs/change/${specId}`);
       const specPath = path.join(specDir, 'spec.md');
       const designPath = path.join(specDir, 'design.md');
-      const implementationPath = path.join(specDir, 'implementation.md');
+      const stepsPath = path.join(specDir, 'steps.md');
       assert.ok(fs.existsSync(specPath), 'spec file should exist');
       assert.ok(fs.existsSync(designPath), 'design file should exist');
-      assert.ok(fs.existsSync(implementationPath), 'implementation file should exist');
+      assert.ok(fs.existsSync(stepsPath), 'steps file should exist');
 
       const content = fs.readFileSync(specPath, 'utf-8');
       const designContent = fs.readFileSync(designPath, 'utf-8');
-      const implementationContent = fs.readFileSync(implementationPath, 'utf-8');
+      const stepsContent = fs.readFileSync(stepsPath, 'utf-8');
       const frontmatter = extractFrontmatter(content, `specs/change/${specId}/spec.md`);
 
       assert.ok(/^\d{8}-default-template$/.test(frontmatter.id), `frontmatter.id should be date-based, got: ${frontmatter.id}`);
@@ -545,12 +545,12 @@ test('zest-dev create integration', async (t) => {
       assert.equal(typeof frontmatter.created, 'string');
       assert.ok(content.includes('## Overview'), 'should use packaged default template');
       assert.ok(content.includes('## Research'), 'should include Research section');
-      assert.ok(content.includes('[Design and research](./design.md)'), 'should link to design file');
+      assert.ok(content.includes('详见 [design.md](./design.md)。'), 'should reference design file naturally');
       assert.ok(content.includes('## Design'), 'should include Design section');
       assert.ok(content.includes('## Plan'), 'should include Plan section');
       assert.ok(content.includes('## Progress'), 'should include Progress section');
       assert.ok(content.includes('## Implementation'), 'should include Implementation section');
-      assert.ok(content.includes('[Implementation notes](./implementation.md)'), 'should link to implementation file');
+      assert.ok(content.includes('详见 [steps.md](./steps.md)。'), 'should reference steps file naturally');
       assert.equal(
         content.includes('Optional completion checklist, created during Plan and updated during Implement.'),
         false,
@@ -565,13 +565,14 @@ test('zest-dev create integration', async (t) => {
       assert.equal(content.includes('## Notes'), false);
       assert.ok(designContent.includes('## Research'), 'design template should include Research section');
       assert.ok(designContent.includes('## Design'), 'design template should include Design section');
-      assert.ok(implementationContent.includes('## Implementation'), 'implementation template should include Implementation section');
-      assert.ok(implementationContent.includes('## Verification'), 'implementation template should include Verification section');
+      assert.ok(stepsContent.includes('## Step 1'), 'steps template should include an initial step section');
+      assert.equal(stepsContent.includes('## Implementation'), false, 'steps template should not split implementation globally');
+      assert.equal(stepsContent.includes('## Verification'), false, 'steps template should not split verification globally');
       assert.equal(content.includes('Phase 3: Test and verify'), false);
       assert.equal(content.includes('{name}'), false);
       assert.equal(content.includes('{date}'), false);
       assert.equal(designContent.includes('{name}'), false);
-      assert.equal(implementationContent.includes('{date}'), false);
+      assert.equal(stepsContent.includes('{date}'), false);
     });
 
     await t.test('custom template override is ignored', () => {
@@ -603,7 +604,7 @@ Token: {name}|{date}
       const specPath = path.join(specDir, 'spec.md');
       assert.ok(fs.existsSync(specPath), 'spec file should exist');
       assert.ok(fs.existsSync(path.join(specDir, 'design.md')), 'design file should exist');
-      assert.ok(fs.existsSync(path.join(specDir, 'implementation.md')), 'implementation file should exist');
+      assert.ok(fs.existsSync(path.join(specDir, 'steps.md')), 'steps file should exist');
 
       const content = fs.readFileSync(specPath, 'utf-8');
       const frontmatter = extractFrontmatter(content, `specs/change/${specId}/spec.md`);
@@ -657,7 +658,7 @@ test('zest-dev status integration', async (t) => {
       assert.equal(status.active_change.status, 'new');
       assert.equal(status.agent_hints, undefined);
       assert.ok(fs.existsSync(path.join(TEST_DIR, 'specs/change', secondSpecDir, 'design.md')));
-      assert.ok(fs.existsSync(path.join(TEST_DIR, 'specs/change', secondSpecDir, 'implementation.md')));
+      assert.ok(fs.existsSync(path.join(TEST_DIR, 'specs/change', secondSpecDir, 'steps.md')));
     });
 
     await t.test('status shows dangling active symlink with null fields', () => {
@@ -856,7 +857,7 @@ Test spec.
 
 ## Implementation
 
-[Implementation notes](./implementation.md)
+详见 [steps.md](./steps.md)。
 
 `);
       const staleFile = path.join(TEST_DIR, '.ralph', 'stale.txt');
@@ -936,7 +937,7 @@ created: '2026-06-04'
 
 ## Implementation
 
-[Implementation notes](./implementation.md)
+详见 [steps.md](./steps.md)。
 
 `);
 
@@ -1018,7 +1019,7 @@ test('zest-dev prompt supports actual command set and summarize alias', () => {
     assert.equal(summarizeAliasPrompt, summarizeChatPrompt);
     assert.ok(summarizeChatPrompt.includes('`design.md` → Research section'));
     assert.ok(summarizeChatPrompt.includes('`spec.md` → `## Progress`'));
-    assert.ok(summarizeChatPrompt.includes('`implementation.md` → `## Implementation`'));
+    assert.ok(summarizeChatPrompt.includes('`steps.md`: One section per Plan step'));
     assert.equal(summarizeChatPrompt.includes('## Notes` → `### Progress'), false);
   } finally {
     cleanup();
