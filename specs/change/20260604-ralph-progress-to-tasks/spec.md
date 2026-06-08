@@ -63,7 +63,7 @@ Add `zest-dev ralph` as a CLI command that reads the active Spec, extracts unfin
 - Decision: Only unfinished items are converted into Ralph Tasks; completed items are skipped. Source: user decision; `skills/zest-dev/implement.md:17-18`
 - Decision: The conversion source is only `## Notes` -> `### Progress` checkbox items. The command should not infer tasks from `## Plan`; if the Progress section is missing, malformed, or contains unsupported checkbox syntax, it fails fast with a clear error. Source: user decision; `skills/zest-dev/plan.md:54-65`; `AGENTS.md:33-50`
 - Decision: Each unfinished Progress checkbox becomes one Ralph Task using the checkbox text exactly as written after the marker. Source: user decision; `skills/zest-dev/plan.md:54-65`
-- Decision: After all unfinished Progress items are added, append a fixed final Ralph Task: `Make sure all tasks are done in ralph loops, and then create PR`. Source: user decision
+- Decision: After all unfinished Progress items are added, append a fixed final Ralph Task: `Make sure all tasks are done in ralph loops, and then create PR. If there is a related issue, make sure to link it in the PR.` Source: user decision
 - Decision: `zest-dev ralph` writes the implement command prompt into project-root `./task.md`, overwriting any existing content. The prompt content comes from the same generator used by `zest-dev prompt implement`. Source: user decision; `bin/zest-dev.js:265-270`; `lib/prompt-generator.js:19-42`; `commands/implement.md:1-10`
 - Decision: `zest-dev ralph` executes the setup workflow in one run: add Ralph tasks, write `task.md`, then print the results of both steps for human confirmation. Any required operation that fails, including Ralph state cleanup, any `ralph --add-task`, or writing `task.md`, causes an immediate non-zero failure. Source: user decision; `AGENTS.md:33-50`; `bin/zest-dev.js:132-145,152-159,218-225`; `/Users/william/.nvm/versions/node/v24.13.0/lib/node_modules/@th0rgal/ralph-wiggum/README.md:231-245`
 
@@ -87,7 +87,7 @@ flowchart TD
 - Input: the active Spec's `## Notes` -> `### Progress` checkbox list.
 - Generated Ralph Tasks:
   - One task per unfinished Progress checkbox, using the checkbox text exactly.
-  - One final fixed task: `Make sure all tasks are done in ralph loops, and then create PR`.
+  - One final fixed task: `Make sure all tasks are done in ralph loops, and then create PR. If there is a related issue, make sure to link it in the PR.`.
 - Generated prompt file: project-root `task.md`, overwritten with `generatePrompt("implement")`.
 - Output: command output should show the `ralph --add-task` results and the `task.md` write result so the user can inspect what happened.
 

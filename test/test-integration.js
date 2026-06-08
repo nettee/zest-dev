@@ -847,7 +847,7 @@ Test spec.
       assert.deepEqual(tasks, [
         'Step 1: Parse active Progress into task text',
         'Step 3: Write implement prompt file',
-        'Make sure all tasks are done in ralph loops, and then create PR'
+        'Make sure all tasks are done in ralph loops, and then create PR. If there is a related issue, make sure to link it in the PR.'
       ]);
       assert.deepEqual(output.tasks_added, tasks);
       assert.equal('ralph_results' in output, false);
