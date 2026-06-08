@@ -551,6 +551,11 @@ test('zest-dev create integration', async (t) => {
       assert.ok(content.includes('## Progress'), 'should include Progress section');
       assert.ok(content.includes('## Implementation'), 'should include Implementation section');
       assert.ok(content.includes('[Implementation notes](./implementation.md)'), 'should link to implementation file');
+      assert.equal(
+        content.includes('Optional completion checklist, created during Plan and updated during Implement.'),
+        false,
+        'Progress section should not include a non-checkbox placeholder that Ralph rejects'
+      );
       assert.ok(
         content.includes('Optional implementation step breakdown, created during Plan.'),
         'packaged default template should keep Plan guidance brief'

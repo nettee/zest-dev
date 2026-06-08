@@ -23,8 +23,6 @@ created: "{date}"
 
 ## Progress
 
-<!-- Optional completion checklist, created during Plan and updated during Implement. -->
-
 ## Implementation
 
 [Implementation notes](./implementation.md)
