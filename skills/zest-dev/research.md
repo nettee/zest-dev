@@ -4,7 +4,6 @@ Canonical workflow for researching an active change spec.
 
 ## When to use
 - An active spec exists and the team needs repository facts, patterns, and options
-- A thin `research` command routes here
 
 ## Workflow
 1. Run `zest-dev status` and verify an active change spec exists.

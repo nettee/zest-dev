@@ -1,23 +1,21 @@
 ---
 name: Zest Dev
-description: This skill should be used when the user asks to "create a spec", "write a spec", mentions "zest dev", "zest-dev", "spec-driven development", "human-interactive development", workflow phases like "research phase", "design phase", "implement phase", asks "how do I write a spec", "what's the spec process", "spec methodology", needs guidance on specification planning and development workflows, or wants to know which workflow to use ("draft", "summarize", "new", "vibe coding").
+description: This skill should be used when the user asks to "create a spec", "write a spec", mentions "zest dev", "zest-dev", "spec-driven development", "human-interactive development", workflow phases like "research phase", "design phase", "implement phase", asks "how do I write a spec", "what's the spec process", "spec methodology", or needs guidance on specification planning and development workflows.
 version: 0.1.0
 ---
 
-# Zest Dev: Thick Skill, Thin Commands
+# Zest Dev
 
 ## Purpose
 
 Zest Dev is a lightweight, human-interactive workflow for spec-driven development.
 
-This skill is the **canonical workflow source** for planned feature work:
+This skill defines the workflow for planned feature work:
 - `new`
 - `research`
 - `design`
 - `plan`
 - `implement`
-
-Commands should stay thin. They exist as explicit entrypoints and compatibility shims. The actual phase logic lives here.
 
 To keep this file concise, the detailed workflows live in sibling phase docs:
 - `new.md`
@@ -26,8 +24,6 @@ To keep this file concise, the detailed workflows live in sibling phase docs:
 - `plan.md`
 - `implement.md`
 
-**Core principle:** keep workflow intelligence in the skill, keep commands lightweight.
-
 ## When This Skill Should Trigger
 
 Use this skill when the user:
@@ -35,7 +31,6 @@ Use this skill when the user:
 - mentions Zest Dev or spec-driven development
 - asks to enter a workflow phase such as new, research, design, plan, or implement
 - wants to continue an active change spec
-- uses a thin command that explicitly routes into this skill
 
 ## Shared Rules
 
@@ -44,7 +39,6 @@ Use this skill when the user:
 
 ### Source of truth
 - Treat this skill as the workflow source for the five core phases.
-- Treat commands as wrappers that declare intent and hand off to this skill.
 
 ### CLI boundaries
 - Use `zest-dev` CLI for spec lifecycle operations.
@@ -71,23 +65,9 @@ Use this skill when the user:
 
 ### Questions and approvals
 - Ask targeted clarifying questions when requirements or architecture are underspecified.
-- During quick-implement, get explicit user approval when transitioning from Plan to Implement.
 - If the user says “whatever you think is best,” provide your recommendation and get confirmation when the choice is consequential.
 
 ## Entry Modes
-
-### 1. Thin command entry
-
-Examples:
-- `/zest-dev:new`
-- `/zest-dev:research`
-- `/zest-dev:design`
-- `/zest-dev:plan`
-- `/zest-dev:implement`
-
-Interpret the command as a request to run the corresponding phase in this skill.
-
-### 2. Natural-language entry
 
 Examples:
 - “create a spec for this”
@@ -98,14 +78,10 @@ Examples:
 
 Infer the intended phase from user intent and current spec status.
 
-### 3. Bridge entry
-
-Composite commands such as `draft` and `quick-implement` should use this skill's core phases instead of re-describing thick workflows themselves.
-
 ## Workflow Overview
 
 ```text
-User intent or thin command
+User intent
           ↓
   Zest Dev skill phase routing
           ↓
@@ -154,23 +130,11 @@ Use when the plan is ready for coding.
 ### Plan
 - The canonical Plan workflow lives in `plan.md`.
 - Use it for issue-scale step shaping and status advancement to `planned`.
+- During planning, always include a final documentation follow-up step that tells the implementer to update relevant project documentation if the implemented change makes that necessary.
 
 ### Implement
 - The canonical Implement workflow lives in `implement.md`.
 - Use it for implementation, test writing, notes updates, and status advancement to `implemented` only when the full plan is complete.
-
-## Bridge Workflows
-
-### Draft
-- Capture a discussion into a spec.
-- Set the highest status genuinely reached by the conversation.
-- Then route the user into the next appropriate core phase from this skill.
-
-### Quick Implement
-- Create or resume the active spec.
-- Run the remaining core phases in order.
-- Keep explicit checkpoints for confirming new requirements and moving from Plan to Implement.
-- Reuse the canonical phase rules from this skill instead of embedding separate thick instructions.
 
 ## Content Guidance Ownership
 
@@ -183,11 +147,9 @@ Concrete section-writing guidance lives in the phase files:
 
 ## Guardrails
 
-- Do not rely on deployed command frontmatter except `description`.
-- Do not hardcode platform-specific agent handles in command text.
+- Do not hardcode platform-specific agent handles in workflow text.
 - Prefer generic role language such as explorer, architect, or reviewer subagent.
-- Keep commands small enough that future workflow changes happen primarily in this skill.
 
 ## Summary
 
-Use thin commands for entry, this skill for workflow logic, the CLI for lifecycle transitions, and the spec file as the durable record.
+Use this skill for workflow logic, the CLI for lifecycle transitions, and the spec file as the durable record.

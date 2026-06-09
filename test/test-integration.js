@@ -22,17 +22,13 @@ const CLI_COMMAND = process.env.ZEST_DEV_CLI_PATH
 const TEST_DIR = path.join(__dirname, '../test-project-temp');
 const CREATE_TEST_DIR = path.join(__dirname, '../test-project-create-temp');
 const EXPECTED_COMMANDS = [
-  'zest-dev-archive.md',
   'zest-dev-compound.md',
   'zest-dev-design.md',
-  'zest-dev-draft.md',
   'zest-dev-implement.md',
   'zest-dev-new.md',
   'zest-dev-plan.md',
   'zest-dev-quick-implement.md',
-  'zest-dev-research.md',
-  'zest-dev-summarize-chat.md',
-  'zest-dev-summarize-pr.md'
+  'zest-dev-research.md'
 ];
 const THIN_COMMANDS = [
   'zest-dev-new.md',
@@ -40,7 +36,6 @@ const THIN_COMMANDS = [
   'zest-dev-design.md',
   'zest-dev-plan.md',
   'zest-dev-implement.md',
-  'zest-dev-draft.md',
   'zest-dev-quick-implement.md'
 ];
 const SKILL_PHASE_FILES = ['new.md', 'research.md', 'design.md', 'plan.md', 'implement.md'];
@@ -296,8 +291,8 @@ test('zest-dev init integration', async (t) => {
       const opencodeSkillPath = path.join(globalOpenCodeSkillsDir, 'zest-dev/SKILL.md');
       assert.ok(fs.existsSync(opencodeSkillPath));
       const skillContent = fs.readFileSync(opencodeSkillPath, 'utf-8');
-      assert.ok(skillContent.includes('This skill is the **canonical workflow source**'));
-      assert.ok(skillContent.includes('Commands should stay thin'));
+      assert.ok(skillContent.includes('This skill defines the workflow for planned feature work'));
+      assert.ok(skillContent.includes('always include a final documentation follow-up step'));
 
       for (const file of SKILL_PHASE_FILES) {
         assert.ok(fs.existsSync(path.join(globalOpenCodeSkillsDir, 'zest-dev', file)));
@@ -325,7 +320,7 @@ test('zest-dev init integration', async (t) => {
       assert.equal(implementPhase.includes('mark the corresponding `## Plan` checkbox'), false);
 
       const codexSkillFile = fs.readFileSync(path.join(globalCodexSkillsDir, 'SKILL.md'), 'utf-8');
-      assert.ok(codexSkillFile.includes('This skill is the **canonical workflow source**'));
+      assert.ok(codexSkillFile.includes('This skill defines the workflow for planned feature work'));
 
       for (const subagent of CODEX_SUBAGENTS) {
         const tomlContent = fs.readFileSync(path.join(globalCodexAgentsDir, subagent), 'utf-8');
@@ -357,6 +352,25 @@ test('zest-dev init integration', async (t) => {
       assert.ok(fs.existsSync(nonLegacyTopLevelFile));
       assert.ok(fs.existsSync(agentsDir));
       assert.ok(fs.existsSync(nestedDir));
+    });
+
+    await t.test('global init removes stale managed command prompts and preserves user files', () => {
+      const staleManagedFile = path.join(globalOpenCodeCommandsDir, 'zest-dev-archive.md');
+      const userCommandFile = path.join(globalOpenCodeCommandsDir, 'my-command.md');
+
+      fs.writeFileSync(staleManagedFile, '# stale managed command', 'utf-8');
+      fs.writeFileSync(userCommandFile, '# user command', 'utf-8');
+
+      const rerunOutput = yaml.load(runInit(TEST_DIR, globalEnv));
+      assert.equal(rerunOutput.ok, true);
+      assert.equal(fs.existsSync(staleManagedFile), false);
+      assert.ok(fs.existsSync(userCommandFile));
+      assert.deepEqual(
+        fs.readdirSync(globalOpenCodeCommandsDir).sort(),
+        [...EXPECTED_COMMANDS, 'my-command.md'].sort()
+      );
+
+      fs.unlinkSync(userCommandFile);
     });
 
     await t.test('global init is idempotent', () => {
@@ -1052,33 +1066,14 @@ created: '2026-06-04'
   }
 });
 
-test('zest-dev prompt archive integration', () => {
-  setup();
-
-  try {
-    const prompt = runCommand('prompt archive');
-    assert.ok(prompt.includes('Archive Active Change Spec'));
-    assert.ok(prompt.includes('zest-dev show active'));
-    assert.ok(prompt.includes('zest-dev unset-active'));
-    assert.equal(prompt.includes('zest-dev archive active --no-merge'), false);
-
-    runInitArgs('--local');
-    const deployedArchive = readCommand('.opencode', 'zest-dev-archive.md');
-    assert.ok(deployedArchive.includes('zest-dev unset-active'));
-    assert.equal(deployedArchive.includes('zest-dev archive active --no-merge'), false);
-  } finally {
-    cleanup();
-  }
-});
-
-test('zest-dev prompt supports actual command set and summarize alias', () => {
+test('zest-dev prompt supports actual command set', () => {
   setup();
 
   try {
     const quickPrompt = runCommand('prompt quick-implement test feature');
-    assert.ok(quickPrompt.includes('Thin bridge entrypoint'));
+    assert.ok(quickPrompt.includes('complete Zest Dev workflow'));
     assert.ok(quickPrompt.includes('test feature'));
-    assert.ok(quickPrompt.includes('use the Plan phase\'s AFK/HITL step summary'));
+    assert.ok(quickPrompt.includes('explicit approval before entering Implementation'));
 
     const planPrompt = runCommand('prompt plan');
     assert.equal(
@@ -1086,20 +1081,9 @@ test('zest-dev prompt supports actual command set and summarize alias', () => {
       'Follow the Zest Dev workflow to advance the active spec to planned, using this focus if relevant: .'
     );
 
-    const draftPrompt = runCommand('prompt draft');
-    assert.ok(draftPrompt.includes('Bridge entrypoint into the Zest Dev skill.'));
-    assert.ok(draftPrompt.includes('guide the user to `/implement` as the next explicit step'));
-    assert.ok(draftPrompt.includes('run `zest-dev update active researched`'));
-    assert.ok(draftPrompt.includes('run `zest-dev update active designed`'));
-    assert.ok(draftPrompt.includes('run `zest-dev update active planned`'));
-
-    const summarizeAliasPrompt = runCommand('prompt summarize');
-    const summarizeChatPrompt = runCommand('prompt summarize-chat');
-    assert.equal(summarizeAliasPrompt, summarizeChatPrompt);
-    assert.ok(summarizeChatPrompt.includes('`design.md` → Research section'));
-    assert.ok(summarizeChatPrompt.includes('`spec.md` → `## Progress`'));
-    assert.ok(summarizeChatPrompt.includes('`steps.md`: One section per Plan step'));
-    assert.equal(summarizeChatPrompt.includes('## Notes` → `### Progress'), false);
+    const invalidPrompt = runCommandExpectFailure('prompt summarize');
+    assert.equal(invalidPrompt.failed, true);
+    assert.ok(invalidPrompt.output.includes('Invalid command: summarize'));
   } finally {
     cleanup();
   }

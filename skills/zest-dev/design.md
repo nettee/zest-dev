@@ -4,7 +4,6 @@ Canonical workflow for designing an active change spec.
 
 ## When to use
 - Research or direct understanding is sufficient to choose an implementation design
-- A thin `design` command routes here
 
 ## Workflow
 1. Run `zest-dev status` and verify an active change spec exists.

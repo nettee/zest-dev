@@ -4,7 +4,6 @@ Canonical workflow for planning implementation of an active change spec.
 
 ## When to use
 - The design is ready to turn into implementation steps
-- A thin `plan` command routes here
 
 ## Workflow
 1. Run `zest-dev status` and verify an active change spec exists.
@@ -23,9 +22,14 @@ Canonical workflow for planning implementation of an active change spec.
    - Do not mark a step as `HITL` merely because the output is documentation, runbook text, an operator-facing procedure, or a workflow that humans will later execute.
    - Mark steps as `AFK` when an agent can implement them independently from the written spec and repository context.
    - Capture dependencies between steps.
-5. Ask the user clarifying questions when needed.
-6. Wait for answers before finalizing the plan when the open questions are consequential.
-7. Fill `## Plan` with compact structured steps:
+5. Add a final Plan step for documentation follow-up:
+   - Always include this as the final Plan step.
+   - The step should tell the implementer to update relevant project documentation if the implemented change makes that necessary.
+   - Do not decide during planning whether documentation must change. Leave that check to implementation, when the final code and behavior are visible.
+   - Do not automatically include glossary or ADR work. Treat those as special documentation updates only when the implemented change genuinely calls for them.
+6. Ask the user clarifying questions when needed.
+7. Wait for answers before finalizing the plan when the open questions are consequential.
+8. Fill `## Plan` with compact structured steps:
    - Do not use markdown checkboxes in `## Plan`.
    - Keep the step label as `Step 1`, `Step 2`, and so on.
    - Prefer steps that each deliver one meaningful vertical slice and remain easy to review.
@@ -50,8 +54,15 @@ Canonical workflow for planning implementation of an active change spec.
       Goal: Choose and apply the Bar user-facing behavior.
       Scope: Confirm the behavior with the user, then update Bar prompts and docs.
       Depends on: Step 1
+
+      ### Step 3: Documentation Follow-Up
+
+      Type: AFK
+      Goal: Keep project documentation aligned with the implemented behavior.
+      Scope: If the implementation changes documented behavior, usage, commands, setup, or workflows, update the relevant project docs.
+      Depends on: Step 2
       ```
-8. Add or update `spec.md` → `## Progress` with a thin progress checklist:
+9. Add or update `spec.md` → `## Progress` with a thin progress checklist:
    - Add one checkbox per Plan step.
    - Keep each checklist item to the step title only.
    - This checklist is for implementation progress tracking, not for describing the plan.
@@ -62,11 +73,11 @@ Canonical workflow for planning implementation of an active change spec.
       - [ ] Step 1: Foo
       - [ ] Step 2: Bar
       ```
-9. Update status based on the starting state:
+10. Update status based on the starting state:
    - If the spec started as `designed`, run `zest-dev update active planned`.
    - If the spec started as `planned`, skip the update and keep the status as-is.
    - If the spec started as `implemented`, skip the update and keep the status as-is while revising the plan.
-10. Present the plan and stop:
+11. Present the plan and stop:
    - Report every Plan step's `Type` as `AFK` or `HITL`.
    - For each `HITL` step, tell the user what needs to be discussed, reviewed, judged, or approved in conversation before implementation continues.
    - If all steps are `AFK`, say that no user action is required before implementation.

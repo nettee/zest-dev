@@ -44,7 +44,6 @@ Work through a feature spec one phase at a time, with human review between each 
 /zest-dev:design                # Clarify requirements and design the architecture
 /zest-dev:plan                  # Create the implementation plan
 /zest-dev:implement             # Build the feature following the plan
-/zest-dev:archive               # Agent-guided merge into specs/current, then unset active
 ```
 
 Each command routes into the main Zest Dev skill, which advances the spec through `new → researched → designed → planned → implemented`.
@@ -59,22 +58,7 @@ Start from a description:
 /zest-dev:quick-implement "My new feature"
 ```
 
-Or start from an existing spec:
-
-```bash
-zest-dev set-active <spec-id>
-/zest-dev:quick-implement
-```
-
-### Summarize a Session
-
-After a quick coding conversation, capture what was discussed and built into a permanent spec file.
-
-```bash
-/zest-dev:summarize
-```
-
-This is useful when you skipped the planning phase and want to document the work after the fact.
+`quick-implement` creates a new spec, follows the full Zest Dev workflow, and asks for explicit approval before Implementation.
 
 ## CLI Reference
 
@@ -91,8 +75,6 @@ The `zest-dev` CLI manages spec files. Use it to inspect and update specs outsid
 | `zest-dev unset-active` | Unset active change spec |
 | `zest-dev update <spec-id\|active> <status>` | Update spec status |
 | `zest-dev create-branch` | Create a git branch from the active change spec |
-
-Archive is intentionally **not** a public CLI subcommand. Use `/zest-dev:archive` in plugin-enabled editors or `zest-dev prompt archive` for prompt-driven flows.
 
 ### Status Transitions
 
@@ -112,14 +94,10 @@ codex "$(zest-dev prompt research)"
 codex "$(zest-dev prompt design)"
 codex "$(zest-dev prompt plan)"
 codex "$(zest-dev prompt implement)"
-codex "$(zest-dev prompt archive)"
-codex "$(zest-dev prompt draft)"
 codex "$(zest-dev prompt quick-implement 'some description')"
-codex "$(zest-dev prompt summarize-chat)"
-codex "$(zest-dev prompt summarize-pr 123)"
 ```
 
-`zest-dev prompt` supports the actual command files in `commands/`. The legacy alias `summarize` maps to `summarize-chat` for compatibility.
+`zest-dev prompt` supports the actual command files in `commands/`.
 
 ### Resource Layout
 
