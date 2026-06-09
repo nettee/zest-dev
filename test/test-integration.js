@@ -45,11 +45,6 @@ const THIN_COMMANDS = [
 ];
 const SKILL_PHASE_FILES = ['new.md', 'research.md', 'design.md', 'plan.md', 'implement.md'];
 const CODEX_SUBAGENTS = ['code-architect.toml', 'code-explorer.toml', 'code-reviewer.toml'];
-const LANGUAGE_ALIGNMENT_RULES = [
-  'Respond in the user\'s language by default, if user\'s language is not English.',
-  'Always respond in the user\'s language throughout the flow unless the user asks to switch languages.'
-];
-
 function cleanup(testDir = TEST_DIR) {
   if (fs.existsSync(testDir)) {
     fs.rmSync(testDir, { recursive: true, force: true });
@@ -276,7 +271,7 @@ test('zest-dev init integration', async (t) => {
     await t.test('default global init preserves opencode content rules', () => {
       for (const file of EXPECTED_COMMANDS) {
         const content = fs.readFileSync(path.join(globalOpenCodeCommandsDir, file), 'utf-8');
-        assert.ok(LANGUAGE_ALIGNMENT_RULES.some(rule => content.includes(rule)));
+        assert.ok(content.startsWith('---\n'), `deployed command should preserve markdown frontmatter: ${file}`);
       }
 
       const content = fs.readFileSync(path.join(globalOpenCodeCommandsDir, 'zest-dev-new.md'), 'utf-8');
@@ -1086,7 +1081,10 @@ test('zest-dev prompt supports actual command set and summarize alias', () => {
     assert.ok(quickPrompt.includes('use the Plan phase\'s AFK/HITL step summary'));
 
     const planPrompt = runCommand('prompt plan');
-    assert.ok(planPrompt.includes('Run Zest Dev **Plan** phase workflow.'));
+    assert.equal(
+      planPrompt.trim(),
+      'Follow the Zest Dev workflow to advance the active spec to planned, using this focus if relevant: .'
+    );
 
     const draftPrompt = runCommand('prompt draft');
     assert.ok(draftPrompt.includes('Bridge entrypoint into the Zest Dev skill.'));
@@ -1112,13 +1110,18 @@ test('zest-dev prompt implement supports incremental phases', () => {
 
   try {
     const prompt = runCommand('prompt implement');
-    assert.ok(prompt.includes('Run Zest Dev **Implement** phase workflow.'));
+    assert.equal(
+      prompt.trim(),
+      'Follow the Zest Dev workflow to advance the active spec to implemented, using this focus if relevant: .'
+    );
     assert.equal(prompt.includes('**Step 1:'), false);
     assert.equal(prompt.includes('Treat this command as a request'), false);
 
     runInitArgs('--local');
     const deployedImplement = readCommand('.opencode', 'zest-dev-implement.md');
-    assert.ok(deployedImplement.includes('Run Zest Dev **Implement** phase workflow.'));
+    assert.ok(
+      deployedImplement.includes('Follow the Zest Dev workflow to advance the active spec to implemented, using this focus if relevant: $ARGUMENTS.')
+    );
     assert.equal(deployedImplement.includes('**Step 1:'), false);
     assert.equal(deployedImplement.includes('Treat this command as a request'), false);
   } finally {
