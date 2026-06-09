@@ -23,9 +23,14 @@ Canonical workflow for planning implementation of an active change spec.
    - Do not mark a step as `HITL` merely because the output is documentation, runbook text, an operator-facing procedure, or a workflow that humans will later execute.
    - Mark steps as `AFK` when an agent can implement them independently from the written spec and repository context.
    - Capture dependencies between steps.
-5. Ask the user clarifying questions when needed.
-6. Wait for answers before finalizing the plan when the open questions are consequential.
-7. Fill `## Plan` with compact structured steps:
+5. Decide whether project documentation should be updated as part of the plan:
+   - Check whether the change affects user-facing behavior, developer workflows, commands, setup, usage, architecture notes, or other maintained project documentation.
+   - If documentation should change, include a final Plan step to update the relevant project docs.
+   - If the change is simple or does not affect documented behavior, no documentation step is required.
+   - Do not automatically include glossary or ADR work. Treat those as special documentation updates only when the change genuinely calls for them.
+6. Ask the user clarifying questions when needed.
+7. Wait for answers before finalizing the plan when the open questions are consequential.
+8. Fill `## Plan` with compact structured steps:
    - Do not use markdown checkboxes in `## Plan`.
    - Keep the step label as `Step 1`, `Step 2`, and so on.
    - Prefer steps that each deliver one meaningful vertical slice and remain easy to review.
@@ -51,7 +56,7 @@ Canonical workflow for planning implementation of an active change spec.
       Scope: Confirm the behavior with the user, then update Bar prompts and docs.
       Depends on: Step 1
       ```
-8. Add or update `spec.md` → `## Progress` with a thin progress checklist:
+9. Add or update `spec.md` → `## Progress` with a thin progress checklist:
    - Add one checkbox per Plan step.
    - Keep each checklist item to the step title only.
    - This checklist is for implementation progress tracking, not for describing the plan.
@@ -62,11 +67,11 @@ Canonical workflow for planning implementation of an active change spec.
       - [ ] Step 1: Foo
       - [ ] Step 2: Bar
       ```
-9. Update status based on the starting state:
+10. Update status based on the starting state:
    - If the spec started as `designed`, run `zest-dev update active planned`.
    - If the spec started as `planned`, skip the update and keep the status as-is.
    - If the spec started as `implemented`, skip the update and keep the status as-is while revising the plan.
-10. Present the plan and stop:
+11. Present the plan and stop:
    - Report every Plan step's `Type` as `AFK` or `HITL`.
    - For each `HITL` step, tell the user what needs to be discussed, reviewed, judged, or approved in conversation before implementation continues.
    - If all steps are `AFK`, say that no user action is required before implementation.

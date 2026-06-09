@@ -1,6 +1,6 @@
 ---
 name: Zest Dev
-description: This skill should be used when the user asks to "create a spec", "write a spec", mentions "zest dev", "zest-dev", "spec-driven development", "human-interactive development", workflow phases like "research phase", "design phase", "implement phase", asks "how do I write a spec", "what's the spec process", "spec methodology", needs guidance on specification planning and development workflows, or wants to know which workflow to use ("draft", "summarize", "new", "vibe coding").
+description: This skill should be used when the user asks to "create a spec", "write a spec", mentions "zest dev", "zest-dev", "spec-driven development", "human-interactive development", workflow phases like "research phase", "design phase", "implement phase", asks "how do I write a spec", "what's the spec process", "spec methodology", needs guidance on specification planning and development workflows, wants a quick implementation flow, or wants to capture prior work into a spec.
 version: 0.1.0
 ---
 
@@ -100,7 +100,7 @@ Infer the intended phase from user intent and current spec status.
 
 ### 3. Bridge entry
 
-Composite commands such as `draft` and `quick-implement` should use this skill's core phases instead of re-describing thick workflows themselves.
+Composite commands such as `quick-implement` should use this skill's core phases instead of re-describing thick workflows themselves.
 
 ## Workflow Overview
 
@@ -154,6 +154,7 @@ Use when the plan is ready for coding.
 ### Plan
 - The canonical Plan workflow lives in `plan.md`.
 - Use it for issue-scale step shaping and status advancement to `planned`.
+- During planning, consider whether the implementation should include a final step to update relevant project documentation. Include that step only when the change affects documented behavior, usage, commands, setup, workflows, or other maintained docs.
 
 ### Implement
 - The canonical Implement workflow lives in `implement.md`.
@@ -162,15 +163,18 @@ Use when the plan is ready for coding.
 ## Bridge Workflows
 
 ### Draft
-- Capture a discussion into a spec.
-- Set the highest status genuinely reached by the conversation.
-- Then route the user into the next appropriate core phase from this skill.
+- Draft is no longer a separate command.
+- When the user asks to capture an in-progress discussion into a spec, use the New phase and then route to the appropriate next core phase based on the discussion.
 
 ### Quick Implement
-- Create or resume the active spec.
-- Run the remaining core phases in order.
-- Keep explicit checkpoints for confirming new requirements and moving from Plan to Implement.
+- Create a new spec from the user's requirement.
+- Run all core phases in order.
+- Get explicit user approval before moving from Plan to Implement.
 - Reuse the canonical phase rules from this skill instead of embedding separate thick instructions.
+
+### Summarize Prior Work
+- Summarize is no longer a separate command.
+- When the user asks to turn a prior chat, completed coding session, or pull request into a spec, capture only facts supported by the conversation or referenced source, create a spec, and set the highest status genuinely supported by those facts.
 
 ## Content Guidance Ownership
 

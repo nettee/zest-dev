@@ -17,7 +17,7 @@ This plugin integrates the Zest Dev methodology into command- and prompt-driven 
 ## Features
 
 - **Spec creation** - Create new specs from natural language descriptions
-- **Phase management** - Guide specs through research → design → implementation phases
+- **Phase management** - Guide specs through research → design → plan → implementation phases
 - **Active change spec context** - All commands work with the active change spec
 - **CLI integration** - Seamlessly integrates with the `zest-dev` CLI tool
 
@@ -28,17 +28,16 @@ All command flows keep responding in the user's language unless the user asks to
 | Command | Purpose |
 |---------|---------|
 | `/zest-dev:new <description>` | Create a new spec from natural language description |
-| `/zest-dev:draft` | Crystallize a conversation into a spec, then proceed step by step |
 | `/zest-dev:research` | Enter the Research phase via the main Zest Dev skill |
 | `/zest-dev:design` | Enter the Design phase via the main Zest Dev skill |
+| `/zest-dev:plan` | Enter the Plan phase via the main Zest Dev skill |
 | `/zest-dev:implement` | Enter the Implement phase via the main Zest Dev skill |
-| `/zest-dev:archive` | Merge implemented active change spec knowledge into `specs/current/`, then unset active |
-| `/zest-dev:summarize-chat` | Capture a completed coding session into a spec (post-hoc) |
-| `/zest-dev:summarize-pr <pr>` | Summarize a GitHub PR into a spec (post-hoc) |
+| `/zest-dev:quick-implement <description>` | Create a spec and run the full workflow with approval before Implementation |
+| `/zest-dev:compound` | Capture durable knowledge from the current session |
 
 ## Skills
 
-- **Zest Dev** - Canonical workflow source for the New / Research / Design / Implement phases
+- **Zest Dev** - Canonical workflow source for the New / Research / Design / Plan / Implement phases
 
 ## Prerequisites
 
@@ -64,20 +63,17 @@ Start from a description and work through each phase:
 1. `/zest-dev:new <description>` — thin entry into the New phase
 2. `/zest-dev:research` — thin entry into the Research phase
 3. `/zest-dev:design` — thin entry into the Design phase
-4. `/zest-dev:implement` — thin entry into the Implement phase
-5. `/zest-dev:archive` — merge into `specs/current/` and unset active change spec
+4. `/zest-dev:plan` — thin entry into the Plan phase
+5. `/zest-dev:implement` — thin entry into the Implement phase
 
-### Vibe coding first (post-hoc)
-Code first, then document what was built:
-1. Write code freely
-2. `/zest-dev:summarize-chat` or `/zest-dev:summarize-pr` — capture into a spec
+### Quick implementation
+Start from a new requirement and run the full workflow:
+1. `/zest-dev:quick-implement <description>` — create a spec, plan the work, and ask for approval before Implementation
 
-### Discussion-driven (new)
-Chat and brainstorm first, then formalize and proceed:
-1. Have a free-form discussion about the feature
-2. `/zest-dev:draft` — crystallize discussion into a spec with overview
-3. Optionally continue with `/zest-dev:research`, `/zest-dev:design`, `/zest-dev:implement`
+### Knowledge capture
+Capture durable knowledge from the current session:
+1. `/zest-dev:compound` — write reusable findings, decisions, or lessons into project knowledge
 
 ## Prompt Compatibility
 
-`zest-dev prompt <command>` generates prompt text from the thin command files. It supports the real command set in `commands/`, plus a compatibility alias from `summarize` to `summarize-chat`.
+`zest-dev prompt <command>` generates prompt text from the thin command files. It supports the real command set in `commands/`.
