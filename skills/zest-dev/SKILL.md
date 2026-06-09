@@ -63,7 +63,7 @@ Use this skill when the user:
 - Use pseudocode and flow descriptions instead of production code.
 - Keep Research factual.
 - Keep Design opinionated.
-- Keep Notes concise and implementation-focused.
+- Keep implementation notes concise and implementation-focused.
 
 ### Reading discipline
 - Before writing or deciding, read the active spec and the relevant repository files.
@@ -176,10 +176,10 @@ Use when the plan is ready for coding.
 
 Concrete section-writing guidance lives in the phase files:
 - `new.md` defines how to write `## Overview`.
-- `research.md` defines how to write `## Research`.
-- `design.md` defines how to write `## Design`.
-- `plan.md` defines how to write `## Plan`.
-- `implement.md` defines how to update `## Plan` and write `## Notes`.
+- `research.md` defines how to write `design.md` → `## Research`.
+- `design.md` defines how to write `design.md` → `## Design`.
+- `plan.md` defines how to write `spec.md` → `## Plan` and `## Progress`.
+- `implement.md` defines how to update `spec.md` → `## Progress` and write `steps.md`.
 
 ## Guardrails
 

@@ -8,7 +8,7 @@ Canonical workflow for planning implementation of an active change spec.
 
 ## Workflow
 1. Run `zest-dev status` and verify an active change spec exists.
-2. Run `zest-dev show active` and read the spec file.
+2. Run `zest-dev show active` and read the main spec file and `design.md`.
 3. Check status before proceeding:
    - If the status is `new` or `researched`, suggest design first unless the implementation approach is already sufficiently decided.
    - If the status is `designed`, continue.
@@ -51,14 +51,13 @@ Canonical workflow for planning implementation of an active change spec.
       Scope: Confirm the behavior with the user, then update Bar prompts and docs.
       Depends on: Step 1
       ```
-8. Add or update `## Notes` with a thin progress checklist:
-   - Use the heading `### Progress`.
+8. Add or update `spec.md` → `## Progress` with a thin progress checklist:
    - Add one checkbox per Plan step.
    - Keep each checklist item to the step title only.
    - This checklist is for implementation progress tracking, not for describing the plan.
    - Format:
       ```markdown
-      ### Progress
+      ## Progress
 
       - [ ] Step 1: Foo
       - [ ] Step 2: Bar

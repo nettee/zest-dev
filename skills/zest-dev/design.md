@@ -8,7 +8,7 @@ Canonical workflow for designing an active change spec.
 
 ## Workflow
 1. Run `zest-dev status` and verify an active change spec exists.
-2. Run `zest-dev show active` and read the spec file.
+2. Run `zest-dev show active`, read the main spec file, and read `design.md`.
 3. Check status gating before proceeding:
    - If the status is `new`, suggest research first unless the task is simple and sufficiently understood.
    - If the status is `researched`, continue.
@@ -17,7 +17,7 @@ Canonical workflow for designing an active change spec.
 5. Ask the user clarifying questions when needed.
 6. Wait for answers before finalizing the architecture when the open questions are consequential.
 7. Synthesize one recommended architecture by default, including the matching test strategy.
-8. Fill `## Design` with:
+8. Fill `design.md` → `## Design` with:
    - Design Summary
    - Design Decisions
    - System Structure, optional

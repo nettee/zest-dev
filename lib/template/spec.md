@@ -11,24 +11,18 @@ created: "{date}"
 
 ## Research
 
-<!-- What facts, existing patterns, references, and constraints can inform the design? -->
+See [design.md](./design.md).
 
 ## Design
 
-<!-- Technical approach, architecture decisions, and test strategy. Each design decision should cite a fact source. -->
+See [design.md](./design.md).
 
 ## Plan
 
-<!-- Optional implementation step breakdown, created during Plan and updated during Implement. -->
+<!-- Optional implementation step breakdown, created during Plan. -->
 
-## Notes
+## Progress
 
-<!-- Optional sections — add what's relevant. -->
+## Implementation
 
-### Implementation
-
-<!-- Files created/modified, decisions made during coding, deviations from design -->
-
-### Verification
-
-<!-- How the feature was verified: tests written, manual testing steps, results -->
+See [steps.md](./steps.md).

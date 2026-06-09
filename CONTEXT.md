@@ -5,11 +5,23 @@ Zest Dev is a lightweight, human-interactive workflow for AI-assisted coding. Th
 ## Language
 
 **Spec**:
-A change document that records the overview, research, design, optional plan, and implementation notes for one unit of work.
+A change record for one unit of work, stored as a Spec directory with a concise main Spec file and optional supporting files.
 _Avoid_: ticket, task document
 
+**Main Spec File**:
+The review-oriented `spec.md` file inside a Spec. It keeps the workflow section order visible, with concise content for high-frequency review sections and links for lower-review-frequency supporting detail.
+_Avoid_: full spec, source of truth file
+
+**Spec Supporting File**:
+A Markdown file inside a Spec directory that carries lower-review-frequency workflow detail, such as design research or step-by-step implementation records.
+_Avoid_: appendix, attachment
+
+**Steps File**:
+The `steps.md` Spec Supporting File that records implementation and verification by Plan Step. It does not split implementation and verification into separate global sections.
+_Avoid_: implementation log, verification log
+
 **Spec Template**:
-The Markdown skeleton used by the CLI to create a new Spec. It defines the initial top-level sections with brief placeholders, not examples, subsection templates, or detailed writing guidance.
+The built-in Markdown skeletons used by the CLI to create a new Spec layout. They define initial sections with brief placeholders, not examples, subsection templates, or detailed writing guidance.
 _Avoid_: workflow instructions, writing rules
 
 **Skill**:
@@ -33,7 +45,7 @@ A core workflow phase that turns an approved Design into the Spec's Plan section
 _Avoid_: design step, planning note
 
 **Planned Status**:
-A Spec lifecycle milestone meaning the Spec's Design and Plan sections are ready for implementation.
+A Spec lifecycle milestone meaning the Spec's Design, Plan, and Progress sections are ready for implementation.
 _Avoid_: designed, ready
 
 **Plan Step**:
@@ -41,8 +53,8 @@ One issue-scale implementation slice inside a Spec's Plan section. A Plan Step h
 _Avoid_: task, ticket
 
 **Progress Checklist**:
-A thin completion checklist in a Spec's Notes section, with one checkbox per Plan Step. It tracks implementation completion; it is not the implementation plan itself.
-_Avoid_: plan, task list
+A thin completion checklist in the Main Spec File, with one checkbox per Plan Step. It tracks implementation completion; it is not the implementation plan itself.
+_Avoid_: plan, task list, notes
 
 **Ralph Task**:
 A markdown checkbox item consumed by Ralph Tasks Mode from `.ralph/ralph-tasks.md`. It is generated from a Progress Checklist item when Zest Dev hands planned work to Ralph.
@@ -64,7 +76,7 @@ _Avoid_: workflow engine, writing guide
 
 Developer: "The Spec Template should only create the empty sections."
 
-Maintainer: "Right. The main Skill routes the workflow, the Phase File explains how to fill the relevant sections, the Command only routes the request, and the CLI creates the Spec from the Spec Template."
+Maintainer: "Right. The main Skill routes the workflow, the Phase File explains how to fill the relevant sections, the Command only routes the request, and the CLI creates the Spec layout from the built-in Spec Template."
 
 Developer: "Should the Design Phase also write the implementation checklist?"
 
@@ -72,7 +84,7 @@ Maintainer: "No. The Design Phase records decisions and trade-offs; the Plan Pha
 
 Developer: "When is a Spec ready for implementation?"
 
-Maintainer: "When it reaches Planned Status: the Design is decided, and the Plan checklist is ready to execute."
+Maintainer: "When it reaches Planned Status: the Design is decided, and the Plan plus Progress Checklist are ready to execute."
 
 Developer: "Can an agent start Step 2 without me?"
 

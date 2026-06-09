@@ -24,13 +24,14 @@ Infer a kebab-case slug from the PR title and run:
 zest-dev create <spec-slug>
 ```
 
-**Step 3: Fill spec**
+**Step 3: Fill split spec files**
 
-Read the created file and fill sections. Keep content concise — omit subsections where there's insufficient context rather than padding with guesses.
+Read the created `spec.md`, `design.md`, and `steps.md` files and fill sections. Keep content concise — omit subsections where there's insufficient context rather than padding with guesses.
 
-- **Overview**: What the PR does and why (from title + body). Skip subsections with no data.
-- **Design**: Key approach and files changed. Only if design context is available in the PR.
-- **Implementation**: Tasks (all `[x]`), files modified with line counts, testing notes. Always fill this for real PRs.
+- **`spec.md` → Overview**: What the PR does and why (from title + body). Skip subsections with no data.
+- **`design.md` → Design**: Key approach and files changed. Only if design context is available in the PR.
+- **`spec.md` → Progress**: Tasks as completed checkboxes.
+- **`steps.md`**: One section per Plan step, combining files modified, implementation notes, and verification notes. Always fill this for real PRs.
 
 **Step 4: Update status**
 
