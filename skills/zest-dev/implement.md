@@ -8,7 +8,7 @@ Canonical workflow for implementing an active change spec.
 
 ## Workflow
 1. Run `zest-dev status` and verify an active change spec exists with status `planned`.
-2. Run `zest-dev show active`, read the main spec file, and read `steps.md`.
+2. Run `zest-dev show active`, read the main spec file, read `design.md`, and read `steps.md`.
 3. Read all relevant implementation files before coding.
 4. When the implementation work is suitable for test-driven development, try to use the registered `tdd` skill and its red-green-refactor loop; judge applicability from the spec, plan step, and files being changed.
 5. Implement the feature following the plan, design, and repository conventions.

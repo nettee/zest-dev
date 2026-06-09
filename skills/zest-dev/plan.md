@@ -8,7 +8,7 @@ Canonical workflow for planning implementation of an active change spec.
 
 ## Workflow
 1. Run `zest-dev status` and verify an active change spec exists.
-2. Run `zest-dev show active` and read the main spec file.
+2. Run `zest-dev show active` and read the main spec file and `design.md`.
 3. Check status before proceeding:
    - If the status is `new` or `researched`, suggest design first unless the implementation approach is already sufficiently decided.
    - If the status is `designed`, continue.
