@@ -1,6 +1,6 @@
 ---
 name: Zest Dev
-description: This skill should be used when the user asks to "create a spec", "write a spec", mentions "zest dev", "zest-dev", "spec-driven development", "human-interactive development", workflow phases like "research phase", "design phase", "implement phase", asks "how do I write a spec", "what's the spec process", "spec methodology", needs guidance on specification planning and development workflows, wants a quick implementation flow, or wants to capture prior work into a spec.
+description: This skill should be used when the user asks to "create a spec", "write a spec", mentions "zest dev", "zest-dev", "spec-driven development", "human-interactive development", workflow phases like "research phase", "design phase", "implement phase", asks "how do I write a spec", "what's the spec process", "spec methodology", or needs guidance on specification planning and development workflows.
 version: 0.1.0
 ---
 
@@ -65,7 +65,6 @@ Use this skill when the user:
 
 ### Questions and approvals
 - Ask targeted clarifying questions when requirements or architecture are underspecified.
-- During an end-to-end implementation flow, get explicit user approval when transitioning from Plan to Implement.
 - If the user says “whatever you think is best,” provide your recommendation and get confirmation when the choice is consequential.
 
 ## Entry Modes
@@ -136,20 +135,6 @@ Use when the plan is ready for coding.
 ### Implement
 - The canonical Implement workflow lives in `implement.md`.
 - Use it for implementation, test writing, notes updates, and status advancement to `implemented` only when the full plan is complete.
-
-## Composite Workflows
-
-### Capture In-Progress Discussion
-- When the user asks to capture an in-progress discussion into a spec, use the New phase and then route to the appropriate next core phase based on the discussion.
-
-### Quick Implement
-- Create a new spec from the user's requirement.
-- Run all core phases in order.
-- Get explicit user approval before moving from Plan to Implement.
-- Reuse the canonical phase rules from this skill instead of embedding separate thick instructions.
-
-### Summarize Prior Work
-- When the user asks to turn a prior chat, completed coding session, or pull request into a spec, capture only facts supported by the conversation or referenced source, create a spec, and set the highest status genuinely supported by those facts.
 
 ## Content Guidance Ownership
 
