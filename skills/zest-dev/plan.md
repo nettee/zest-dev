@@ -23,11 +23,11 @@ Canonical workflow for planning implementation of an active change spec.
    - Do not mark a step as `HITL` merely because the output is documentation, runbook text, an operator-facing procedure, or a workflow that humans will later execute.
    - Mark steps as `AFK` when an agent can implement them independently from the written spec and repository context.
    - Capture dependencies between steps.
-5. Decide whether project documentation should be updated as part of the plan:
-   - Check whether the change affects user-facing behavior, developer workflows, commands, setup, usage, architecture notes, or other maintained project documentation.
-   - If documentation should change, include a final Plan step to update the relevant project docs.
-   - If the change is simple or does not affect documented behavior, no documentation step is required.
-   - Do not automatically include glossary or ADR work. Treat those as special documentation updates only when the change genuinely calls for them.
+5. Add a final Plan step for documentation follow-up:
+   - Always include this as the final Plan step.
+   - The step should tell the implementer to update relevant project documentation if the implemented change makes that necessary.
+   - Do not decide during planning whether documentation must change. Leave that check to implementation, when the final code and behavior are visible.
+   - Do not automatically include glossary or ADR work. Treat those as special documentation updates only when the implemented change genuinely calls for them.
 6. Ask the user clarifying questions when needed.
 7. Wait for answers before finalizing the plan when the open questions are consequential.
 8. Fill `## Plan` with compact structured steps:
@@ -55,6 +55,13 @@ Canonical workflow for planning implementation of an active change spec.
       Goal: Choose and apply the Bar user-facing behavior.
       Scope: Confirm the behavior with the user, then update Bar prompts and docs.
       Depends on: Step 1
+
+      ### Step 3: Documentation Follow-Up
+
+      Type: AFK
+      Goal: Keep project documentation aligned with the implemented behavior.
+      Scope: If the implementation changes documented behavior, usage, commands, setup, or workflows, update the relevant project docs.
+      Depends on: Step 2
       ```
 9. Add or update `spec.md` → `## Progress` with a thin progress checklist:
    - Add one checkbox per Plan step.

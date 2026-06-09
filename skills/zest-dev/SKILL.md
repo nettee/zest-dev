@@ -154,7 +154,7 @@ Use when the plan is ready for coding.
 ### Plan
 - The canonical Plan workflow lives in `plan.md`.
 - Use it for issue-scale step shaping and status advancement to `planned`.
-- During planning, consider whether the implementation should include a final step to update relevant project documentation. Include that step only when the change affects documented behavior, usage, commands, setup, workflows, or other maintained docs.
+- During planning, always include a final documentation follow-up step that tells the implementer to update relevant project documentation if the implemented change makes that necessary.
 
 ### Implement
 - The canonical Implement workflow lives in `implement.md`.
