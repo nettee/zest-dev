@@ -5,7 +5,6 @@ Canonical workflow for creating a new change spec.
 ## When to use
 - No active spec exists yet
 - The user wants to formalize a new requirement
-- A thin `new` command routes here
 
 ## Workflow
 1. Extract a human-readable name and kebab-case slug.

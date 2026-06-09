@@ -4,20 +4,18 @@ description: This skill should be used when the user asks to "create a spec", "w
 version: 0.1.0
 ---
 
-# Zest Dev: Thick Skill, Thin Commands
+# Zest Dev
 
 ## Purpose
 
 Zest Dev is a lightweight, human-interactive workflow for spec-driven development.
 
-This skill is the **canonical workflow source** for planned feature work:
+This skill defines the workflow for planned feature work:
 - `new`
 - `research`
 - `design`
 - `plan`
 - `implement`
-
-Commands should stay thin. They exist as explicit entrypoints and compatibility shims. The actual phase logic lives here.
 
 To keep this file concise, the detailed workflows live in sibling phase docs:
 - `new.md`
@@ -26,8 +24,6 @@ To keep this file concise, the detailed workflows live in sibling phase docs:
 - `plan.md`
 - `implement.md`
 
-**Core principle:** keep workflow intelligence in the skill, keep commands lightweight.
-
 ## When This Skill Should Trigger
 
 Use this skill when the user:
@@ -35,7 +31,6 @@ Use this skill when the user:
 - mentions Zest Dev or spec-driven development
 - asks to enter a workflow phase such as new, research, design, plan, or implement
 - wants to continue an active change spec
-- uses a thin command that explicitly routes into this skill
 
 ## Shared Rules
 
@@ -44,7 +39,6 @@ Use this skill when the user:
 
 ### Source of truth
 - Treat this skill as the workflow source for the five core phases.
-- Treat commands as wrappers that declare intent and hand off to this skill.
 
 ### CLI boundaries
 - Use `zest-dev` CLI for spec lifecycle operations.
@@ -71,23 +65,10 @@ Use this skill when the user:
 
 ### Questions and approvals
 - Ask targeted clarifying questions when requirements or architecture are underspecified.
-- During quick-implement, get explicit user approval when transitioning from Plan to Implement.
+- During an end-to-end implementation flow, get explicit user approval when transitioning from Plan to Implement.
 - If the user says “whatever you think is best,” provide your recommendation and get confirmation when the choice is consequential.
 
 ## Entry Modes
-
-### 1. Thin command entry
-
-Examples:
-- `/zest-dev:new`
-- `/zest-dev:research`
-- `/zest-dev:design`
-- `/zest-dev:plan`
-- `/zest-dev:implement`
-
-Interpret the command as a request to run the corresponding phase in this skill.
-
-### 2. Natural-language entry
 
 Examples:
 - “create a spec for this”
@@ -98,14 +79,10 @@ Examples:
 
 Infer the intended phase from user intent and current spec status.
 
-### 3. Bridge entry
-
-Composite commands such as `quick-implement` should use this skill's core phases instead of re-describing thick workflows themselves.
-
 ## Workflow Overview
 
 ```text
-User intent or thin command
+User intent
           ↓
   Zest Dev skill phase routing
           ↓
@@ -160,10 +137,9 @@ Use when the plan is ready for coding.
 - The canonical Implement workflow lives in `implement.md`.
 - Use it for implementation, test writing, notes updates, and status advancement to `implemented` only when the full plan is complete.
 
-## Bridge Workflows
+## Composite Workflows
 
-### Draft
-- Draft is no longer a separate command.
+### Capture In-Progress Discussion
 - When the user asks to capture an in-progress discussion into a spec, use the New phase and then route to the appropriate next core phase based on the discussion.
 
 ### Quick Implement
@@ -173,7 +149,6 @@ Use when the plan is ready for coding.
 - Reuse the canonical phase rules from this skill instead of embedding separate thick instructions.
 
 ### Summarize Prior Work
-- Summarize is no longer a separate command.
 - When the user asks to turn a prior chat, completed coding session, or pull request into a spec, capture only facts supported by the conversation or referenced source, create a spec, and set the highest status genuinely supported by those facts.
 
 ## Content Guidance Ownership
@@ -187,11 +162,9 @@ Concrete section-writing guidance lives in the phase files:
 
 ## Guardrails
 
-- Do not rely on deployed command frontmatter except `description`.
-- Do not hardcode platform-specific agent handles in command text.
+- Do not hardcode platform-specific agent handles in workflow text.
 - Prefer generic role language such as explorer, architect, or reviewer subagent.
-- Keep commands small enough that future workflow changes happen primarily in this skill.
 
 ## Summary
 
-Use thin commands for entry, this skill for workflow logic, the CLI for lifecycle transitions, and the spec file as the durable record.
+Use this skill for workflow logic, the CLI for lifecycle transitions, and the spec file as the durable record.

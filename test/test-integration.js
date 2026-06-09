@@ -291,8 +291,8 @@ test('zest-dev init integration', async (t) => {
       const opencodeSkillPath = path.join(globalOpenCodeSkillsDir, 'zest-dev/SKILL.md');
       assert.ok(fs.existsSync(opencodeSkillPath));
       const skillContent = fs.readFileSync(opencodeSkillPath, 'utf-8');
-      assert.ok(skillContent.includes('This skill is the **canonical workflow source**'));
-      assert.ok(skillContent.includes('Commands should stay thin'));
+      assert.ok(skillContent.includes('This skill defines the workflow for planned feature work'));
+      assert.ok(skillContent.includes('always include a final documentation follow-up step'));
 
       for (const file of SKILL_PHASE_FILES) {
         assert.ok(fs.existsSync(path.join(globalOpenCodeSkillsDir, 'zest-dev', file)));
@@ -320,7 +320,7 @@ test('zest-dev init integration', async (t) => {
       assert.equal(implementPhase.includes('mark the corresponding `## Plan` checkbox'), false);
 
       const codexSkillFile = fs.readFileSync(path.join(globalCodexSkillsDir, 'SKILL.md'), 'utf-8');
-      assert.ok(codexSkillFile.includes('This skill is the **canonical workflow source**'));
+      assert.ok(codexSkillFile.includes('This skill defines the workflow for planned feature work'));
 
       for (const subagent of CODEX_SUBAGENTS) {
         const tomlContent = fs.readFileSync(path.join(globalCodexAgentsDir, subagent), 'utf-8');

@@ -4,7 +4,6 @@ Canonical workflow for planning implementation of an active change spec.
 
 ## When to use
 - The design is ready to turn into implementation steps
-- A thin `plan` command routes here
 
 ## Workflow
 1. Run `zest-dev status` and verify an active change spec exists.
