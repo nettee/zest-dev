@@ -354,6 +354,25 @@ test('zest-dev init integration', async (t) => {
       assert.ok(fs.existsSync(nestedDir));
     });
 
+    await t.test('global init removes stale managed command prompts and preserves user files', () => {
+      const staleManagedFile = path.join(globalOpenCodeCommandsDir, 'zest-dev-archive.md');
+      const userCommandFile = path.join(globalOpenCodeCommandsDir, 'my-command.md');
+
+      fs.writeFileSync(staleManagedFile, '# stale managed command', 'utf-8');
+      fs.writeFileSync(userCommandFile, '# user command', 'utf-8');
+
+      const rerunOutput = yaml.load(runInit(TEST_DIR, globalEnv));
+      assert.equal(rerunOutput.ok, true);
+      assert.equal(fs.existsSync(staleManagedFile), false);
+      assert.ok(fs.existsSync(userCommandFile));
+      assert.deepEqual(
+        fs.readdirSync(globalOpenCodeCommandsDir).sort(),
+        [...EXPECTED_COMMANDS, 'my-command.md'].sort()
+      );
+
+      fs.unlinkSync(userCommandFile);
+    });
+
     await t.test('global init is idempotent', () => {
       const secondRun = yaml.load(runInit(TEST_DIR, globalEnv));
       assert.equal(secondRun.ok, true);
