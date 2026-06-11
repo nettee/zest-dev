@@ -141,7 +141,7 @@ Use when the plan is ready for coding.
 Concrete section-writing guidance lives in the phase files:
 - `new.md` defines how to write `## Overview`.
 - `research.md` defines how to write `design.md` → `## Research`.
-- `design.md` defines how to write `design.md` → `## Design`.
+- `design.md` defines how to write the Design Section: `spec.md` → `## Design` for Design Summary and EAG, plus `design.md` → `## Design Detail`.
 - `plan.md` defines how to write `spec.md` → `## Plan` and `## Progress`.
 - `implement.md` defines how to update `spec.md` → `## Progress` and write `steps.md`.
 

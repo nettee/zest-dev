@@ -303,6 +303,12 @@ test('zest-dev init integration', async (t) => {
 
       const designPhase = fs.readFileSync(path.join(globalOpenCodeSkillsDir, 'zest-dev/design.md'), 'utf-8');
       assert.ok(designPhase.includes('If the status is `designed`, `planned`, or `implemented`, confirm that the user wants to revise the existing design before continuing.'));
+      assert.ok(designPhase.includes('Fill the Design Section:'));
+      assert.ok(designPhase.includes('### E2E Acceptance Gate (EAG)'));
+      assert.ok(designPhase.includes("The EAG is the Design Section's automated end-to-end acceptance gate, not a general test plan."));
+      assert.ok(designPhase.includes('`### E2E Acceptance Gate (EAG)`'));
+      assert.ok(designPhase.includes('small, preferably single, reviewer-facing handle'));
+      assert.ok(designPhase.includes('If no automated end-to-end gate exists, state that there is no EAG.'));
 
       const planPhase = fs.readFileSync(path.join(globalOpenCodeSkillsDir, 'zest-dev/plan.md'), 'utf-8');
       assert.ok(planPhase.includes('If the spec started as `designed`, run `zest-dev update active planned`.'));
@@ -557,6 +563,13 @@ test('zest-dev create integration', async (t) => {
       assert.ok(content.includes('## Research'), 'should include Research section');
       assert.ok(content.includes('See [design.md](./design.md).'), 'should reference design file naturally');
       assert.ok(content.includes('## Design'), 'should include Design section');
+      assert.ok(content.includes('### Design Summary'), 'should include Design Summary subsection');
+      assert.ok(content.includes('### E2E Acceptance Gate (EAG)'), 'should include EAG subsection');
+      assert.ok(
+        content.includes('Automated end-to-end acceptance behavior and verification path, or state that there is no EAG.'),
+        'EAG placeholder should stay brief and require automated end-to-end verification or an explicit no-EAG statement'
+      );
+      assert.ok(content.includes('See [design.md](./design.md) for design detail.'), 'should reference design detail naturally');
       assert.ok(content.includes('## Plan'), 'should include Plan section');
       assert.ok(content.includes('## Progress'), 'should include Progress section');
       assert.ok(content.includes('## Implementation'), 'should include Implementation section');
@@ -574,7 +587,8 @@ test('zest-dev create integration', async (t) => {
       assert.equal(content.includes('Substep 1.1 Implement'), false);
       assert.equal(content.includes('## Notes'), false);
       assert.ok(designContent.includes('## Research'), 'design template should include Research section');
-      assert.ok(designContent.includes('## Design'), 'design template should include Design section');
+      assert.ok(designContent.includes('## Design Detail'), 'design template should include Design Detail section');
+      assert.equal(designContent.includes('## Design\n'), false, 'design template should not keep the old Design section name');
       assert.ok(stepsContent.includes('## Step 1'), 'steps template should include an initial step section');
       assert.equal(stepsContent.includes('## Implementation'), false, 'steps template should not split implementation globally');
       assert.equal(stepsContent.includes('## Verification'), false, 'steps template should not split verification globally');

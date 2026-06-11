@@ -16,16 +16,19 @@ Canonical workflow for designing an active change spec.
 5. Ask the user clarifying questions when needed.
 6. Wait for answers before finalizing the architecture when the open questions are consequential.
 7. Synthesize one recommended architecture by default, including the matching test strategy.
-8. Fill `design.md` → `## Design` with:
-   - Design Summary
-   - Design Decisions
-   - System Structure, optional
-   - Prefer Mermaid for state transition diagrams, sequence diagrams, module diagrams, and other structured visuals; use ASCII only for quick sketches where Mermaid adds no clarity.
-   - System Procedure, optional
-   - Interfaces / APIs, optional
-   - Change Scope
-   - Edge Cases
-   - Verification Strategy
+8. Fill the Design Section:
+   - In `spec.md` → `## Design`, write:
+     - `### Design Summary`
+     - `### E2E Acceptance Gate (EAG)`
+   - In `design.md` → `## Design Detail`, write:
+     - Design Decisions
+     - System Structure, optional
+     - Prefer Mermaid for state transition diagrams, sequence diagrams, module diagrams, and other structured visuals; use ASCII only for quick sketches where Mermaid adds no clarity.
+     - System Procedure, optional
+     - Interfaces / APIs, optional
+     - Change Scope
+     - Edge Cases
+     - Verification Strategy
    - Use Design Summary to describe the overall design approach and rationale.
    - Use Change Scope as a two-part section:
      - Impact Areas: high-level affected modules, database/schema changes, architecture boundaries, API contracts, compatibility constraints, generated artifacts, and rollout impact.
@@ -41,3 +44,13 @@ Canonical workflow for designing an active change spec.
 
 ## Rule
 This is where decisions, trade-offs, and recommendations belong.
+
+### E2E Acceptance Gate (EAG)
+
+The EAG is the Design Section's automated end-to-end acceptance gate, not a general test plan. Use it as a small, preferably single, reviewer-facing handle for judging whether the Spec's validation proves the intended user- or system-visible behavior.
+
+Write both parts:
+- Acceptance behavior: the end-to-end behavior that must be true.
+- Verification path: the command, workflow, or automated check that proves it.
+
+Do not use unit tests, manual checks, or a broad case list as the EAG. If no automated end-to-end gate exists, state that there is no EAG.
