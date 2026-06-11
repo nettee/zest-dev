@@ -19,11 +19,11 @@ See [design.md](./design.md).
 
 <!-- Overall design approach and rationale. -->
 
+See [design.md](./design.md) for design detail.
+
 ### E2E Acceptance Gate (EAG)
 
 <!-- Automated end-to-end acceptance behavior and verification path, or state that there is no EAG. -->
-
-See [design.md](./design.md) for design detail.
 
 ## Plan
 

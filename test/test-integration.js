@@ -564,12 +564,12 @@ test('zest-dev create integration', async (t) => {
       assert.ok(content.includes('See [design.md](./design.md).'), 'should reference design file naturally');
       assert.ok(content.includes('## Design'), 'should include Design section');
       assert.ok(content.includes('### Design Summary'), 'should include Design Summary subsection');
+      assert.ok(content.includes('### Design Summary\n\n<!-- Overall design approach and rationale. -->\n\nSee [design.md](./design.md) for design detail.'), 'should place the design detail link with the top-level Design section');
       assert.ok(content.includes('### E2E Acceptance Gate (EAG)'), 'should include EAG subsection');
       assert.ok(
         content.includes('Automated end-to-end acceptance behavior and verification path, or state that there is no EAG.'),
         'EAG placeholder should stay brief and require automated end-to-end verification or an explicit no-EAG statement'
       );
-      assert.ok(content.includes('See [design.md](./design.md) for design detail.'), 'should reference design detail naturally');
       assert.ok(content.includes('## Plan'), 'should include Plan section');
       assert.ok(content.includes('## Progress'), 'should include Progress section');
       assert.ok(content.includes('## Implementation'), 'should include Implementation section');
