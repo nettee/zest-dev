@@ -16,12 +16,28 @@ _Avoid_: full spec, source of truth file
 A Markdown file inside a Spec directory that carries lower-review-frequency workflow detail, such as design research or step-by-step implementation records.
 _Avoid_: appendix, attachment
 
+**Design Section**:
+The conceptual Design area of a Spec. It spans the Main Spec File's Design section for high-frequency review content and `design.md` for lower-frequency Design Detail.
+_Avoid_: design file, design-only section
+
+**Design Summary**:
+A concise, high-frequency review summary inside the Main Spec File's Design section. It captures the chosen approach without replacing Design Detail.
+_Avoid_: full design, design detail
+
+**E2E Acceptance Gate (EAG)**:
+A small, preferably single, automated end-to-end acceptance gate in the Main Spec File's Design section. It states both the user- or system-visible behavior to accept and the executable verification path; when no automated end-to-end gate exists, the Spec should say there is no EAG.
+_Avoid_: test checklist, unit test plan, acceptance case list, manual acceptance step
+
+**Design Detail**:
+The `## Design Detail` section in `design.md` that carries lower-review-frequency design reasoning, trade-offs, architecture notes, and verification strategy.
+_Avoid_: design summary, main design
+
 **Steps File**:
 The `steps.md` Spec Supporting File that records implementation and verification by Plan Step. It does not split implementation and verification into separate global sections.
 _Avoid_: implementation log, verification log
 
 **Spec Template**:
-The built-in Markdown skeletons used by the CLI to create a new Spec layout. They define initial sections with brief placeholders, not examples, subsection templates, or detailed writing guidance.
+The built-in Markdown skeletons used by the CLI to create a new Spec layout. They define initial sections and required subsections with brief placeholders, not examples or detailed writing guidance.
 _Avoid_: workflow instructions, writing rules
 
 **Skill**:
@@ -81,6 +97,18 @@ Maintainer: "Right. The main Skill routes the workflow, the Phase File explains 
 Developer: "Should the Design Phase also write the implementation checklist?"
 
 Maintainer: "No. The Design Phase records decisions and trade-offs; the Plan Phase turns that Design into a checklist."
+
+Developer: "When should the EAG be chosen?"
+
+Maintainer: "During the Design Phase. It is part of the Design Section, and later Plan or Implement work should use it as the end-to-end validation gate."
+
+Developer: "Where should the short version of the design go?"
+
+Maintainer: "The Design Section spans both files: put Design Summary in the Main Spec File for review, and keep Design Detail in `design.md` for the reasoning and supporting detail."
+
+Developer: "Should the acceptance gate list every test case?"
+
+Maintainer: "No. The EAG should be one small automated end-to-end gate whenever possible: the visible behavior to accept plus the command or path that verifies it. If no automated end-to-end gate exists, say there is no EAG."
 
 Developer: "When is a Spec ready for implementation?"
 
