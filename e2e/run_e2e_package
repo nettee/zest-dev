@@ -1,0 +1,9 @@
+#!/usr/bin/env python3
+
+from helpers.package_env import packaged_cli_environment
+from helpers.runner import run_pytest
+
+
+if __name__ == "__main__":
+    with packaged_cli_environment() as env:
+        raise SystemExit(run_pytest(env=env))

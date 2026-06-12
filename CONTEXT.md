@@ -28,6 +28,10 @@ _Avoid_: full design, design detail
 A small, preferably single, automated end-to-end acceptance gate in the Main Spec File's Design section. It states both the user- or system-visible behavior to accept and the executable verification path; when no automated end-to-end gate exists, the Spec should say there is no EAG.
 _Avoid_: test checklist, unit test plan, acceptance case list, manual acceptance step
 
+**E2E Test Suite**:
+The repository's executable end-to-end test harness for verifying real `zest-dev` CLI behavior across local and packaged-install paths. It is broader than a Spec's single E2E Acceptance Gate.
+_Avoid_: acceptance gate, unit tests, product runtime
+
 **Design Detail**:
 The `## Design Detail` section in `design.md` that carries lower-review-frequency design reasoning, trade-offs, architecture notes, and verification strategy.
 _Avoid_: design summary, main design
