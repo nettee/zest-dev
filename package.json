@@ -33,9 +33,9 @@
   ],
   "scripts": {
     "postinstall": "node scripts/ensure-plugin-symlinks.js",
-    "test": "node --test test/test-integration.js",
-    "test:local": "node --test test/test-integration.js",
-    "test:package": "node test/setup-package-env.js setup && ZEST_DEV_CLI_PATH=$(pwd)/test-package-env node --test test/test-integration.js; STATUS=$?; node test/setup-package-env.js cleanup; exit $STATUS"
+    "test": "pnpm test:local",
+    "test:local": "cd e2e && uv run ./run_e2e_local",
+    "test:package": "cd e2e && uv run ./run_e2e_package"
   },
   "pnpm": {
     "nodeLinker": "hoisted"

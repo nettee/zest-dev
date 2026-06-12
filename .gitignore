@@ -57,6 +57,11 @@ build/Release
 node_modules/
 jspm_packages/
 
+# Python E2E environment and caches
+e2e/.venv/
+**/__pycache__/
+**/.pytest_cache/
+
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
 
