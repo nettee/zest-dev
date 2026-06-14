@@ -48,8 +48,8 @@ See [steps.md](./steps.md).
     assert tasks == [
         "Step 1: Parse active Progress into task text",
         "Step 3: Write implement prompt file",
-        FINAL_RALPH_TASK,
         DFU_RALPH_TASK,
+        FINAL_RALPH_TASK,
     ]
     assert output["tasks_added"] == tasks
     assert "ralph_results" not in output
@@ -93,8 +93,8 @@ Legacy spec.
     assert tasks == [
         "Step 1: Preserve legacy Ralph handoff",
         "Step 3: Keep split layout support",
-        FINAL_RALPH_TASK,
         DFU_RALPH_TASK,
+        FINAL_RALPH_TASK,
     ]
     assert output["tasks_added"] == tasks
 
