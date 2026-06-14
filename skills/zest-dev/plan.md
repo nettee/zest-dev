@@ -22,7 +22,7 @@ Canonical workflow for planning implementation of an active change spec.
    - Do not mark a step as `HITL` merely because the output is documentation, runbook text, an operator-facing procedure, or a workflow that humans will later execute.
    - Mark steps as `AFK` when an agent can implement them independently from the written spec and repository context.
    - Capture dependencies between steps.
-5. Add a final Plan step for documentation follow-up:
+5. Add a final Plan step for Documentation Sync:
    - Always include this as the final Plan step.
    - The step should tell the implementer to update relevant project documentation if the implemented change makes that necessary.
    - Do not decide during planning whether documentation must change. Leave that check to implementation, when the final code and behavior are visible.
@@ -55,7 +55,7 @@ Canonical workflow for planning implementation of an active change spec.
       Scope: Confirm the behavior with the user, then update Bar prompts and docs.
       Depends on: Step 1
 
-      ### Step 3: Documentation Follow-Up
+      ### Step 3: Documentation Sync
 
       Type: AFK
       Goal: Keep project documentation aligned with the implemented behavior.
@@ -66,6 +66,7 @@ Canonical workflow for planning implementation of an active change spec.
    - Add one checkbox per Plan step.
    - Keep each checklist item to the step title only.
    - This checklist is for implementation progress tracking, not for describing the plan.
+   - Do not include Deferred Follow-Ups (DFU), because DFU is outside the current Spec's Plan.
    - Format:
       ```markdown
       ## Progress

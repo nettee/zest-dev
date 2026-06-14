@@ -125,12 +125,12 @@ Use when the plan is ready for coding.
 
 ### Design
 - The canonical Design workflow lives in `design.md`.
-- Use it for clarifications, architecture synthesis, design decisions, and status advancement to `designed`.
+- Use it for clarifications, architecture synthesis, design decisions, Deferred Follow-Ups (DFU), and status advancement to `designed`.
 
 ### Plan
 - The canonical Plan workflow lives in `plan.md`.
 - Use it for issue-scale step shaping and status advancement to `planned`.
-- During planning, always include a final documentation follow-up step that tells the implementer to update relevant project documentation if the implemented change makes that necessary.
+- During planning, always include a final Documentation Sync step that tells the implementer to update relevant project documentation if the implemented change makes that necessary.
 
 ### Implement
 - The canonical Implement workflow lives in `implement.md`.
@@ -141,7 +141,7 @@ Use when the plan is ready for coding.
 Concrete section-writing guidance lives in the phase files:
 - `new.md` defines how to write `## Overview`.
 - `research.md` defines how to write `design.md` → `## Research`.
-- `design.md` defines how to write the Design Section: `spec.md` → `## Design` for Design Summary and EAG, plus `design.md` → `## Design Detail`.
+- `design.md` defines how to write the Design Section: `spec.md` → `## Design` for Design Summary and EAG, `spec.md` → `## Deferred Follow-Ups (DFU)`, plus `design.md` → `## Design Detail`.
 - `plan.md` defines how to write `spec.md` → `## Plan` and `## Progress`.
 - `implement.md` defines how to update `spec.md` → `## Progress` and write `steps.md`.
 

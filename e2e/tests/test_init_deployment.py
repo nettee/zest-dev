@@ -86,7 +86,7 @@ def test_default_global_init_deploys_expected_artifacts(cli):
 
     skill_content = (skills_dir / "zest-dev" / "SKILL.md").read_text(encoding="utf-8")
     assert "This skill defines the workflow for planned feature work" in skill_content
-    assert "always include a final documentation follow-up step" in skill_content
+    assert "always include a final Documentation Sync step" in skill_content
     for filename in SKILL_PHASE_FILES:
         assert (skills_dir / "zest-dev" / filename).exists()
 
@@ -101,6 +101,8 @@ def test_default_global_init_deploys_expected_artifacts(cli):
     assert "`### E2E Acceptance Gate (EAG)`" in design_phase
     assert "small, preferably single, reviewer-facing handle" in design_phase
     assert "If no automated end-to-end gate exists, state that there is no EAG." in design_phase
+    assert "## Deferred Follow-Ups (DFU)" in design_phase
+    assert "write `None.` when the Design defers no follow-up work" in design_phase
 
     plan_phase = (skills_dir / "zest-dev" / "plan.md").read_text(encoding="utf-8")
     assert "If the spec started as `designed`, run `zest-dev update active planned`." in plan_phase
@@ -108,6 +110,7 @@ def test_default_global_init_deploys_expected_artifacts(cli):
     assert "Do not create GitHub issues or external issue-tracker entries unless the user explicitly asks for that." in plan_phase
     assert "Do not use markdown checkboxes in `## Plan`." in plan_phase
     assert "Add or update `spec.md` → `## Progress` with a thin progress checklist:" in plan_phase
+    assert "### Step 3: Documentation Sync" in plan_phase
     assert "Report every Plan step's `Type` as `AFK` or `HITL`." in plan_phase
     assert "For each `HITL` step, tell the user what needs to be discussed, reviewed, judged, or approved in conversation before implementation continues." in plan_phase
 
@@ -115,6 +118,7 @@ def test_default_global_init_deploys_expected_artifacts(cli):
     assert "try to use the registered `tdd` skill" in implement_phase
     assert "judge applicability from the spec, plan step, and files being changed" in implement_phase
     assert "mark the corresponding `spec.md` → `## Progress` checkbox as `[x]`" in implement_phase
+    assert "DFU is fixed during the Design Phase" in implement_phase
     assert "mark the corresponding `## Plan` checkbox" not in implement_phase
 
     codex_skill = (codex_skill_dir / "SKILL.md").read_text(encoding="utf-8")

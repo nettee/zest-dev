@@ -34,6 +34,10 @@ FINAL_RALPH_TASK = (
     "Make sure all tasks are done in ralph loops, and then create PR. "
     "If there is a related issue, make sure to link it in the PR."
 )
+DFU_RALPH_TASK = (
+    "If the spec has Deferred Follow-Ups (DFU), create one GitHub issue "
+    "for each DFU item and link those issues in the PR."
+)
 
 
 class Cli:

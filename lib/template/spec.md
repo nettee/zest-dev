@@ -34,3 +34,7 @@ See [design.md](./design.md) for design detail.
 ## Implementation
 
 See [steps.md](./steps.md).
+
+## Deferred Follow-Ups (DFU)
+
+<!-- Follow-up items deferred out of this Spec during Design, or None. -->

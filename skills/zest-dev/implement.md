@@ -18,8 +18,9 @@ Canonical workflow for implementing an active change spec.
     - what changed
     - how the step was verified
     - any design deviation or follow-up relevant to that step
-10. If the full spec is complete, run `zest-dev update active implemented`.
-11. If only part of the work is complete, keep the current non-final status and document what was done.
+10. Do not add new Deferred Follow-Ups (DFU) during implementation. DFU is fixed during the Design Phase; if implementation reveals missing deferred work that changes the Design boundary, revise the Design instead of silently appending DFU.
+11. If the full spec is complete, run `zest-dev update active implemented`.
+12. If only part of the work is complete, keep the current non-final status and document what was done.
 
 ## Rule
 Only mark the spec `implemented` when the whole plan is finished.

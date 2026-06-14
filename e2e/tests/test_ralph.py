@@ -1,6 +1,7 @@
 from pathlib import Path
 
 from conftest import (
+    DFU_RALPH_TASK,
     FINAL_RALPH_TASK,
     create_active_spec_with_body,
     fake_ralph_env,
@@ -48,6 +49,7 @@ See [steps.md](./steps.md).
         "Step 1: Parse active Progress into task text",
         "Step 3: Write implement prompt file",
         FINAL_RALPH_TASK,
+        DFU_RALPH_TASK,
     ]
     assert output["tasks_added"] == tasks
     assert "ralph_results" not in output
@@ -92,6 +94,7 @@ Legacy spec.
         "Step 1: Preserve legacy Ralph handoff",
         "Step 3: Keep split layout support",
         FINAL_RALPH_TASK,
+        DFU_RALPH_TASK,
     ]
     assert output["tasks_added"] == tasks
 
