@@ -72,9 +72,17 @@ _Avoid_: designed, ready
 One issue-scale implementation slice inside a Spec's Plan section. A Plan Step has a Type that describes whether the next implementer can proceed independently or needs human input.
 _Avoid_: task, ticket
 
+**Documentation Sync**:
+The final Plan Step that checks whether the current implementation changed documented behavior, usage, commands, setup, or workflows, and updates relevant project documentation when needed. It is part of the current Spec's implementation work, not a Deferred Follow-Up.
+_Avoid_: documentation follow-up
+
 **Progress Checklist**:
 A thin completion checklist in the Main Spec File, with one checkbox per Plan Step. It tracks implementation completion; it is not the implementation plan itself.
 _Avoid_: plan, task list, notes
+
+**Deferred Follow-Ups (DFU)**:
+A final Main Spec File section for follow-up items explicitly deferred out of the current Spec during Design because they should be done only after the current Spec is complete. DFU is fixed as part of the Design Phase and is not part of the Plan or Progress Checklist.
+_Avoid_: backlog, future tasks, documentation follow-up
 
 **Ralph Task**:
 A markdown checkbox item consumed by Ralph Tasks Mode from `.ralph/ralph-tasks.md`. It is generated from a Progress Checklist item when Zest Dev hands planned work to Ralph.

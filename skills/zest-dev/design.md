@@ -20,6 +20,7 @@ Canonical workflow for designing an active change spec.
    - In `spec.md` → `## Design`, write:
      - `### Design Summary`
      - `### E2E Acceptance Gate (EAG)`
+   - In `spec.md` → `## Deferred Follow-Ups (DFU)`, write deferred follow-up items as concise bullets, or write `None.` when the Design defers no follow-up work.
    - In `design.md` → `## Design Detail`, write:
      - Design Decisions
      - System Structure, optional
@@ -35,6 +36,8 @@ Canonical workflow for designing an active change spec.
      - Planned File Changes: concrete files or directories expected to change, plus a brief note about each planned modification.
    - Do not add `Source:` citations inside Change Scope items.
    - Put execution sequencing in `## Plan` during the Plan phase.
+   - Use DFU only for follow-up work intentionally deferred out of the current Spec and meant to happen after this Spec is complete.
+   - Do not put current-Spec implementation work, Documentation Sync work, or Progress items in DFU.
    - List all design decisions.
    - Every design decision must cite its fact source inline or immediately adjacent to it.
    - Reuse sources already captured in `## Research` when possible; gather new factual sources when needed.
