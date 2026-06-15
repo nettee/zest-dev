@@ -90,6 +90,9 @@ def test_default_global_init_deploys_expected_artifacts(cli):
     for filename in SKILL_PHASE_FILES:
         assert (skills_dir / "zest-dev" / filename).exists()
 
+    brainstorming_skill = (skills_dir / "brainstorming" / "SKILL.md").read_text(encoding="utf-8")
+    assert "include a dedicated `EAG Validation` step before the final `Documentation Sync` step" in brainstorming_skill
+
     research_phase = (skills_dir / "zest-dev" / "research.md").read_text(encoding="utf-8")
     assert "Summarize your understanding of the request and confirm it with the user" in research_phase
 
