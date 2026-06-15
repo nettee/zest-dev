@@ -130,7 +130,7 @@ Use when the plan is ready for coding.
 ### Plan
 - The canonical Plan workflow lives in `plan.md`.
 - Use it for issue-scale step shaping and status advancement to `planned`.
-- During planning, always include a final Documentation Sync step that tells the implementer to update relevant project documentation if the implemented change makes that necessary.
+- During planning, always include a dedicated EAG Validation step before the final Documentation Sync step.
 
 ### Implement
 - The canonical Implement workflow lives in `implement.md`.

@@ -22,14 +22,19 @@ Canonical workflow for planning implementation of an active change spec.
    - Do not mark a step as `HITL` merely because the output is documentation, runbook text, an operator-facing procedure, or a workflow that humans will later execute.
    - Mark steps as `AFK` when an agent can implement them independently from the written spec and repository context.
    - Capture dependencies between steps.
-5. Add a final Plan step for Documentation Sync:
+5. Add a dedicated Plan step for EAG Validation:
+   - Place it after the functional implementation steps and before Documentation Sync.
+   - The step should tell the implementer to validate the completed change against the Design section's EAG.
+   - When the Design says there is no EAG, the step should explicitly confirm that no dedicated automated end-to-end gate exists and use the best available validation already defined by the Spec.
+   - Do not redefine the EAG during planning. Reuse the Design section's acceptance behavior and verification path as written.
+6. Add a final Plan step for Documentation Sync:
    - Always include this as the final Plan step.
    - The step should tell the implementer to update relevant project documentation if the implemented change makes that necessary.
    - Do not decide during planning whether documentation must change. Leave that check to implementation, when the final code and behavior are visible.
    - Do not automatically include glossary or ADR work. Treat those as special documentation updates only when the implemented change genuinely calls for them.
-6. Ask the user clarifying questions when needed.
-7. Wait for answers before finalizing the plan when the open questions are consequential.
-8. Fill `## Plan` with compact structured steps:
+7. Ask the user clarifying questions when needed.
+8. Wait for answers before finalizing the plan when the open questions are consequential.
+9. Fill `## Plan` with compact structured steps:
    - Do not use markdown checkboxes in `## Plan`.
    - Keep the step label as `Step 1`, `Step 2`, and so on.
    - Prefer steps that each deliver one meaningful vertical slice and remain easy to review.
@@ -55,14 +60,21 @@ Canonical workflow for planning implementation of an active change spec.
       Scope: Confirm the behavior with the user, then update Bar prompts and docs.
       Depends on: Step 1
 
-      ### Step 3: Documentation Sync
+      ### Step 3: EAG Validation
+
+      Type: AFK
+      Goal: Validate the completed change against the Spec's EAG before wrap-up work.
+      Scope: Run the automated end-to-end verification path defined in the Design section, or confirm that the Design explicitly says there is no EAG and use the best available Spec-defined validation.
+      Depends on: Step 2
+
+      ### Step 4: Documentation Sync
 
       Type: AFK
       Goal: Keep project documentation aligned with the implemented behavior.
       Scope: If the implementation changes documented behavior, usage, commands, setup, or workflows, update the relevant project docs.
-      Depends on: Step 2
+      Depends on: Step 3
       ```
-9. Add or update `spec.md` → `## Progress` with a thin progress checklist:
+10. Add or update `spec.md` → `## Progress` with a thin progress checklist:
    - Add one checkbox per Plan step.
    - Keep each checklist item to the step title only.
    - This checklist is for implementation progress tracking, not for describing the plan.
@@ -74,11 +86,11 @@ Canonical workflow for planning implementation of an active change spec.
       - [ ] Step 1: Foo
       - [ ] Step 2: Bar
       ```
-10. Update status based on the starting state:
+11. Update status based on the starting state:
    - If the spec started as `designed`, run `zest-dev update active planned`.
    - If the spec started as `planned`, skip the update and keep the status as-is.
    - If the spec started as `implemented`, skip the update and keep the status as-is while revising the plan.
-11. Present the plan and stop:
+12. Present the plan and stop:
    - Report every Plan step's `Type` as `AFK` or `HITL`.
    - For each `HITL` step, tell the user what needs to be discussed, reviewed, judged, or approved in conversation before implementation continues.
    - If all steps are `AFK`, say that no user action is required before implementation.

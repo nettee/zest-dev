@@ -86,9 +86,12 @@ def test_default_global_init_deploys_expected_artifacts(cli):
 
     skill_content = (skills_dir / "zest-dev" / "SKILL.md").read_text(encoding="utf-8")
     assert "This skill defines the workflow for planned feature work" in skill_content
-    assert "always include a final Documentation Sync step" in skill_content
+    assert "always include a dedicated EAG Validation step before the final Documentation Sync step" in skill_content
     for filename in SKILL_PHASE_FILES:
         assert (skills_dir / "zest-dev" / filename).exists()
+
+    brainstorming_skill = (skills_dir / "brainstorming" / "SKILL.md").read_text(encoding="utf-8")
+    assert "include a dedicated `EAG Validation` step before the final `Documentation Sync` step" in brainstorming_skill
 
     research_phase = (skills_dir / "zest-dev" / "research.md").read_text(encoding="utf-8")
     assert "Summarize your understanding of the request and confirm it with the user" in research_phase
@@ -112,7 +115,8 @@ def test_default_global_init_deploys_expected_artifacts(cli):
     assert "Do not create GitHub issues or external issue-tracker entries unless the user explicitly asks for that." in plan_phase
     assert "Do not use markdown checkboxes in `## Plan`." in plan_phase
     assert "Add or update `spec.md` → `## Progress` with a thin progress checklist:" in plan_phase
-    assert "### Step 3: Documentation Sync" in plan_phase
+    assert "### Step 3: EAG Validation" in plan_phase
+    assert "### Step 4: Documentation Sync" in plan_phase
     assert "Report every Plan step's `Type` as `AFK` or `HITL`." in plan_phase
     assert "For each `HITL` step, tell the user what needs to be discussed, reviewed, judged, or approved in conversation before implementation continues." in plan_phase
 

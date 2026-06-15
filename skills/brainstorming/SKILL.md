@@ -26,7 +26,7 @@ You MUST create a task for each of these items and complete them in order:
 3. **Ask clarifying questions** — one at a time, understand purpose/constraints/success criteria
 4. **Propose 2-3 approaches** — with trade-offs and your recommendation
 5. **Present design and plan** — in sections scaled to their complexity, get user approval after each section
-6. **Write Zest Dev spec** — use the `zest-dev` CLI to create or update a change spec in the standard Zest Dev spec location; when creating a new spec, immediately set it active with `zest-dev set-active <spec-id>`; write Overview, Research, Design, and Plan content
+6. **Write Zest Dev spec** — use the `zest-dev` CLI to create or update a change spec in the standard Zest Dev spec location; when creating a new spec, immediately set it active with `zest-dev set-active <spec-id>`; write Overview, Research, Design, and Plan content, and make the Plan include a dedicated `EAG Validation` step before the final `Documentation Sync` step
 7. **Spec self-review** — quick inline check for placeholders, contradictions, ambiguity, scope (see below)
 8. **Mark planned** — check the current spec status and use the `zest-dev` CLI to advance it to `planned` only when needed
 
@@ -107,6 +107,7 @@ digraph brainstorming {
 - Create or update the relevant change spec in Zest Dev's standard spec directory.
 - If you create a new spec with `zest-dev create <slug>`, immediately set the created spec active with `zest-dev set-active <spec-id>` before editing or advancing it.
 - Write concise content for **Overview**, **Research**, **Design** and **Plan** sections.
+- When writing **Plan**, include a dedicated `EAG Validation` step after the functional implementation steps and before the final `Documentation Sync` step.
 - Use elements-of-style:writing-clearly-and-concisely skill if available
 
 **Spec Self-Review:**
@@ -115,7 +116,8 @@ After writing the spec document, look at it with fresh eyes:
 1. **Placeholder scan:** Any "TBD", "TODO", incomplete sections, or vague requirements? Fix them.
 2. **Internal consistency:** Do any sections contradict each other? Does the architecture match the feature descriptions?
 3. **Scope check:** Is this focused enough for a single implementation plan, or does it need decomposition?
-4. **Ambiguity check:** Could any requirement be interpreted two different ways? If so, pick one and make it explicit.
+4. **Plan invariant check:** Does the Plan include a dedicated `EAG Validation` step before the final `Documentation Sync` step? Fix it if not.
+5. **Ambiguity check:** Could any requirement be interpreted two different ways? If so, pick one and make it explicit.
 
 Fix any issues inline. No need to re-review — just fix and move on.
 

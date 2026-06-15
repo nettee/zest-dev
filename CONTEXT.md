@@ -72,8 +72,12 @@ _Avoid_: designed, ready
 One issue-scale implementation slice inside a Spec's Plan section. A Plan Step has a Type that describes whether the next implementer can proceed independently or needs human input.
 _Avoid_: task, ticket
 
+**EAG Validation**:
+The Plan Step that comes after the functional implementation steps and before Documentation Sync. It validates the completed change against the Design section's EAG, or explicitly confirms that the Design says there is no EAG and uses the best available Spec-defined validation.
+_Avoid_: general test plan, documentation step
+
 **Documentation Sync**:
-The final Plan Step that checks whether the current implementation changed documented behavior, usage, commands, setup, or workflows, and updates relevant project documentation when needed. It is part of the current Spec's implementation work, not a Deferred Follow-Up.
+The final Plan Step, after EAG Validation, that checks whether the current implementation changed documented behavior, usage, commands, setup, or workflows, and updates relevant project documentation when needed. It is part of the current Spec's implementation work, not a Deferred Follow-Up.
 _Avoid_: documentation follow-up
 
 **Progress Checklist**:
@@ -113,6 +117,10 @@ Maintainer: "No. The Design Phase records decisions and trade-offs; the Plan Pha
 Developer: "When should the EAG be chosen?"
 
 Maintainer: "During the Design Phase. It is part of the Design Section, and later Plan or Implement work should use it as the end-to-end validation gate."
+
+Developer: "Where does that validation show up in the Plan?"
+
+Maintainer: "As its own EAG Validation step after the functional changes and before Documentation Sync."
 
 Developer: "Where should the short version of the design go?"
 
