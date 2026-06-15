@@ -37,4 +37,4 @@ See [steps.md](./steps.md).
 
 ## Deferred Follow-Ups (DFU)
 
-<!-- Follow-up items deferred out of this Spec during Design, or None. -->
+<!-- Follow-up items deferred out of this Spec during Design only when the user explicitly wants them handled later or confirms a discovered functional gap, or None. -->

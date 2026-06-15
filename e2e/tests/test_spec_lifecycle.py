@@ -42,7 +42,7 @@ def test_create_uses_builtin_split_templates(cli):
     assert "## Implementation" in content
     assert "See [steps.md](./steps.md)." in content
     assert "## Deferred Follow-Ups (DFU)" in content
-    assert "Follow-up items deferred out of this Spec during Design, or None." in content
+    assert "Follow-up items deferred out of this Spec during Design only when the user explicitly wants them handled later or confirms a discovered functional gap, or None." in content
     assert "Optional completion checklist, created during Plan and updated during Implement." not in content
     assert "Optional implementation step breakdown, created during Plan." in content
     assert "Use markdown checkboxes for all step and substep items" not in content

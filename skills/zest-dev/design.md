@@ -37,6 +37,8 @@ Canonical workflow for designing an active change spec.
    - Do not add `Source:` citations inside Change Scope items.
    - Put execution sequencing in `## Plan` during the Plan phase.
    - Use DFU only for follow-up work intentionally deferred out of the current Spec and meant to happen after this Spec is complete.
+   - Add DFU items only when the user explicitly says they want to handle that work later, or when a clear functional gap is discovered and you confirm with the user before placing it into DFU.
+   - Do not add DFU items on your own initiative.
    - Do not put current-Spec implementation work, Documentation Sync work, or Progress items in DFU.
    - List all design decisions.
    - Every design decision must cite its fact source inline or immediately adjacent to it.
