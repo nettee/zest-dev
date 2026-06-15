@@ -81,7 +81,7 @@ A thin completion checklist in the Main Spec File, with one checkbox per Plan St
 _Avoid_: plan, task list, notes
 
 **Deferred Follow-Ups (DFU)**:
-A final Main Spec File section for follow-up items explicitly deferred out of the current Spec during Design because they should be done only after the current Spec is complete. DFU is fixed as part of the Design Phase and is not part of the Plan or Progress Checklist.
+A final Main Spec File section for follow-up items explicitly deferred out of the current Spec during Design because they should be done only after the current Spec is complete. Add DFU only when the user explicitly wants to handle that work later, or when a clear functional gap is discovered and confirmed with the user first. DFU is fixed as part of the Design Phase and is not part of the Plan or Progress Checklist.
 _Avoid_: backlog, future tasks, documentation follow-up
 
 **Ralph Task**:

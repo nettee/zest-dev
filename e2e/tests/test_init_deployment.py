@@ -103,6 +103,8 @@ def test_default_global_init_deploys_expected_artifacts(cli):
     assert "If no automated end-to-end gate exists, state that there is no EAG." in design_phase
     assert "## Deferred Follow-Ups (DFU)" in design_phase
     assert "write `None.` when the Design defers no follow-up work" in design_phase
+    assert "Add DFU items only when the user explicitly says they want to handle that work later" in design_phase
+    assert "Do not add DFU items on your own initiative." in design_phase
 
     plan_phase = (skills_dir / "zest-dev" / "plan.md").read_text(encoding="utf-8")
     assert "If the spec started as `designed`, run `zest-dev update active planned`." in plan_phase
@@ -119,6 +121,7 @@ def test_default_global_init_deploys_expected_artifacts(cli):
     assert "judge applicability from the spec, plan step, and files being changed" in implement_phase
     assert "mark the corresponding `spec.md` → `## Progress` checkbox as `[x]`" in implement_phase
     assert "DFU is fixed during the Design Phase" in implement_phase
+    assert "confirm the DFU with the user instead of silently appending it" in implement_phase
     assert "mark the corresponding `## Plan` checkbox" not in implement_phase
 
     codex_skill = (codex_skill_dir / "SKILL.md").read_text(encoding="utf-8")
