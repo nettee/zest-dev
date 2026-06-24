@@ -99,6 +99,44 @@ Legacy spec.
     assert output["tasks_added"] == tasks
 
 
+def test_ralph_only_adds_leading_afk_progress_tasks(cli):
+    create_active_spec_with_body(
+        cli,
+        "ralph-leading-afk-progress",
+        """---
+id: test-ralph-leading-afk-progress
+name: Ralph Leading AFK Progress
+status: planned
+created: '2026-06-04'
+---
+
+## Overview
+
+Test spec.
+
+## Progress
+
+- [ ] Step 1 (AFK): AMR API Admin Grant
+- [ ] Step 2 (AFK): Admin Grant Workflow
+- [ ] Step 3 (AFK): Wallet Source Copy
+- [ ] Step 4 (HITL): Test/Production Secret Setup
+- [ ] Step 5 (AFK): Should not enter Ralph after HITL
+
+""",
+    )
+    output = cli.yaml("ralph", env=fake_ralph_env(cli.project_dir))
+    tasks = read_fake_ralph_tasks(cli.project_dir)
+
+    assert tasks == [
+        "Step 1 (AFK): AMR API Admin Grant",
+        "Step 2 (AFK): Admin Grant Workflow",
+        "Step 3 (AFK): Wallet Source Copy",
+        DFU_RALPH_TASK,
+        FINAL_RALPH_TASK,
+    ]
+    assert output["tasks_added"] == tasks
+
+
 def test_ralph_failure_cases_do_not_write_outputs(cli):
     create_active_spec_with_body(
         cli,
@@ -167,5 +205,26 @@ created: '2026-06-04'
     )
     failed = cli.fail("ralph", env=fake_ralph_env(project))
     assert "Unsupported Progress line: - [/] Step 1: In progress is not supported" in failed
+    assert not (project / ".ralph").exists()
+    assert not (project / "task.md").exists()
+
+    create_active_spec_with_body(
+        cli,
+        "ralph-mixed-progress-labels",
+        """---
+id: test-ralph-mixed-progress-labels
+name: Ralph Mixed Progress Labels
+status: planned
+created: '2026-06-04'
+---
+
+## Progress
+
+- [ ] Step 1 (AFK): Annotated
+- [ ] Step 2: Plain mixed into annotated Progress
+""",
+    )
+    failed = cli.fail("ralph", env=fake_ralph_env(project))
+    assert "Unsupported Progress line: - [ ] Step 2: Plain mixed into annotated Progress" in failed
     assert not (project / ".ralph").exists()
     assert not (project / "task.md").exists()
