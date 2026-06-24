@@ -36,40 +36,36 @@ Canonical workflow for planning implementation of an active change spec.
 8. Wait for answers before finalizing the plan when the open questions are consequential.
 9. Fill `## Plan` with compact structured steps:
    - Do not use markdown checkboxes in `## Plan`.
-   - Keep the step label as `Step 1`, `Step 2`, and so on.
+   - Put the step type directly after the step number in every step heading: `Step 1 (AFK): ...` or `Step 2 (HITL): ...`.
    - Prefer steps that each deliver one meaningful vertical slice and remain easy to review.
    - Good step boundaries usually align with one user-visible workflow, one subsystem integration boundary, one migration or rollout step, or one stabilization milestone.
    - Each step should be issue-scale: large enough to matter, small enough for a coding agent to implement and validate in one focused session.
    - Keep fields brief. Do not turn each step into a second design document.
-   - Include `Type`, `Goal`, `Scope`, and `Depends on`.
+   - Include `Goal`, `Scope`, and `Depends on`; the type belongs in the step heading, not as a separate field.
    - Use `Depends on: None` when the step has no dependency.
    - Add acceptance criteria only when they are necessary to remove ambiguity.
    - Format as structured prose, for example:
       ```markdown
-      ### Step 1: Foo
+      ### Step 1 (AFK): Foo
 
-      Type: AFK
       Goal: Deliver the smallest useful end-to-end Foo behavior.
       Scope: Update the Foo command path and its integration tests.
       Depends on: None
 
-      ### Step 2: Bar
+      ### Step 2 (HITL): Bar
 
-      Type: HITL
       Goal: Choose and apply the Bar user-facing behavior.
       Scope: Confirm the behavior with the user, then update Bar prompts and docs.
       Depends on: Step 1
 
-      ### Step 3: EAG Validation
+      ### Step 3 (AFK): EAG Validation
 
-      Type: AFK
       Goal: Validate the completed change against the Spec's EAG before wrap-up work.
       Scope: Run the automated end-to-end verification path defined in the Design section, or confirm that the Design explicitly says there is no EAG and use the best available Spec-defined validation.
       Depends on: Step 2
 
-      ### Step 4: Documentation Sync
+      ### Step 4 (AFK): Documentation Sync
 
-      Type: AFK
       Goal: Keep project documentation aligned with the implemented behavior.
       Scope: If the implementation changes documented behavior, usage, commands, setup, or workflows, update the relevant project docs.
       Depends on: Step 3
@@ -77,14 +73,15 @@ Canonical workflow for planning implementation of an active change spec.
 10. Add or update `spec.md` → `## Progress` with a thin progress checklist:
    - Add one checkbox per Plan step.
    - Keep each checklist item to the step title only.
+   - Preserve the step type marker after the step number, matching the Plan heading form: `Step N (AFK): ...` or `Step N (HITL): ...`.
    - This checklist is for implementation progress tracking, not for describing the plan.
    - Do not include Deferred Follow-Ups (DFU), because DFU is outside the current Spec's Plan.
    - Format:
       ```markdown
       ## Progress
 
-      - [ ] Step 1: Foo
-      - [ ] Step 2: Bar
+      - [ ] Step 1 (AFK): Foo
+      - [ ] Step 2 (HITL): Bar
       ```
 11. Update status based on the starting state:
    - If the spec started as `designed`, run `zest-dev update active planned`.

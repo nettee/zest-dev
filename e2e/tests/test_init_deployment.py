@@ -115,8 +115,9 @@ def test_default_global_init_deploys_expected_artifacts(cli):
     assert "Do not create GitHub issues or external issue-tracker entries unless the user explicitly asks for that." in plan_phase
     assert "Do not use markdown checkboxes in `## Plan`." in plan_phase
     assert "Add or update `spec.md` → `## Progress` with a thin progress checklist:" in plan_phase
-    assert "### Step 3: EAG Validation" in plan_phase
-    assert "### Step 4: Documentation Sync" in plan_phase
+    assert "### Step 3 (AFK): EAG Validation" in plan_phase
+    assert "### Step 4 (AFK): Documentation Sync" in plan_phase
+    assert "Step N (AFK): ..." in plan_phase
     assert "Report every Plan step's `Type` as `AFK` or `HITL`." in plan_phase
     assert "For each `HITL` step, tell the user what needs to be discussed, reviewed, judged, or approved in conversation before implementation continues." in plan_phase
 
