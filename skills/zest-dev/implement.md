@@ -13,7 +13,7 @@ Canonical workflow for implementing an active change spec.
 5. Implement the feature following the plan, design, and repository conventions.
 6. Write or update tests alongside the implementation, not afterward.
 7. Run relevant tests during implementation, fix issues, and continue until the relevant tests pass.
-8. After each completed plan step, mark the corresponding `spec.md` → `## Progress` checkbox as `[x]` only when that step is complete and relevant tests pass.
+8. After each completed plan step, mark the corresponding `spec.md` → `## Progress` checkbox as `[x]` only when that step is complete and relevant tests pass; preserve the `Step N (AFK): ...` or `Step N (HITL): ...` title format.
 9. Fill `steps.md` with one section per completed Plan step. Each section should briefly combine:
     - what changed
     - how the step was verified
