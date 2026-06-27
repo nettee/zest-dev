@@ -16,6 +16,10 @@ _Avoid_: full spec, source of truth file
 A Markdown file inside a Spec directory that carries lower-review-frequency workflow detail, such as design research or step-by-step implementation records.
 _Avoid_: appendix, attachment
 
+**Issue Spec Representation**:
+A forge-neutral representation of a Spec stored in an issue body plus issue comments, with protocol metadata sufficient to reconstruct the Spec without relying on an LLM.
+_Avoid_: GitHub dump, issue attachment format
+
 **Design Section**:
 The conceptual Design area of a Spec. It spans the Main Spec File's Design section for high-frequency review content and `design.md` for lower-frequency Design Detail.
 _Avoid_: design file, design-only section

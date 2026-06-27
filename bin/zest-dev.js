@@ -14,7 +14,9 @@ const {
   setActiveChangeSpec,
   unsetActiveChangeSpec,
   updateSpecStatus,
-  createBranchFromActiveChangeSpec
+  createBranchFromActiveChangeSpec,
+  dumpSpec,
+  loadIssueRepresentation
 } = require('../lib/spec-manager');
 const { deployPlugin } = require('../lib/plugin-deployer');
 const { generatePrompt } = require('../lib/prompt-generator');
@@ -234,6 +236,36 @@ program
     try {
       const result = createBranchFromActiveChangeSpec();
       console.log(yaml.dump(result));
+    } catch (error) {
+      console.error('Error:', error.message);
+      process.exit(1);
+    }
+  });
+
+// zest-dev dump <spec_id|active>
+program
+  .command('dump <spec>')
+  .description('Dump a spec to an issue representation or forge issue')
+  .option('--dry-run', 'Print the local Issue Spec Representation without creating an issue')
+  .action((spec, options) => {
+    try {
+      const result = dumpSpec(spec, { dryRun: Boolean(options.dryRun) });
+      console.log(yaml.dump(result, { lineWidth: -1 }));
+    } catch (error) {
+      console.error('Error:', error.message);
+      process.exit(1);
+    }
+  });
+
+// zest-dev load [issue]
+program
+  .command('load [issue]')
+  .description('Load a spec from an issue representation or forge issue')
+  .option('--from-file <path>', 'Load from a local Issue Spec Representation YAML file')
+  .action((issue, options) => {
+    try {
+      const result = loadIssueRepresentation(issue, { fromFile: options.fromFile });
+      console.log(yaml.dump(result, { lineWidth: -1 }));
     } catch (error) {
       console.error('Error:', error.message);
       process.exit(1);
