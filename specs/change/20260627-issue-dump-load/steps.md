@@ -1,6 +1,6 @@
 # Steps
 
-## Step 1: Protocol document and core local representation
+## Step 1 (AFK): Protocol Document And Core Local Representation
 
 ### Implementation
 
@@ -10,7 +10,7 @@ Pending.
 
 Pending.
 
-## Step 2: CLI commands and local mode
+## Step 2 (AFK): CLI Local Mode
 
 ### Implementation
 
@@ -20,7 +20,7 @@ Pending.
 
 Pending.
 
-## Step 3: GitHub transport
+## Step 3 (AFK): GitHub Transport
 
 ### Implementation
 
@@ -30,7 +30,17 @@ Pending.
 
 Pending.
 
-## Step 4: Documentation sync and acceptance
+## Step 4 (AFK): EAG Validation
+
+### Implementation
+
+Pending.
+
+### Verification
+
+Pending.
+
+## Step 5 (AFK): Documentation Sync
 
 ### Implementation
 

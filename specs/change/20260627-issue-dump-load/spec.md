@@ -36,31 +36,43 @@ Dump a test Spec directory with multiple Markdown files to a local Issue Spec Re
 
 ## Plan
 
-- [ ] Step 1: Protocol document and core local representation
-  - [ ] Substep 1.1 Implement: Add parser/renderer for Issue Spec Representation v1.
-  - [ ] Substep 1.2 Implement: Walk Spec directories and build representation from all Markdown files.
-  - [ ] Substep 1.3 Implement: Load local representation into a new Spec directory.
-  - [ ] Substep 1.4 Verify: Add E2E coverage for local round-trip and fail-fast protocol errors.
-- [ ] Step 2: CLI commands and local mode
-  - [ ] Substep 2.1 Implement: Add `zest-dev dump <spec|active> --dry-run`.
-  - [ ] Substep 2.2 Implement: Add `zest-dev load --from-file <path>`.
-  - [ ] Substep 2.3 Verify: Cover command output, active-spec behavior, and package test path.
-- [ ] Step 3: GitHub transport
-  - [ ] Substep 3.1 Implement: Infer forge/repo from the default remote, falling back to GitHub.
-  - [ ] Substep 3.2 Implement: Create GitHub issues and comments through `gh`.
-  - [ ] Substep 3.3 Implement: Read GitHub issue body/comments through `gh` for remote load.
-  - [ ] Substep 3.4 Verify: Add adapter-focused tests with stubbed `gh` behavior.
-- [ ] Step 4: Documentation sync and acceptance
-  - [ ] Substep 4.1 Implement: Update README or command docs with `dump/load` usage.
-  - [ ] Substep 4.2 Verify: Run local E2E suite.
-  - [ ] Substep 4.3 Verify: Run package E2E suite when practical.
+### Step 1 (AFK): Protocol Document And Core Local Representation
+
+Goal: Establish the forge-neutral Issue Spec Representation and prove local lossless round-trip behavior.
+Scope: Keep [docs/issue-spec-representation.md](../../../docs/issue-spec-representation.md) aligned with implementation, add parser/renderer code, walk Spec directories for Markdown files, load local representations into new Spec directories, and cover local round-trip plus fail-fast protocol errors.
+Depends on: None
+
+### Step 2 (AFK): CLI Local Mode
+
+Goal: Expose the pure local protocol path through the public CLI.
+Scope: Add `zest-dev dump <spec|active> --dry-run` and `zest-dev load --from-file <path>`, preserving YAML-style command output, active-spec behavior, and package-install coverage.
+Depends on: Step 1
+
+### Step 3 (AFK): GitHub Transport
+
+Goal: Support real issue archive creation and loading for the first forge transport.
+Scope: Infer forge/repo from the default remote with GitHub fallback, use `gh` to create issues/comments and read issue body/comments, fail clearly for unsupported Forgejo, and test the adapter with stubbed `gh` behavior including partial failure reporting.
+Depends on: Step 2
+
+### Step 4 (AFK): EAG Validation
+
+Goal: Validate the completed change against the Spec's EAG before wrap-up work.
+Scope: Run the local representation round-trip EAG and fail-fast cases defined in the Design section, then run relevant local/package E2E coverage.
+Depends on: Step 3
+
+### Step 5 (AFK): Documentation Sync
+
+Goal: Keep project documentation aligned with the implemented behavior.
+Scope: If the implementation changes documented behavior, usage, commands, setup, or workflows, update the relevant project docs.
+Depends on: Step 4
 
 ## Progress
 
-- [ ] Step 1: Protocol document and core local representation
-- [ ] Step 2: CLI commands and local mode
-- [ ] Step 3: GitHub transport
-- [ ] Step 4: Documentation sync and acceptance
+- [ ] Step 1 (AFK): Protocol Document And Core Local Representation
+- [ ] Step 2 (AFK): CLI Local Mode
+- [ ] Step 3 (AFK): GitHub Transport
+- [ ] Step 4 (AFK): EAG Validation
+- [ ] Step 5 (AFK): Documentation Sync
 
 ## Implementation
 
