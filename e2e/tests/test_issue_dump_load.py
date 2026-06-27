@@ -45,6 +45,29 @@ def test_dump_dry_run_and_load_from_file_round_trip_markdown_files(cli):
     assert markdown_files(cli.project_dir / "specs" / "change" / source_id) == source_files
 
 
+def test_dump_and_load_round_trip_yaml_sensitive_markdown_paths(cli):
+    created = cli.yaml("create", "yaml-sensitive-paths")["spec"]
+    source_id = created["id"]
+    source_dir = cli.project_dir / "specs" / "change" / source_id
+    (source_dir / "notes").mkdir()
+    (source_dir / "notes" / "a: b.md").write_text("# Colon\n", encoding="utf-8")
+    (source_dir / "notes" / "foo #bar.md").write_text("# Hash\n", encoding="utf-8")
+
+    dumped = cli.yaml("dump", source_id, "--dry-run")
+    assert any("path: 'notes/a: b.md'" in comment for comment in dumped["issue"]["comments"])
+    assert any("path: 'notes/foo #bar.md'" in comment for comment in dumped["issue"]["comments"])
+
+    source_files = markdown_files(source_dir)
+    source_dir.rename(source_dir.with_name(f"{source_id}.source"))
+
+    dump_path = cli.project_dir / "yaml-sensitive.yml"
+    dump_path.write_text(yaml.safe_dump(dumped["issue"], sort_keys=False), encoding="utf-8")
+    loaded = cli.yaml("load", "--from-file", str(dump_path))
+
+    assert loaded["ok"] is True
+    assert markdown_files(cli.project_dir / "specs" / "change" / source_id) == source_files
+
+
 def test_dump_and_load_fail_fast_for_invalid_local_protocol(cli):
     created = cli.yaml("create", "invalid-dump-source")["spec"]
     spec_dir = cli.project_dir / "specs" / "change" / created["id"]
@@ -106,6 +129,30 @@ def test_dump_and_load_fail_fast_for_invalid_local_protocol(cli):
     )
     (cli.project_dir / "specs" / "change" / "20240101-valid").mkdir(parents=True)
     assert "Target Spec directory already exists" in cli.fail("load", "--from-file", str(valid_path))
+
+
+def test_load_ignores_non_protocol_html_comments(cli):
+    path = cli.project_dir / "non-protocol-comment.yml"
+    path.write_text(
+        yaml.safe_dump(
+            {
+                "body": "<!--\nzest-dev-issue-spec: 1\nspec-id: 20240101-valid\npath: spec.md\n-->\n# Body\n",
+                "comments": [
+                    "<!--\nplain: comment\n-->\nThis is ordinary discussion.\n",
+                    "<!--\nnot actually the protocol\n-->\nStill discussion.\n",
+                ],
+            },
+            sort_keys=False,
+        ),
+        encoding="utf-8",
+    )
+
+    loaded = cli.yaml("load", "--from-file", str(path))
+
+    assert loaded["ok"] is True
+    assert markdown_files(cli.project_dir / "specs" / "change" / "20240101-valid") == {
+        "spec.md": "# Body\n"
+    }
 
 
 def test_github_transport_uses_gh_and_reports_comment_failure(cli):
