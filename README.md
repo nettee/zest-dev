@@ -75,6 +75,8 @@ The `zest-dev` CLI manages spec files. Use it to inspect and update specs outsid
 | `zest-dev unset-active` | Unset active change spec |
 | `zest-dev update <spec-id\|active> <status>` | Update spec status |
 | `zest-dev create-branch` | Create a git branch from the active change spec |
+| `zest-dev dump <spec-id\|active> [--dry-run]` | Archive a spec as an issue representation or GitHub issue |
+| `zest-dev load [issue] [--from-file <path>]` | Reconstruct a spec from an issue representation or GitHub issue |
 
 ### Status Transitions
 

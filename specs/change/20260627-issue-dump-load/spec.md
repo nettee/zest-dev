@@ -1,7 +1,7 @@
 ---
 id: 20260627-issue-dump-load
 name: Issue Dump Load
-status: planned
+status: implemented
 created: '2026-06-27'
 ---
 
@@ -68,11 +68,11 @@ Depends on: Step 4
 
 ## Progress
 
-- [ ] Step 1 (AFK): Protocol Document And Core Local Representation
-- [ ] Step 2 (AFK): CLI Local Mode
-- [ ] Step 3 (AFK): GitHub Transport
-- [ ] Step 4 (AFK): EAG Validation
-- [ ] Step 5 (AFK): Documentation Sync
+- [x] Step 1 (AFK): Protocol Document And Core Local Representation
+- [x] Step 2 (AFK): CLI Local Mode
+- [x] Step 3 (AFK): GitHub Transport
+- [x] Step 4 (AFK): EAG Validation
+- [x] Step 5 (AFK): Documentation Sync
 
 ## Implementation
 
