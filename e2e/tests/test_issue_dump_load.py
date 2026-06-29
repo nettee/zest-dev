@@ -185,6 +185,11 @@ if sys.argv[1:3] == ["issue", "comment"]:
         print("comment failed", file=sys.stderr)
         raise SystemExit(2)
     raise SystemExit(0)
+if sys.argv[1:3] == ["issue", "close"]:
+    if os.environ.get("FAIL_CLOSE") == "1":
+        print("close failed", file=sys.stderr)
+        raise SystemExit(2)
+    raise SystemExit(0)
 if sys.argv[1:3] == ["issue", "view"]:
     comments = [
         {"body": body}
@@ -204,14 +209,21 @@ raise SystemExit(2)
     dumped = cli.yaml("dump", created["id"], env=env)
     assert dumped["ok"] is True
     assert dumped["issue"]["url"] == "https://github.com/nettee/zest-dev/issues/123"
+    assert dumped["issue"]["closed"] is True
     log_entries = [yaml.safe_load(line) for line in log_path.read_text(encoding="utf-8").splitlines()]
     assert log_entries[1]["args"][:2] == ["issue", "create"]
     assert "--label" in log_entries[1]["args"]
     assert log_entries[2]["args"][:2] == ["issue", "comment"]
+    assert log_entries[-1]["args"] == ["issue", "close", "https://github.com/nettee/zest-dev/issues/123"]
 
     fail_env = {**env, "FAIL_COMMENT": "1"}
     assert "created issue before failure: https://github.com/nettee/zest-dev/issues/123" in cli.fail(
         "dump", created["id"], env=fail_env
+    )
+
+    close_fail_env = {**env, "FAIL_CLOSE": "1"}
+    assert "created issue before failure: https://github.com/nettee/zest-dev/issues/123" in cli.fail(
+        "dump", created["id"], env=close_fail_env
     )
 
     dry_run = cli.yaml("dump", created["id"], "--dry-run")
