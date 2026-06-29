@@ -237,3 +237,20 @@ def test_update_and_active_alias(cli):
     implemented = cli.yaml("update", planned, "implemented")
     assert implemented["status"]["from"] == "planned"
     assert implemented["status"]["to"] == "implemented"
+
+
+def test_spec_commands_accept_path_identifiers(cli):
+    spec_id = cli.yaml("create", "path-identifier")["spec"]["id"]
+    spec_dir = f"specs/change/{spec_id}"
+    spec_file = f"{spec_dir}/spec.md"
+
+    assert cli.yaml("show", spec_dir)["id"] == spec_id
+    assert cli.yaml("show", f"{spec_dir}/")["id"] == spec_id
+    assert cli.yaml("show", spec_file)["id"] == spec_id
+
+    cli.ok("set-active", spec_dir)
+    assert cli.yaml("show", "active")["id"] == spec_id
+
+    update = cli.yaml("update", spec_file, "researched")
+    assert update["spec"]["id"] == spec_id
+    assert update["spec"]["status"] == "researched"

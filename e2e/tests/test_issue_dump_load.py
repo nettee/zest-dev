@@ -53,7 +53,7 @@ def test_dump_and_load_round_trip_yaml_sensitive_markdown_paths(cli):
     (source_dir / "notes" / "a: b.md").write_text("# Colon\n", encoding="utf-8")
     (source_dir / "notes" / "foo #bar.md").write_text("# Hash\n", encoding="utf-8")
 
-    dumped = cli.yaml("dump", source_id, "--dry-run")
+    dumped = cli.yaml("dump", f"specs/change/{source_id}", "--dry-run")
     assert any("path: 'notes/a: b.md'" in comment for comment in dumped["issue"]["comments"])
     assert any("path: 'notes/foo #bar.md'" in comment for comment in dumped["issue"]["comments"])
 
