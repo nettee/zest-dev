@@ -29,3 +29,8 @@
 
 - AFK implementation through Step 3 is complete and committed locally.
 - Waiting on Human review, repository secret setup, and PR merge decisions before continuing to real GitHub/npm validation.
+
+## 2026-07-04 - Step 4 PR created
+
+- Created PR: https://github.com/nettee/zest-dev/pull/104
+- PR body documents local validation and the required `NPM_TOKEN` repository secret setup.
