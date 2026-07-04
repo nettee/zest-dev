@@ -21,3 +21,23 @@ Completed package contents and E2E validation:
 
 Notes:
 - Added `.npmignore` as an explicit ignore file, but npm still emitted its gitignore-fallback warning during dry-run. The published content remains controlled and verified through `package.json` `files` plus the dry-run manifest.
+
+## Step 3
+
+Status: awaiting Human release authorization.
+
+AI summary for Human review:
+- Package: `zest-dev`
+- Current repository version: `0.1.1`
+- Current npm latest version: `0.1.0`
+- Proposed npm dist-tag: `latest`
+- Proposed registry: default public npm registry
+- Provenance: not included in the first manual publish command unless Human explicitly requires it
+- Proposed publish command for Step 4: `npm publish`
+
+Human must confirm before Step 4:
+- They control or can publish to the npm package `zest-dev`.
+- `0.1.1` is the intended release version.
+- Publishing to the default public npm registry under `latest` is intended.
+- Manual publish without provenance is acceptable, or they explicitly request a provenance/trusted-publishing path instead.
+- They are ready to handle npm login, OTP, or access-token prompts locally.

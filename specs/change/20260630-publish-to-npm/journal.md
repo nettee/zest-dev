@@ -34,3 +34,19 @@ Results:
 Notes:
 - npm still printed a gitignore-fallback warning even after adding `.npmignore`; this is not blocking because the dry-run manifest is correct and the `files` allowlist controls package contents.
 - Next step is HITL release authorization before any registry write.
+
+## Step 3 (HITL): Human Release Authorization
+
+Status: waiting for Human confirmation.
+
+AI actions completed:
+- Rechecked npm registry metadata: `zest-dev` latest is `0.1.0`.
+- Prepared the release authorization summary for Human review.
+- Identified the proposed Step 4 publish command as `npm publish` from the repository root, assuming the Human confirms a normal manual public release without provenance.
+
+Human action required:
+- Confirm package ownership/publish permission for `zest-dev`.
+- Confirm version `0.1.1` and dist-tag `latest`.
+- Confirm default public npm registry.
+- Confirm whether manual publish without provenance is acceptable.
+- Confirm readiness to handle npm auth, OTP, or token prompts outside the agent.
