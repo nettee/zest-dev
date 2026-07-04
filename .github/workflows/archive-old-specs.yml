@@ -29,6 +29,13 @@ jobs:
       - name: Install published zest-dev CLI
         run: npm install -g zest-dev
 
+      - name: Ensure archive labels exist
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh label view "spec:change" >/dev/null 2>&1 || gh label create "spec:change" --color "5319e7" --description "Zest Dev change spec"
+          gh label view "archive" >/dev/null 2>&1 || gh label create "archive" --color "cfd3d7" --description "Archived spec snapshot"
+
       - name: Archive eligible specs
         env:
           GH_TOKEN: ${{ github.token }}
