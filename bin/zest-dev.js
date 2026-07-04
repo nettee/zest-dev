@@ -21,6 +21,7 @@ const {
 const { deployPlugin } = require('../lib/plugin-deployer');
 const { generatePrompt } = require('../lib/prompt-generator');
 const { setupRalphFromActiveSpec } = require('../lib/ralph-setup');
+const packageJson = require('../package.json');
 
 const program = new Command();
 
@@ -126,7 +127,7 @@ function hasDeployedCommandMarkdowns() {
 program
   .name('zest-dev')
   .description('A lightweight, human-interactive development workflow for AI-assisted coding')
-  .version('0.1.0');
+  .version(packageJson.version);
 
 // zest-dev status
 program

@@ -1,0 +1,15 @@
+# Explicit npm ignore file.
+# Published content is primarily controlled by package.json "files".
+
+specs/
+e2e/
+test-package-env/
+node_modules/
+.npm/
+.git/
+.github/
+.cursor/
+.opencode/
+.agents/
+.codex/
+*.tgz
