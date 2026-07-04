@@ -52,3 +52,12 @@
 
 - Human configured npm Trusted Publisher for `nettee/zest-dev` with workflow filename `publish-npm.yml`.
 - npm shows publish permissions for the trusted publisher, so no expiring `NPM_TOKEN` secret is needed.
+
+## 2026-07-04 - Step 5 publish validation failed
+
+- PR #104 was merged to `main` as merge commit `c65782e`.
+- The `Publish npm` workflow ran on `main` and failed in the `npm publish --access public --provenance` step.
+- Provenance signing reached npm successfully, but the final registry publish failed with `npm error code E404` and `404 Not Found - PUT https://registry.npmjs.org/zest-dev - Not found`.
+- `npm view zest-dev version --json` still reports `1.0.0`, while merged `package.json` is `1.0.1`; publish is not complete.
+- `npm owner ls zest-dev` reports package owner `nettee <anchori@163.com>`.
+- External research is in progress to identify the exact Trusted Publishing remediation before rerunning the release.
