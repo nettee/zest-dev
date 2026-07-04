@@ -7,6 +7,96 @@ on:
     branches: [main, master]
 
 jobs:
+  pr-patch-bump:
+    name: PR Patch Bump
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Fetch base branch
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: git fetch --no-tags --depth=1 origin "$BASE_REF"
+
+      - name: Detect whether PR needs patch bump
+        id: detect-bump
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: node scripts/ci/should-bump-pr-version.js "origin/$BASE_REF"
+
+      - name: Log bump skip reason
+        if: steps.detect-bump.outputs.should_bump != 'true'
+        run: |
+          echo "Skipping PR patch bump."
+          echo "Reason: ${{ steps.detect-bump.outputs.reason }}"
+          echo "Matched files: ${{ steps.detect-bump.outputs.matched_files }}"
+
+      - name: Install dependencies
+        if: steps.detect-bump.outputs.should_bump == 'true'
+        run: pnpm install --frozen-lockfile
+
+      - name: Bump patch version
+        if: steps.detect-bump.outputs.should_bump == 'true'
+        run: pnpm version patch --no-git-tag-version
+
+      - name: Refresh lockfile
+        if: steps.detect-bump.outputs.should_bump == 'true'
+        run: pnpm install --lockfile-only --ignore-scripts
+
+      - name: Commit patch bump
+        if: steps.detect-bump.outputs.should_bump == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json pnpm-lock.yaml
+          git diff --cached --quiet && { echo "No version bump changes to commit."; exit 0; }
+          git commit -m "ci: auto bump patch version"
+          git push origin "HEAD:${{ github.event.pull_request.head.ref }}"
+
+  version-freshness:
+    name: Version Freshness
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Compare PR package version with base branch
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$BASE_REF"
+          mkdir -p .github/tmp
+          git show "origin/$BASE_REF:package.json" > .github/tmp/base-package.json
+          node scripts/ci/check-version-freshness.js .github/tmp/base-package.json package.json
+
   test-local:
     name: Integration Test (Local)
     runs-on: ubuntu-latest
