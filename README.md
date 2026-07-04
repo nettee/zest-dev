@@ -67,6 +67,10 @@ The repository uses npm Trusted Publishing with GitHub Actions OIDC:
 - The `publish-npm.yml` workflow publishes merged versions with `npm publish --access public --provenance`.
 - npm package settings must include a trusted publisher for `nettee/zest-dev` with workflow filename `publish-npm.yml`.
 
+Optional repository secret:
+
+- Set `AUTO_BUMP_TOKEN` to a fine-grained GitHub token with write access to this repository if you want PR auto-bump pushes to be attributed to that token owner instead of `github-actions[bot]`. This can avoid GitHub's approval gate on follow-up PR runs triggered by the auto-bump commit.
+
 If publishing fails, inspect the `Publish npm` workflow run on `main` before retrying.
 
 ## Usage Workflow

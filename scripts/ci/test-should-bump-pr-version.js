@@ -63,6 +63,20 @@ function testVersionOnlyChangeDoesNotLoop() {
   });
 }
 
+function testReadmeChangeDoesNotTriggerBump() {
+  const result = evaluateBumpRequirement({
+    changedFiles: ['README.md'],
+    packageFiles: ['package.json', 'pnpm-lock.yaml', 'README.md', 'bin/'],
+    versionChanged: false
+  });
+
+  assert.deepStrictEqual(result, {
+    shouldBump: false,
+    reason: 'No package-shipped CLI changes detected.',
+    matchedFiles: []
+  });
+}
+
 function testHasVersionChange() {
   assert.strictEqual(hasVersionChange('1.0.0', '1.0.1'), true);
   assert.strictEqual(hasVersionChange('1.0.0', '1.0.0'), false);
@@ -82,6 +96,7 @@ function main() {
   testBumpRequiredForCliChangeWithoutVersionChange();
   testVersionChangeSkipsBump();
   testVersionOnlyChangeDoesNotLoop();
+  testReadmeChangeDoesNotTriggerBump();
   testHasVersionChange();
   testReadVersionFromPackageJsonFailsFast();
   console.log('should-bump-pr-version tests passed');

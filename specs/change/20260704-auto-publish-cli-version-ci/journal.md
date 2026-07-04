@@ -88,3 +88,9 @@
 ## 2026-07-04 - Step 7 documentation synced
 
 - Updated `README.md` so the publish section describes automatic PR patch bumping, version freshness CI, and npm Trusted Publishing via `publish-npm.yml`.
+
+## 2026-07-04 - Auto-bump policy refined
+
+- Excluded `README.md` from PR auto-bump trigger detection so docs-only README changes do not count as CLI release changes.
+- Updated `ci.yml` so the PR auto-bump job uses repository secret `AUTO_BUMP_TOKEN` when present, falling back to `github.token` otherwise.
+- Documented that `AUTO_BUMP_TOKEN` can be used to avoid GitHub's approval gate on follow-up PR runs created by auto-bump commits.
