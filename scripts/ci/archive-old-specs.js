@@ -43,33 +43,9 @@ function listEarliestSpecs({ specsDir = DEFAULT_SPECS_DIR, limit = 10 } = {}) {
     .slice(0, limit);
 }
 
-function readLinkedSpecId(specsDir, linkName) {
-  const linkPath = path.join(specsDir, linkName);
-  if (!fs.existsSync(linkPath)) {
-    return null;
-  }
-
-  const stat = fs.lstatSync(linkPath);
-  if (!stat.isSymbolicLink()) {
-    return null;
-  }
-
-  return path.basename(fs.readlinkSync(linkPath));
-}
-
-function getProtectedSpecIds(specsDir) {
-  return new Set(
-    ['active', 'current']
-      .map(linkName => readLinkedSpecId(specsDir, linkName))
-      .filter(Boolean)
-  );
-}
-
 function selectSpecsToArchive({ specsDir = DEFAULT_SPECS_DIR, now = new Date(), limit = 10, maxAgeDays = 10 } = {}) {
   const cutoff = cutoffTimestamp(now, maxAgeDays);
-  const protectedSpecIds = getProtectedSpecIds(specsDir);
   return listEarliestSpecs({ specsDir, limit })
-    .filter(specId => !protectedSpecIds.has(specId))
     .filter(specId => parseUtcDatePrefix(specId) < cutoff);
 }
 
@@ -136,7 +112,6 @@ module.exports = {
   archiveIssueExists,
   archiveSpecs,
   cutoffTimestamp,
-  getProtectedSpecIds,
   listEarliestSpecs,
   parseUtcDatePrefix,
   selectSpecsToArchive

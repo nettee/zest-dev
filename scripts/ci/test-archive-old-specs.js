@@ -34,7 +34,7 @@ function fixture() {
   return { root, specsDir };
 }
 
-function testListsEarliestTenAndExcludesActiveSymlink() {
+function testListsEarliestTenAndIgnoresActiveSymlinkEntry() {
   const { specsDir } = fixture();
   for (let day = 1; day <= 12; day += 1) {
     makeSpec(specsDir, `202601${String(day).padStart(2, '0')}-spec-${day}`);
@@ -96,20 +96,6 @@ function testDeletesOnlyAfterSuccessfulDump() {
   assert.strictEqual(fs.existsSync(path.join(specsDir, '20260602-fails')), true);
 }
 
-function testSkipsActiveAndCurrentTargets() {
-  const { specsDir } = fixture();
-  makeSpec(specsDir, '20260601-active');
-  makeSpec(specsDir, '20260602-current');
-  makeSpec(specsDir, '20260603-eligible');
-  fs.symlinkSync('20260601-active', path.join(specsDir, 'active'));
-  fs.symlinkSync('20260602-current', path.join(specsDir, 'current'));
-
-  assert.deepStrictEqual(
-    selectSpecsToArchive({ specsDir, now: new Date('2026-07-04T00:00:00Z') }),
-    ['20260603-eligible']
-  );
-}
-
 function testExistingArchiveIssueDeletesWithoutDumpingAgain() {
   const { specsDir } = fixture();
   makeSpec(specsDir, '20260601-already-archived');
@@ -161,10 +147,9 @@ function testRunsGlobalZestDevDump() {
 }
 
 function main() {
-  testListsEarliestTenAndExcludesActiveSymlink();
+  testListsEarliestTenAndIgnoresActiveSymlinkEntry();
   testSelectsOnlyMoreThanTenDaysOld();
   testDeletesOnlyAfterSuccessfulDump();
-  testSkipsActiveAndCurrentTargets();
   testExistingArchiveIssueDeletesWithoutDumpingAgain();
   testMissingSpecsDirectoryFailsFast();
   testRunsGlobalZestDevDump();
