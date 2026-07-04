@@ -77,3 +77,26 @@ Updated release authorization target:
 - Dist-tag: `latest`
 - Registry: default public npm registry
 - Proposed Step 4 command: `npm publish`
+
+Step 3 outcome:
+- Human requested the publish command and proceeded with publishing the validated `1.0.0` target.
+
+## Step 4 (HITL): npm Publish
+
+Status: completed.
+
+AI actions:
+- Provided the Human with the exact publish command: `npm publish`.
+- Asked the Human to share the complete npm output for interpretation.
+
+Human actions:
+- Ran `npm publish` from the repository root.
+- Completed npm's browser authentication flow.
+- Shared npm output showing publication to `https://registry.npmjs.org/` with tag `latest` and default access.
+
+Result:
+- npm output ended with `+ zest-dev@1.0.0`, indicating the package publish succeeded.
+
+Notes:
+- The Human performed the registry-writing operation and authentication.
+- Next step is AFK EAG validation.

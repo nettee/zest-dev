@@ -46,3 +46,18 @@ Human must confirm before Step 4:
 - Publishing to the default public npm registry under `latest` is intended.
 - Manual publish without provenance is acceptable, or they explicitly request a provenance/trusted-publishing path instead.
 - They are ready to handle npm login, OTP, or access-token prompts locally.
+
+Outcome:
+- Human proceeded with Step 4 using the validated `1.0.0` release target.
+
+## Step 4
+
+Completed npm publish:
+- AI provided the publish command: `npm publish`.
+- Human ran the command and completed npm's browser authentication flow.
+- npm output reported publishing to `https://registry.npmjs.org/` with tag `latest` and default access.
+- npm output ended with `+ zest-dev@1.0.0`.
+
+Notes:
+- Registry write was performed by the Human, not by AI.
+- Step 5 will validate the released package path.
