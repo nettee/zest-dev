@@ -68,3 +68,8 @@
 - Removed `registry-url` from `actions/setup-node` in `publish-npm.yml` so GitHub Actions does not inject `_authToken` config that can block OIDC publishing.
 - Upgraded the publish workflow runtime to Node `22.14.0` and npm `^11.5.1`, matching current npm Trusted Publishing requirements.
 - Normalized `package.json.repository` to `{ type: "git", url: "git+https://github.com/nettee/zest-dev.git" }` so published metadata matches the GitHub repo exactly.
+
+## 2026-07-04 - Step 5 remediation PR created
+
+- Created follow-up PR: https://github.com/nettee/zest-dev/pull/105
+- This PR is intended to unblock a rerun of the `Publish npm` workflow so the real release validation can continue.
