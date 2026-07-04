@@ -61,3 +61,10 @@
 - `npm view zest-dev version --json` still reports `1.0.0`, while merged `package.json` is `1.0.1`; publish is not complete.
 - `npm owner ls zest-dev` reports package owner `nettee <anchori@163.com>`.
 - External research is in progress to identify the exact Trusted Publishing remediation before rerunning the release.
+
+## 2026-07-04 - Step 5 remediation prepared
+
+- Prepared a follow-up fix branch after research identified three high-probability causes for misleading Trusted Publishing 404s.
+- Removed `registry-url` from `actions/setup-node` in `publish-npm.yml` so GitHub Actions does not inject `_authToken` config that can block OIDC publishing.
+- Upgraded the publish workflow runtime to Node `22.14.0` and npm `^11.5.1`, matching current npm Trusted Publishing requirements.
+- Normalized `package.json.repository` to `{ type: "git", url: "git+https://github.com/nettee/zest-dev.git" }` so published metadata matches the GitHub repo exactly.
