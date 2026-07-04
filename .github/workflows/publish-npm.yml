@@ -23,9 +23,11 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: '22.14.0'
           cache: 'pnpm'
-          registry-url: 'https://registry.npmjs.org'
+
+      - name: Upgrade npm CLI for trusted publishing
+        run: npm install --global npm@^11.5.1
 
       - name: Setup uv
         uses: astral-sh/setup-uv@v5
@@ -39,6 +41,9 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Show publish toolchain versions
+        run: node --version && npm --version && pnpm --version
 
       - name: Run local integration tests
         run: pnpm test:local
