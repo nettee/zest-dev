@@ -50,7 +50,7 @@ zest-dev init
 
 ### Publishing to npm
 
-Publishing writes to the public npm registry and should remain a human-authorized release step.
+Publishing is automated from GitHub Actions after merge to `main` when `package.json` contains a new version.
 
 Before publishing, validate the package locally:
 
@@ -60,7 +60,18 @@ pnpm test:local
 pnpm test:package
 ```
 
-Then have the release operator confirm package ownership, version, tag, registry, and authentication requirements before running `npm publish`. If the npm account requires 2FA, the operator must complete the OTP prompt.
+The repository uses npm Trusted Publishing with GitHub Actions OIDC:
+
+- PRs that change package-shipped CLI files automatically receive a patch version bump when needed.
+- PRs fail CI if their version is not ahead of `main`.
+- The `publish-npm.yml` workflow publishes merged versions with `npm publish --access public --provenance`.
+- npm package settings must include a trusted publisher for `nettee/zest-dev` with workflow filename `publish-npm.yml`.
+
+Optional repository secret:
+
+- Set `AUTO_BUMP_TOKEN` to a fine-grained GitHub token with write access to this repository if you want PR auto-bump pushes to be attributed to that token owner instead of `github-actions[bot]`. This can avoid GitHub's approval gate on follow-up PR runs triggered by the auto-bump commit.
+
+If publishing fails, inspect the `Publish npm` workflow run on `main` before retrying.
 
 ## Usage Workflow
 

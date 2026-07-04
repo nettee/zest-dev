@@ -8,6 +8,10 @@ function fail(message) {
   throw new Error(message);
 }
 
+const EXCLUDED_BUMP_TRIGGER_PATHS = new Set([
+  'README.md'
+]);
+
 function normalizeRepoPath(filePath) {
   return filePath.replace(/\\/g, '/').replace(/^\.\//, '');
 }
@@ -58,7 +62,8 @@ function evaluateBumpRequirement({ changedFiles, packageFiles, versionChanged })
 
   const releaseChangedFiles = changedFiles
     .map(normalizeRepoPath)
-    .filter(filePath => isPackageShippedPath(filePath, packageFiles));
+    .filter(filePath => isPackageShippedPath(filePath, packageFiles))
+    .filter(filePath => !EXCLUDED_BUMP_TRIGGER_PATHS.has(filePath));
 
   const nonVersionReleaseFiles = releaseChangedFiles.filter(
     filePath => filePath !== 'package.json' && filePath !== 'pnpm-lock.yaml'
@@ -148,5 +153,6 @@ module.exports = {
   isPackageShippedPath,
   normalizeRepoPath,
   readPackageFiles,
-  readVersionFromPackageJson
+  readVersionFromPackageJson,
+  EXCLUDED_BUMP_TRIGGER_PATHS
 };

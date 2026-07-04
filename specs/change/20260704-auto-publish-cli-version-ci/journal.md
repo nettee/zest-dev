@@ -73,3 +73,24 @@
 
 - Created follow-up PR: https://github.com/nettee/zest-dev/pull/105
 - This PR is intended to unblock a rerun of the `Publish npm` workflow so the real release validation can continue.
+
+## 2026-07-04 - Step 5 publish validation succeeded
+
+- PR #105 was merged to `main`, and the next `Publish npm` workflow run completed successfully.
+- The successful publish log reported `+ zest-dev@1.0.1` after provenance signing.
+- `npm view zest-dev version --json` and `npm view zest-dev dist-tags --json` now both confirm `latest = 1.0.1`.
+
+## 2026-07-04 - Step 6 EAG validated
+
+- Re-ran the local version-freshness helper tests.
+- Confirmed the successful `publish-npm.yml` run executed `pnpm test:local` and `pnpm test:package` before publishing `zest-dev@1.0.1`.
+
+## 2026-07-04 - Step 7 documentation synced
+
+- Updated `README.md` so the publish section describes automatic PR patch bumping, version freshness CI, and npm Trusted Publishing via `publish-npm.yml`.
+
+## 2026-07-04 - Auto-bump policy refined
+
+- Excluded `README.md` from PR auto-bump trigger detection so docs-only README changes do not count as CLI release changes.
+- Updated `ci.yml` so the PR auto-bump job uses repository secret `AUTO_BUMP_TOKEN` when present, falling back to `github.token` otherwise.
+- Documented that `AUTO_BUMP_TOKEN` can be used to avoid GitHub's approval gate on follow-up PR runs created by auto-bump commits.

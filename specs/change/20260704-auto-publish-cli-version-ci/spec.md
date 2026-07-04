@@ -92,10 +92,10 @@ Depends on: Step 6
 - [x] Step 1 (AFK): Version Freshness CI
 - [x] Step 2 (AFK): PR Patch Bump Automation
 - [x] Step 3 (AFK): Main npm Publish Automation
-- [ ] Step 4 (HITL): PR Review and Secret/Publishing Setup
-- [ ] Step 5 (HITL): Real Release Validation
-- [ ] Step 6 (AFK): EAG Validation
-- [ ] Step 7 (AFK): Documentation Sync
+- [x] Step 4 (HITL): PR Review and Secret/Publishing Setup
+- [x] Step 5 (HITL): Real Release Validation
+- [x] Step 6 (AFK): EAG Validation
+- [x] Step 7 (AFK): Documentation Sync
 
 ## Implementation
 

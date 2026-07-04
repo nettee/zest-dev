@@ -19,6 +19,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.AUTO_BUMP_TOKEN || github.token }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v3
