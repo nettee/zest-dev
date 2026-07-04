@@ -90,7 +90,7 @@ Depends on: Step 6
 ## Progress
 
 - [x] Step 1 (AFK): Version Freshness CI
-- [ ] Step 2 (AFK): PR Patch Bump Automation
+- [x] Step 2 (AFK): PR Patch Bump Automation
 - [ ] Step 3 (AFK): Main npm Publish Automation
 - [ ] Step 4 (HITL): PR Review and Secret/Publishing Setup
 - [ ] Step 5 (HITL): Real Release Validation
