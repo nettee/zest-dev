@@ -35,3 +35,9 @@
 - Created PR: https://github.com/nettee/zest-dev/pull/104
 - PR body documents local validation and the required `NPM_TOKEN` repository secret setup.
 - The PR patch-bump workflow ran on the PR branch and created `ci: auto bump patch version`, updating `package.json` to `1.0.1`.
+
+## 2026-07-04 - Step 4 publish auth revised
+
+- Switched the publish workflow from expiring `NPM_TOKEN` secret auth to npm Trusted Publishing / GitHub OIDC.
+- The publish job now requests `id-token: write` and runs `npm publish --access public --provenance` when the version is absent from npm.
+- Human setup changed from configuring a repository secret to adding a trusted publisher for repository `nettee/zest-dev` and workflow `ci.yml` in npm package settings.

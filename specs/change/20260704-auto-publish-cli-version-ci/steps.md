@@ -12,4 +12,4 @@
 ## Step 3
 
 - Added `scripts/ci/check-npm-version.js` plus a local test command so main-branch automation can detect whether `package.json`'s merged version already exists on npm and only treat 404/not-found as a skip-to-publish case.
-- Extended `.github/workflows/ci.yml` with a push-to-main publish job that waits for the existing test jobs, reuses the repo's pnpm/node setup, skips duplicate versions explicitly, and publishes with `NODE_AUTH_TOKEN`-based npm auth when the version is absent.
+- Extended `.github/workflows/ci.yml` with a push-to-main publish job that waits for the existing test jobs, reuses the repo's pnpm/node setup, skips duplicate versions explicitly, and publishes with npm Trusted Publishing / GitHub OIDC provenance when the version is absent.
