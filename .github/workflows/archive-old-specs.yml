@@ -8,6 +8,7 @@ on:
 permissions:
   contents: write
   issues: write
+  pull-requests: write
 
 concurrency:
   group: archive-old-zest-dev-specs
@@ -42,11 +43,20 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
         run: node scripts/ci/archive-old-specs.js
 
-      - name: Commit spec removals
+      - name: Create PR for spec removals
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add specs/change
           git diff --cached --quiet && { echo "No spec removals to commit."; exit 0; }
+          branch="archive-old-specs/${{ github.run_id }}-${{ github.run_attempt }}"
+          git switch -c "$branch"
           git commit -m "chore: archive old specs"
-          git push origin HEAD:${{ github.ref_name }}
+          git push origin "$branch"
+          gh pr create \
+            --base "${{ github.ref_name }}" \
+            --head "$branch" \
+            --title "Archive old specs" \
+            --body "Automated archive of old Zest Dev specs."
