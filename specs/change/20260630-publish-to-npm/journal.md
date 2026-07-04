@@ -7,7 +7,7 @@ Status: completed.
 Actions:
 - Reviewed the planned npm publish spec and release-readiness scope.
 - Confirmed the existing public npm package version is `zest-dev@0.1.0`, so the repository package version must move forward before publish.
-- Bumped `package.json` to `0.1.1`.
+- Bumped `package.json` to `0.1.1`; later retargeted the release to `1.0.0` by Human request.
 - Updated the CLI version wiring so `zest-dev --version` reads from `package.json`.
 - Updated README Quick Start with npm installation, `npx`, version/help verification, and pre-publish validation commands.
 
@@ -50,3 +50,30 @@ Human action required:
 - Confirm default public npm registry.
 - Confirm whether manual publish without provenance is acceptable.
 - Confirm readiness to handle npm auth, OTP, or token prompts outside the agent.
+
+### Version retarget update
+
+Status: in progress.
+
+Human requested the release target move from `0.1.1` to `1.0.0`.
+
+AI actions:
+- Checked `npm view zest-dev@1.0.0 version --json`; npm returned `E404`, so `1.0.0` is not currently published.
+- Updated `package.json` to `1.0.0`.
+- Updated Step 3 release authorization notes to use `1.0.0`.
+
+Follow-up:
+- Re-run package dry-run and E2E validation for `1.0.0` before asking for final release authorization. Completed below.
+
+Validation after retargeting:
+- `node bin/zest-dev.js --version`: `1.0.0`.
+- `npm pack --dry-run --json`: package `zest-dev@1.0.0`, 39 entries.
+- `pnpm test:local`: 22 passed, 1 skipped.
+- `pnpm test:package`: 23 passed.
+
+Updated release authorization target:
+- Package: `zest-dev`
+- Version: `1.0.0`
+- Dist-tag: `latest`
+- Registry: default public npm registry
+- Proposed Step 4 command: `npm publish`
