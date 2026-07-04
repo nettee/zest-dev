@@ -1,7 +1,7 @@
 ---
 id: 20260630-publish-to-npm
 name: Publish To Npm
-status: planned
+status: implemented
 created: '2026-06-30'
 ---
 
@@ -87,7 +87,7 @@ Depends on: Step 5
 - [x] Step 3 (HITL): Human Release Authorization
 - [x] Step 4 (HITL): npm Publish
 - [x] Step 5 (AFK): EAG Validation
-- [ ] Step 6 (AFK): Documentation Sync
+- [x] Step 6 (AFK): Documentation Sync
 
 ## Implementation
 

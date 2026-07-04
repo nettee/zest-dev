@@ -71,3 +71,10 @@ Completed EAG validation:
 
 Result:
 - The Design EAG passed: the packaged-install E2E behavior remains intact after the npm publish.
+
+## Step 6
+
+Completed documentation sync:
+- Reviewed README install and publish guidance after the successful npm release.
+- Confirmed Step 1 already updated Quick Start with `npm install -g zest-dev`, `npx zest-dev init`, CLI verification, and pre-publish validation guidance.
+- No additional documentation changes were required after the successful `1.0.0` publish.
