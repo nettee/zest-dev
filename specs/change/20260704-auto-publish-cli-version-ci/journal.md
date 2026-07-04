@@ -34,3 +34,4 @@
 
 - Created PR: https://github.com/nettee/zest-dev/pull/104
 - PR body documents local validation and the required `NPM_TOKEN` repository secret setup.
+- The PR patch-bump workflow ran on the PR branch and created `ci: auto bump patch version`, updating `package.json` to `1.0.1`.
