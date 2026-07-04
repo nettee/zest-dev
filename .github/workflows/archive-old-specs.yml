@@ -1,0 +1,45 @@
+name: Archive Old Zest Dev Specs
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: archive-old-zest-dev-specs
+  cancel-in-progress: false
+
+jobs:
+  archive-old-specs:
+    name: Archive old specs
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install published zest-dev CLI
+        run: npm install -g zest-dev
+
+      - name: Archive eligible specs
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/ci/archive-old-specs.js
+
+      - name: Commit spec removals
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add specs/change
+          git diff --cached --quiet && { echo "No spec removals to commit."; exit 0; }
+          git commit -m "chore: archive old specs"
+          git push origin HEAD:${{ github.ref_name }}

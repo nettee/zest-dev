@@ -98,6 +98,30 @@ jobs:
           git show "origin/$BASE_REF:package.json" > .github/tmp/base-package.json
           node scripts/ci/check-version-freshness.js .github/tmp/base-package.json package.json
 
+  ci-script-tests:
+    name: CI Script Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run archive specs script tests
+        run: pnpm test:ci-archive-specs
+
   test-local:
     name: Integration Test (Local)
     runs-on: ubuntu-latest

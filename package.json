@@ -1,6 +1,6 @@
 {
   "name": "zest-dev",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A lightweight, human-interactive development workflow for AI-assisted coding",
   "author": {
     "name": "nettee",
@@ -40,6 +40,7 @@
     "test:ci-version-freshness": "node scripts/ci/test-check-version-freshness.js",
     "test:ci-pr-bump": "node scripts/ci/test-should-bump-pr-version.js",
     "test:ci-publish": "node scripts/ci/test-check-npm-version.js",
+    "test:ci-archive-specs": "node scripts/ci/test-archive-old-specs.js",
     "test:local": "cd e2e && uv run ./run_e2e_local",
     "test:package": "cd e2e && uv run ./run_e2e_package"
   },
