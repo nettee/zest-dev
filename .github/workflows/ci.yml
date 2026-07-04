@@ -7,6 +7,32 @@ on:
     branches: [main, master]
 
 jobs:
+  version-freshness:
+    name: Version Freshness
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Compare PR package version with base branch
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: |
+          git fetch --no-tags --depth=1 origin "$BASE_REF"
+          mkdir -p .github/tmp
+          git show "origin/$BASE_REF:package.json" > .github/tmp/base-package.json
+          node scripts/ci/check-version-freshness.js .github/tmp/base-package.json package.json
+
   test-local:
     name: Integration Test (Local)
     runs-on: ubuntu-latest

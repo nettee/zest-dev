@@ -34,6 +34,7 @@
   "scripts": {
     "postinstall": "node scripts/ensure-plugin-symlinks.js",
     "test": "pnpm test:local",
+    "test:ci-version-freshness": "node scripts/ci/test-check-version-freshness.js",
     "test:local": "cd e2e && uv run ./run_e2e_local",
     "test:package": "cd e2e && uv run ./run_e2e_package"
   },
