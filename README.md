@@ -4,7 +4,29 @@ A lightweight, human-interactive development workflow for AI-assisted coding.
 
 ## Quick Start
 
-Assuming `zest-dev` is already installed and available in PATH, initialize the editor-facing commands and skills in your project:
+Install the CLI from npm, then initialize the editor-facing commands and skills in your project:
+
+```bash
+npm install -g zest-dev
+zest-dev init
+```
+
+If you prefer not to install globally, run it with `npx`:
+
+```bash
+npx zest-dev init
+```
+
+After installation, verify the CLI is available:
+
+```bash
+zest-dev --version
+zest-dev --help
+```
+
+### Initialize a Project
+
+From the project where you want to use Zest Dev, run:
 
 ```bash
 zest-dev init
@@ -25,6 +47,20 @@ npm link
 zest-dev --help
 zest-dev init
 ```
+
+### Publishing to npm
+
+Publishing writes to the public npm registry and should remain a human-authorized release step.
+
+Before publishing, validate the package locally:
+
+```bash
+npm pack --dry-run --json
+pnpm test:local
+pnpm test:package
+```
+
+Then have the release operator confirm package ownership, version, tag, registry, and authentication requirements before running `npm publish`. If the npm account requires 2FA, the operator must complete the OTP prompt.
 
 ## Usage Workflow
 
