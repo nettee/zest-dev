@@ -18,3 +18,9 @@
 - Added `scripts/ci/should-bump-pr-version.js` and a local test command so PR automation can detect package-shipped CLI changes, skip manual version bumps, and avoid version-only rebump loops.
 - Extended `.github/workflows/ci.yml` with a same-repo PR patch-bump job that runs `pnpm version patch --no-git-tag-version`, refreshes `pnpm-lock.yaml`, commits the bump, and pushes it back to the PR branch.
 - Marked Step 2 complete in the spec progress checklist.
+
+## 2026-07-04 - Step 3 complete
+
+- Added `scripts/ci/check-npm-version.js` and a local test command so main-branch CI can distinguish an already-published version from required publish/auth/network failures.
+- Extended `.github/workflows/ci.yml` with a push-to-main publish job that waits for the existing test jobs, skips duplicate npm versions explicitly, and runs `npm publish --access public` with `NODE_AUTH_TOKEN`-based auth when publish is required.
+- Marked Step 3 complete in the spec progress checklist.
