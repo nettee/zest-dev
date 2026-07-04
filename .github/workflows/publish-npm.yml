@@ -1,0 +1,59 @@
+name: Publish npm
+
+on:
+  push:
+    branches: [main, master]
+
+jobs:
+  publish-npm:
+    name: Publish npm Package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Setup uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          version: '0.7.13'
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run local integration tests
+        run: pnpm test:local
+
+      - name: Run packaged integration tests
+        run: pnpm test:package
+
+      - name: Check whether npm version already exists
+        id: npm-version
+        run: node scripts/ci/check-npm-version.js
+
+      - name: Skip publish for existing version
+        if: steps.npm-version.outputs.exists == 'true'
+        run: echo "${{ steps.npm-version.outputs.message }}"
+
+      - name: Publish package to npm
+        if: steps.npm-version.outputs.exists != 'true'
+        run: npm publish --access public --provenance
