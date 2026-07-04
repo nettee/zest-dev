@@ -41,3 +41,4 @@
 - Switched the publish workflow from expiring `NPM_TOKEN` secret auth to npm Trusted Publishing / GitHub OIDC.
 - The publish job now requests `id-token: write` and runs `npm publish --access public --provenance` when the version is absent from npm.
 - Human setup changed from configuring a repository secret to adding a trusted publisher for repository `nettee/zest-dev` and workflow `ci.yml` in npm package settings.
+- Corrected the OIDC `id-token: write` permission so it belongs only to the `publish-npm` job.
