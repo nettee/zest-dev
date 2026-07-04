@@ -47,3 +47,8 @@
 
 - Moved npm publishing out of `.github/workflows/ci.yml` into dedicated `.github/workflows/publish-npm.yml`.
 - Trusted Publisher setup should now use workflow filename `publish-npm.yml`, keeping CI and release permissions separate.
+
+## 2026-07-04 - Step 4 Trusted Publisher configured
+
+- Human configured npm Trusted Publisher for `nettee/zest-dev` with workflow filename `publish-npm.yml`.
+- npm shows publish permissions for the trusted publisher, so no expiring `NPM_TOKEN` secret is needed.
