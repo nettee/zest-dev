@@ -86,7 +86,7 @@ Depends on: Step 5
 - [x] Step 2 (AFK): Package Contents and E2E Validation
 - [x] Step 3 (HITL): Human Release Authorization
 - [x] Step 4 (HITL): npm Publish
-- [ ] Step 5 (AFK): EAG Validation
+- [x] Step 5 (AFK): EAG Validation
 - [ ] Step 6 (AFK): Documentation Sync
 
 ## Implementation

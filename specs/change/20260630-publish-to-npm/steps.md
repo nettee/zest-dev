@@ -61,3 +61,13 @@ Completed npm publish:
 Notes:
 - Registry write was performed by the Human, not by AI.
 - Step 5 will validate the released package path.
+
+## Step 5
+
+Completed EAG validation:
+- Ran `npm view zest-dev version --json`: `1.0.0`.
+- Ran `npm view zest-dev dist-tags --json`: `latest` points to `1.0.0`.
+- Ran `pnpm test:package`: 23 passed.
+
+Result:
+- The Design EAG passed: the packaged-install E2E behavior remains intact after the npm publish.

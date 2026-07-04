@@ -100,3 +100,20 @@ Result:
 Notes:
 - The Human performed the registry-writing operation and authentication.
 - Next step is AFK EAG validation.
+
+## Step 5 (AFK): EAG Validation
+
+Status: completed.
+
+Actions:
+- Checked npm registry version metadata after publish.
+- Checked npm dist-tags after publish.
+- Ran the Spec EAG verification path: `pnpm test:package`.
+
+Results:
+- `npm view zest-dev version --json`: `1.0.0`.
+- `npm view zest-dev dist-tags --json`: `latest` points to `1.0.0`.
+- `pnpm test:package`: 23 passed.
+
+Conclusion:
+- EAG passed.
