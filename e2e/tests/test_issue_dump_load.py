@@ -72,7 +72,9 @@ def test_dump_and_load_fail_fast_for_invalid_local_protocol(cli):
     created = cli.yaml("create", "invalid-dump-source")["spec"]
     spec_dir = cli.project_dir / "specs" / "change" / created["id"]
     (spec_dir / "asset.txt").write_text("not markdown\n", encoding="utf-8")
-    assert "Non-Markdown file in Spec directory: asset.txt" in cli.fail("dump", created["id"], "--dry-run")
+    dumped = cli.yaml("dump", created["id"], "--dry-run")
+    assert dumped["ok"] is True
+    assert "asset.txt" not in yaml.safe_dump(dumped["issue"])
 
     (spec_dir / "asset.txt").unlink()
     (spec_dir / "spec.md").unlink()
