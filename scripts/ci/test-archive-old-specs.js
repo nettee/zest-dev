@@ -12,11 +12,14 @@ const {
 } = require('./archive-old-specs');
 
 function noExistingArchiveRunner(calls = []) {
+  const dumpedSpecs = new Set();
   return (cmd, args) => {
     calls.push({ cmd, args });
     if (cmd === 'gh' && args[0] === 'issue' && args[1] === 'list') {
+      if ([...dumpedSpecs].some(specId => args[5].includes(specId))) return '[{"number":456}]';
       return '[]';
     }
+    if (cmd === 'zest-dev' && args[0] === 'dump') dumpedSpecs.add(args[1]);
     return '';
   };
 }
@@ -72,6 +75,7 @@ function testDeletesOnlyAfterSuccessfulDump() {
   makeSpec(specsDir, '20260601-ok');
   makeSpec(specsDir, '20260602-fails');
   const calls = [];
+  const dumpedSpecs = new Set();
 
   assert.throws(() => archiveSpecs({
     specsDir,
@@ -79,11 +83,13 @@ function testDeletesOnlyAfterSuccessfulDump() {
     runner: (cmd, args) => {
       calls.push({ cmd, args });
       if (cmd === 'gh' && args[0] === 'issue' && args[1] === 'list') {
+        if (args[5].includes('20260601-ok') && dumpedSpecs.has('20260601-ok')) return '[{"number":456}]';
         return '[]';
       }
       if (cmd === 'zest-dev' && args[1] === '20260602-fails') {
         throw new Error('dump failed');
       }
+      if (cmd === 'zest-dev' && args[0] === 'dump') dumpedSpecs.add(args[1]);
       return '';
     }
   }), /dump failed/);
@@ -115,10 +121,49 @@ function testExistingArchiveIssueDeletesWithoutDumpingAgain() {
 
   assert.deepStrictEqual(result, {
     archived: [],
-    skippedExistingIssue: ['20260601-already-archived']
+    skippedExistingIssue: ['20260601-already-archived'],
+    associatedIssues: [{ specId: '20260601-already-archived', issueNumber: 123 }]
   });
   assert.strictEqual(calls.length, 1);
   assert.strictEqual(fs.existsSync(path.join(specsDir, '20260601-already-archived')), false);
+}
+
+function testRecordsIssueCreatedByDump() {
+  const { specsDir } = fixture();
+  makeSpec(specsDir, '20260601-eligible');
+  assert.deepStrictEqual(archiveSpecs({ specsDir, now: new Date('2026-07-04T00:00:00Z'), runner: noExistingArchiveRunner() }), {
+    archived: ['20260601-eligible'], skippedExistingIssue: [], associatedIssues: [{ specId: '20260601-eligible', issueNumber: 456 }]
+  });
+}
+
+function testFailsWhenDumpDoesNotCreateArchiveIssue() {
+  const { specsDir } = fixture();
+  makeSpec(specsDir, '20260601-missing-issue');
+  assert.throws(() => archiveSpecs({ specsDir, now: new Date('2026-07-04T00:00:00Z'), runner: (cmd, args) => {
+    if (cmd === 'gh' && args[0] === 'issue' && args[1] === 'list') return '[]';
+    if (cmd === 'zest-dev' && args[0] === 'dump') return '';
+    throw new Error(`unexpected command: ${cmd}`);
+  } }), /Archive issue was not created/);
+  assert.strictEqual(fs.existsSync(path.join(specsDir, '20260601-missing-issue')), true);
+}
+
+function testRetriesIssueLookupAfterDumpUntilSearchCatchesUp() {
+  const { specsDir } = fixture();
+  makeSpec(specsDir, '20260601-delayed-index');
+  let dumped = false;
+  let lookups = 0;
+  const sleepCalls = [];
+  const result = archiveSpecs({ specsDir, now: new Date('2026-07-04T00:00:00Z'), postDumpIssueLookupDelayMs: 25, sleep: delay => sleepCalls.push(delay), runner: (cmd, args) => {
+    if (cmd === 'gh' && args[0] === 'issue' && args[1] === 'list') {
+      if (!dumped) return '[]';
+      lookups += 1;
+      return lookups < 3 ? '[]' : '[{"number":789}]';
+    }
+    if (cmd === 'zest-dev' && args[0] === 'dump') { dumped = true; return ''; }
+    throw new Error(`unexpected command: ${cmd}`);
+  } });
+  assert.deepStrictEqual(result.associatedIssues, [{ specId: '20260601-delayed-index', issueNumber: 789 }]);
+  assert.deepStrictEqual(sleepCalls, [25, 25]);
 }
 
 function testMissingSpecsDirectoryFailsFast() {
@@ -151,6 +196,9 @@ function main() {
   testSelectsOnlyMoreThanTenDaysOld();
   testDeletesOnlyAfterSuccessfulDump();
   testExistingArchiveIssueDeletesWithoutDumpingAgain();
+  testRecordsIssueCreatedByDump();
+  testFailsWhenDumpDoesNotCreateArchiveIssue();
+  testRetriesIssueLookupAfterDumpUntilSearchCatchesUp();
   testMissingSpecsDirectoryFailsFast();
   testRunsGlobalZestDevDump();
   console.log('archive-old-specs tests passed');
