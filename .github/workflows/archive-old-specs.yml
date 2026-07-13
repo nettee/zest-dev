@@ -21,6 +21,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -34,10 +36,19 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          [ "$(gh label list --search "spec:change" --json name --jq 'any(.name == "spec:change")')" = "true" ] \
-            || gh label create "spec:change" --color "5319e7" --description "Zest Dev change spec"
-          [ "$(gh label list --search "archive" --json name --jq 'any(.name == "archive")')" = "true" ] \
-            || gh label create "archive" --color "cfd3d7" --description "Archived spec snapshot"
+          set -euo pipefail
+          spec_change_label_exists="$(gh label list --search "spec:change" --json name --jq 'any(.name == "spec:change")')"
+          if [ "$spec_change_label_exists" != "true" ]; then
+            gh label create "spec:change" --color "5319e7" --description "Zest Dev change spec"
+          fi
+          archive_label_exists="$(gh label list --search "archive" --json name --jq 'any(.name == "archive")')"
+          if [ "$archive_label_exists" != "true" ]; then
+            gh label create "archive" --color "cfd3d7" --description "Archived spec snapshot"
+          fi
+          archive_pr_label_exists="$(gh label list --search "automation:archive-old-specs" --limit 1000 --json name --jq 'any(.name == "automation:archive-old-specs")')"
+          if [ "$archive_pr_label_exists" != "true" ]; then
+            gh label create "automation:archive-old-specs" --color "1d76db" --description "Automated PR for archiving old specs"
+          fi
 
       - name: Archive eligible specs
         env:
@@ -48,17 +59,54 @@ jobs:
       - name: Create PR for spec removals
         env:
           GH_TOKEN: ${{ github.token }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
         run: |
+          set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add specs/change
-          git diff --cached --quiet && { echo "No spec removals to commit."; exit 0; }
+          git_diff_status=0
+          git diff --cached --quiet || git_diff_status=$?
+          case "$git_diff_status" in
+            0)
+              echo "No spec removals to commit."
+              exit 0
+              ;;
+            1)
+              ;;
+            *)
+              echo "git diff --cached --quiet failed with status $git_diff_status" >&2
+              exit "$git_diff_status"
+              ;;
+          esac
+          archive_pr_label="automation:archive-old-specs"
           branch="archive-old-specs/${{ github.run_id }}-${{ github.run_attempt }}"
           git switch -c "$branch"
           git commit -m "chore: archive old specs"
           git push origin "$branch"
-          gh pr create \
-            --base "${{ github.ref_name }}" \
+          new_pr_url="$(gh pr create \
+            --base "$DEFAULT_BRANCH" \
             --head "$branch" \
             --title "Archive old specs" \
-            --body "Automated archive of old Zest Dev specs."
+            --body "Automated archive of old Zest Dev specs." \
+            --label "$archive_pr_label")"
+          new_pr_number="${new_pr_url##*/}"
+          case "$new_pr_number" in
+            *[!0-9]*|'')
+              echo "Unable to determine newly created PR number from: $new_pr_url" >&2
+              exit 1
+              ;;
+          esac
+          open_pr_numbers="$(gh pr list --state open --label "$archive_pr_label" --limit 1000 --json number --jq '.[].number')"
+          if [ -n "$open_pr_numbers" ]; then
+            while IFS= read -r open_pr_number; do
+              [ -z "$open_pr_number" ] && continue
+              [ "$open_pr_number" = "$new_pr_number" ] && continue
+              gh pr close "$open_pr_number"
+            done <<< "$open_pr_numbers"
+          fi
+          remaining_pr_numbers="$(gh pr list --state open --label "$archive_pr_label" --limit 1000 --json number --jq '.[].number')"
+          if [ "$remaining_pr_numbers" != "$new_pr_number" ]; then
+            echo "Expected #$new_pr_number to be the only open $archive_pr_label PR; found: $remaining_pr_numbers" >&2
+            exit 1
+          fi
