@@ -21,6 +21,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -34,31 +36,95 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          [ "$(gh label list --search "spec:change" --json name --jq 'any(.name == "spec:change")')" = "true" ] \
-            || gh label create "spec:change" --color "5319e7" --description "Zest Dev change spec"
-          [ "$(gh label list --search "archive" --json name --jq 'any(.name == "archive")')" = "true" ] \
-            || gh label create "archive" --color "cfd3d7" --description "Archived spec snapshot"
+          set -euo pipefail
+
+          ensure_label() {
+            local name="$1"
+            local color="$2"
+            local description="$3"
+            local exists
+
+            exists="$(gh label list --limit 1000 --json name --jq ".[] | select(.name == \"$name\") | .name")"
+            [ "$exists" = "$name" ] || gh label create "$name" --color "$color" --description "$description"
+          }
+
+          ensure_label "spec:change" "5319e7" "Zest Dev change spec"
+          ensure_label "archive" "cfd3d7" "Archived spec snapshot"
+          ensure_label "automation:archive-old-specs" "0e8a16" "Archive old specs automation PR"
+
+      - name: Stop if archive PR is already open
+        id: check_open_archive_prs
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          archive_pr_label="automation:archive-old-specs"
+          open_archive_prs="$(gh pr list --state open --label "$archive_pr_label" --limit 1000 --json number,url --jq '.[] | "#\(.number) \(.url)"')"
+          if [ -n "$open_archive_prs" ]; then
+            echo "should_continue=false" >> "$GITHUB_OUTPUT"
+            echo "Found existing open archive PR(s); stopping before creating archive issues or a duplicate PR:"
+            echo "$open_archive_prs"
+            exit 0
+          fi
+
+          echo "should_continue=true" >> "$GITHUB_OUTPUT"
 
       - name: Archive eligible specs
+        id: archive_eligible_specs
+        if: steps.check_open_archive_prs.outputs.should_continue == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
           GITHUB_TOKEN: ${{ github.token }}
         run: node scripts/ci/archive-old-specs.js
 
       - name: Create PR for spec removals
+        if: steps.check_open_archive_prs.outputs.should_continue == 'true'
         env:
           GH_TOKEN: ${{ github.token }}
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+          ARCHIVE_ISSUE_LINES: ${{ steps.archive_eligible_specs.outputs.archive_issue_lines }}
         run: |
+          set -euo pipefail
+
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add specs/change
-          git diff --cached --quiet && { echo "No spec removals to commit."; exit 0; }
+          if git diff --cached --quiet; then
+            echo "No spec removals to commit."
+            exit 0
+          else
+            diff_status=$?
+            if [ "$diff_status" -ne 1 ]; then
+              exit "$diff_status"
+            fi
+          fi
+
+          archive_pr_label="automation:archive-old-specs"
           branch="archive-old-specs/${{ github.run_id }}-${{ github.run_attempt }}"
+          if [ -z "$ARCHIVE_ISSUE_LINES" ]; then
+            echo "Spec removals exist, but archive issue output is empty." >&2
+            exit 1
+          fi
+
+          body_file="$(mktemp)"
+          cat > "$body_file" <<EOF
+          Automated archive of old Zest Dev specs.
+
+          Associated issues:
+          $ARCHIVE_ISSUE_LINES
+          EOF
+
           git switch -c "$branch"
           git commit -m "chore: archive old specs"
           git push origin "$branch"
-          gh pr create \
-            --base "${{ github.ref_name }}" \
+          new_pr_url="$(gh pr create \
+            --base "$DEFAULT_BRANCH" \
             --head "$branch" \
             --title "Archive old specs" \
-            --body "Automated archive of old Zest Dev specs."
+            --body-file "$body_file" \
+            --label "$archive_pr_label")"
+          if [[ ! "$new_pr_url" =~ ^https://github\.com/[^/]+/[^/]+/pull/([0-9]+)$ ]]; then
+            echo "gh pr create returned an invalid PR URL: $new_pr_url" >&2
+            exit 1
+          fi

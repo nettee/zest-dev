@@ -7,6 +7,13 @@ const { execFileSync } = require('child_process');
 const DEFAULT_SPECS_DIR = path.join('specs', 'change');
 const SPEC_ID_PATTERN = /^\d{8}-[a-z0-9][a-z0-9-]*$/;
 const DAY_MS = 24 * 60 * 60 * 1000;
+const POST_DUMP_ISSUE_LOOKUP_ATTEMPTS = 3;
+const POST_DUMP_ISSUE_LOOKUP_DELAY_MS = 1000;
+
+function sleepMs(delayMs) {
+  if (delayMs <= 0) return;
+  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, delayMs);
+}
 
 function parseUtcDatePrefix(specId) {
   const prefix = specId.slice(0, 8);
@@ -49,7 +56,7 @@ function selectSpecsToArchive({ specsDir = DEFAULT_SPECS_DIR, now = new Date(), 
     .filter(specId => parseUtcDatePrefix(specId) < cutoff);
 }
 
-function archiveIssueExists(specId, { runner = execFileSync } = {}) {
+function findArchiveIssue(specId, { runner = execFileSync } = {}) {
   const title = `[archive] ${specId}`;
   const output = runner('gh', [
     'issue',
@@ -67,31 +74,61 @@ function archiveIssueExists(specId, { runner = execFileSync } = {}) {
   if (!Array.isArray(issues)) {
     throw new Error(`Unexpected gh issue list output for ${specId}`);
   }
-  return issues.length > 0;
+  return issues[0] ?? null;
 }
 
-function archiveSpecs({ specsDir = DEFAULT_SPECS_DIR, now = new Date(), limit = 10, maxAgeDays = 10, runner = execFileSync } = {}) {
+function archiveIssueExists(specId, { runner = execFileSync } = {}) {
+  return findArchiveIssue(specId, { runner }) !== null;
+}
+
+function findArchiveIssueWithRetry(specId, { runner = execFileSync, attempts = POST_DUMP_ISSUE_LOOKUP_ATTEMPTS, delayMs = POST_DUMP_ISSUE_LOOKUP_DELAY_MS, sleep = sleepMs } = {}) {
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    const issue = findArchiveIssue(specId, { runner });
+    if (issue || attempt === attempts) return issue;
+    sleep(delayMs);
+  }
+  return null;
+}
+
+function formatIssueLine({ specId, issueNumber }) {
+  return `- #${issueNumber} \`${specId}\``;
+}
+
+function writeGitHubOutput(result) {
+  if (!process.env.GITHUB_OUTPUT) return;
+  const issueLines = result.associatedIssues.map(formatIssueLine).join('\n');
+  fs.appendFileSync(process.env.GITHUB_OUTPUT, `archive_issue_lines<<EOF\n${issueLines}\nEOF\n`);
+}
+
+function archiveSpecs({ specsDir = DEFAULT_SPECS_DIR, now = new Date(), limit = 10, maxAgeDays = 10, runner = execFileSync, postDumpIssueLookupAttempts = POST_DUMP_ISSUE_LOOKUP_ATTEMPTS, postDumpIssueLookupDelayMs = POST_DUMP_ISSUE_LOOKUP_DELAY_MS, sleep = sleepMs } = {}) {
   const specIds = selectSpecsToArchive({ specsDir, now, limit, maxAgeDays });
   const archived = [];
   const skippedExistingIssue = [];
+  const associatedIssues = [];
 
   for (const specId of specIds) {
-    if (archiveIssueExists(specId, { runner })) {
+    const existingIssue = findArchiveIssue(specId, { runner });
+    if (existingIssue) {
       fs.rmSync(path.join(specsDir, specId), { recursive: true, force: false });
       skippedExistingIssue.push(specId);
+      associatedIssues.push({ specId, issueNumber: existingIssue.number });
       continue;
     }
 
     runner('zest-dev', ['dump', specId], { stdio: 'inherit' });
+    const archiveIssue = findArchiveIssueWithRetry(specId, { runner, attempts: postDumpIssueLookupAttempts, delayMs: postDumpIssueLookupDelayMs, sleep });
+    if (!archiveIssue) throw new Error(`Archive issue was not created for ${specId}`);
     fs.rmSync(path.join(specsDir, specId), { recursive: true, force: false });
     archived.push(specId);
+    associatedIssues.push({ specId, issueNumber: archiveIssue.number });
   }
 
-  return { archived, skippedExistingIssue };
+  return { archived, skippedExistingIssue, associatedIssues };
 }
 
 function main() {
   const result = archiveSpecs();
+  writeGitHubOutput(result);
   if (result.archived.length === 0 && result.skippedExistingIssue.length === 0) {
     console.log('No old specs eligible for archival.');
     return;
@@ -112,6 +149,9 @@ module.exports = {
   archiveIssueExists,
   archiveSpecs,
   cutoffTimestamp,
+  findArchiveIssue,
+  findArchiveIssueWithRetry,
+  formatIssueLine,
   listEarliestSpecs,
   parseUtcDatePrefix,
   selectSpecsToArchive
