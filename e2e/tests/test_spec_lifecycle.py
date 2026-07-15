@@ -184,14 +184,15 @@ def test_status_agent_hints(cli):
     cursor_commands = cli.project_dir / ".cursor" / "commands"
     cursor_commands.mkdir(parents=True)
     (cursor_commands / "zest-dev-new.md").write_text("# test", encoding="utf-8")
-    assert cli.yaml("status", env=status_env)["agent_hints"] == ["Run `zest-dev init` to update deployed command markdown files."]
+    update_hint = "Run `zest-dev init` to update deployed commands and skills."
+    assert cli.yaml("status", env=status_env)["agent_hints"] == [update_hint]
 
     global_env = isolated_global_env(cli.project_dir / "global-hint-env")
     (cursor_commands / "zest-dev-new.md").unlink()
     global_commands = Path(global_env["XDG_CONFIG_HOME"]) / "opencode" / "commands"
     global_commands.mkdir(parents=True)
     (global_commands / "zest-dev-new.md").write_text("# test", encoding="utf-8")
-    assert cli.yaml("status", env=global_env)["agent_hints"] == ["Run `zest-dev init` to update deployed command markdown files."]
+    assert cli.yaml("status", env=global_env)["agent_hints"] == [update_hint]
 
     status = cli.yaml("status", env={"HOME": "", "XDG_CONFIG_HOME": "relative-config"})
     assert status["specs_count"] == 2
@@ -201,6 +202,11 @@ def test_status_agent_hints(cli):
     (other_commands / "pr.md").write_text("# unrelated", encoding="utf-8")
     (global_commands / "zest-dev-new.md").unlink()
     assert "agent_hints" not in cli.yaml("status", env=status_env)
+
+    local_codex_skill = cli.project_dir / ".agents" / "skills" / "zest-dev"
+    local_codex_skill.mkdir(parents=True)
+    (local_codex_skill / "SKILL.md").write_text("# deployed skill", encoding="utf-8")
+    assert cli.yaml("status", env=status_env)["agent_hints"] == [update_hint]
 
 
 def test_update_and_active_alias(cli):
