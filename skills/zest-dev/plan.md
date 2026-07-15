@@ -5,14 +5,25 @@ Canonical workflow for planning implementation of an active change spec.
 ## When to use
 - The design is ready to turn into implementation steps
 
-## Workflow
-1. Run `zest-dev status` and verify an active change spec exists.
-2. Run `zest-dev show active` and read the main spec file and `design.md`.
-3. Check status before proceeding:
+## Outcome
+Turn the approved Design into a compact sequence of issue-scale implementation slices that an implementer can execute and verify without reconstructing the architecture.
+
+## Success means
+- The active spec, current status, main spec, and `design.md` were read.
+- Every Plan step has a meaningful goal, bounded scope, dependency, and AFK/HITL type.
+- Functional work is followed by EAG Validation and the final documentation check.
+- `## Progress` mirrors the Plan step titles exactly.
+- An eligible `designed` spec advances to `planned`; revised later-phase specs keep their status.
+
+## Status gate
+- Run `zest-dev status` and `zest-dev show active` before planning.
+- Check the current status:
    - If the status is `new` or `researched`, suggest design first unless the implementation approach is already sufficiently decided.
    - If the status is `designed`, continue.
    - If the status is `planned` or `implemented`, confirm that the user wants to revise the existing plan before continuing.
-4. Identify implementation steps using issue-scale slicing:
+
+## Slicing constraints
+- Identify implementation steps using issue-scale slicing:
    - Use the slicing spirit of Matt Pocock's registered `to-issues` skill as a reference for scale and sequencing.
    - Do not create GitHub issues or external issue-tracker entries unless the user explicitly asks for that.
    - Treat each Plan step as the spec-local counterpart to an issue-sized vertical slice.
@@ -22,19 +33,19 @@ Canonical workflow for planning implementation of an active change spec.
    - Do not mark a step as `HITL` merely because the output is documentation, runbook text, an operator-facing procedure, or a workflow that humans will later execute.
    - Mark steps as `AFK` when an agent can implement them independently from the written spec and repository context.
    - Capture dependencies between steps.
-5. Add a dedicated Plan step for EAG Validation:
+- Add a dedicated Plan step for EAG Validation:
    - Place it after the functional implementation steps and before Documentation Sync.
    - The step should tell the implementer to validate the completed change against the Design section's EAG.
    - When the Design says there is no EAG, the step should explicitly confirm that no dedicated automated end-to-end gate exists and use the best available validation already defined by the Spec.
    - Do not redefine the EAG during planning. Reuse the Design section's acceptance behavior and verification path as written.
-6. Add a final Plan step for Documentation Sync:
+- Add a final Plan step for Documentation Sync:
    - Always include this as the final Plan step.
    - The step should tell the implementer to update relevant project documentation if the implemented change makes that necessary.
    - Do not decide during planning whether documentation must change. Leave that check to implementation, when the final code and behavior are visible.
    - Do not automatically include glossary or ADR work. Treat those as special documentation updates only when the implemented change genuinely calls for them.
-7. Ask the user clarifying questions when needed.
-8. Wait for answers before finalizing the plan when the open questions are consequential.
-9. Fill `## Plan` with compact structured steps:
+
+## Required output
+Fill `## Plan` with compact structured steps:
    - Do not use markdown checkboxes in `## Plan`.
    - Put the step type directly after the step number in every step heading: `Step 1 (AFK): ...` or `Step 2 (HITL): ...`.
    - Prefer steps that each deliver one meaningful vertical slice and remain easy to review.
@@ -70,7 +81,7 @@ Canonical workflow for planning implementation of an active change spec.
       Scope: If the implementation changes documented behavior, usage, commands, setup, or workflows, update the relevant project docs.
       Depends on: Step 3
       ```
-10. Add or update `spec.md` → `## Progress` with a thin progress checklist:
+Add or update `spec.md` → `## Progress` with a thin progress checklist:
    - Add one checkbox per Plan step.
    - Keep each checklist item to the step title only.
    - Preserve the step type marker after the step number, matching the Plan heading form: `Step N (AFK): ...` or `Step N (HITL): ...`.
@@ -83,11 +94,15 @@ Canonical workflow for planning implementation of an active change spec.
       - [ ] Step 1 (AFK): Foo
       - [ ] Step 2 (HITL): Bar
       ```
-11. Update status based on the starting state:
+## Status update
+- Update status based on the starting state:
    - If the spec started as `designed`, run `zest-dev update active planned`.
    - If the spec started as `planned`, skip the update and keep the status as-is.
    - If the spec started as `implemented`, skip the update and keep the status as-is while revising the plan.
-12. Present the plan and stop:
+## Stop or block
+- Ask only questions whose answers materially change step scope, dependencies, acceptance, or AFK/HITL classification.
+- If such a question remains unanswered, stop and name the blocked Plan decision.
+- Otherwise present the plan and stop:
    - Report every Plan step's `Type` as `AFK` or `HITL`.
    - For each `HITL` step, tell the user what needs to be discussed, reviewed, judged, or approved in conversation before implementation continues.
    - If all steps are `AFK`, say that no user action is required before implementation.
