@@ -10,19 +10,7 @@ version: 0.1.0
 
 Zest Dev is a lightweight, human-interactive workflow for spec-driven development.
 
-This skill defines the workflow for planned feature work:
-- `new`
-- `research`
-- `design`
-- `plan`
-- `implement`
-
-To keep this file concise, the detailed workflows live in sibling phase docs:
-- `new.md`
-- `research.md`
-- `design.md`
-- `plan.md`
-- `implement.md`
+Planned feature work progresses through `new → researched → designed → planned → implemented`. This file owns routing and shared invariants; sibling phase files own phase-specific behavior and output guidance.
 
 ## When This Skill Should Trigger
 
@@ -67,89 +55,17 @@ Use this skill when the user:
 - Ask targeted clarifying questions when requirements or architecture are underspecified.
 - If the user says “whatever you think is best,” provide your recommendation and get confirmation when the choice is consequential.
 
-## Entry Modes
-
-Examples:
-- “create a spec for this”
-- “research this change”
-- “design the architecture”
-- “plan the implementation”
-- “implement the active spec”
-
-Infer the intended phase from user intent and current spec status.
-
-## Workflow Overview
-
-```text
-User intent
-          ↓
-  Zest Dev skill phase routing
-          ↓
-     zest-dev CLI + spec files
-          ↓
- spec updated with brief, reviewable content
-```
-
-Valid progression:
-
-```text
-new → researched → designed → planned → implemented
-```
-
 ## Phase Routing
 
-### New phase
-Use when there is no spec yet and the user wants to formalize a requirement.
+Infer the intended phase from user intent and the active spec status, then read its canonical file:
 
-### Research phase
-Use when a spec exists and the team needs repository facts, patterns, and options.
-
-### Design phase
-Use when research or direct understanding is sufficient to choose an implementation design.
-
-### Plan phase
-Use when the design is ready to turn into issue-scale implementation steps.
-
-### Implement phase
-Use when the plan is ready for coding.
-
-## Canonical Phase Workflow Files
-
-### New
-- The canonical New workflow lives in `new.md`.
-- Use it for spec creation, overview writing, and first-step guidance.
-
-### Research
-- The canonical Research workflow lives in `research.md`.
-- Use it for repository discovery, factual research writing, and status advancement to `researched`.
-
-### Design
-- The canonical Design workflow lives in `design.md`.
-- Use it for clarifications, architecture synthesis, design decisions, Deferred Follow-Ups (DFU), and status advancement to `designed`.
-
-### Plan
-- The canonical Plan workflow lives in `plan.md`.
-- Use it for issue-scale step shaping and status advancement to `planned`.
-- During planning, always include a dedicated EAG Validation step before the final Documentation Sync step.
-
-### Implement
-- The canonical Implement workflow lives in `implement.md`.
-- Use it for implementation, test writing, notes updates, and status advancement to `implemented` only when the full plan is complete.
-
-## Content Guidance Ownership
-
-Concrete section-writing guidance lives in the phase files:
-- `new.md` defines how to write `## Overview`.
-- `research.md` defines how to write `design.md` → `## Research`.
-- `design.md` defines how to write the Design Section: `spec.md` → `## Design` for Design Summary and EAG, `spec.md` → `## Deferred Follow-Ups (DFU)`, plus `design.md` → `## Design Detail`.
-- `plan.md` defines how to write `spec.md` → `## Plan` and `## Progress`.
-- `implement.md` defines how to update `spec.md` → `## Progress` and write `steps.md`.
+- `new.md`: create and activate a spec; write `## Overview`.
+- `research.md`: gather repository facts in `design.md` → `## Research`; advance to `researched`.
+- `design.md`: resolve consequential questions; write Design, EAG, DFU, and Design Detail; advance to `designed`.
+- `plan.md`: create issue-scale Plan and Progress entries; advance to `planned`.
+- `implement.md`: implement and validate the Plan; update Progress and `steps.md`; advance to `implemented` only when complete.
 
 ## Guardrails
 
 - Do not hardcode platform-specific agent handles in workflow text.
 - Prefer generic role language such as explorer, architect, or reviewer subagent.
-
-## Summary
-
-Use this skill for workflow logic, the CLI for lifecycle transitions, and the spec file as the durable record.

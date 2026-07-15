@@ -55,45 +55,28 @@ Fill `## Plan` with compact structured steps:
    - Include `Goal`, `Scope`, and `Depends on`; the type belongs in the step heading, not as a separate field.
    - Use `Depends on: None` when the step has no dependency.
    - Add acceptance criteria only when they are necessary to remove ambiguity.
-   - Format as structured prose, for example:
+   - Use this field schema:
       ```markdown
-      ### Step 1 (AFK): Foo
+      ### Step N (AFK|HITL): Title
 
-      Goal: Deliver the smallest useful end-to-end Foo behavior.
-      Scope: Update the Foo command path and its integration tests.
-      Depends on: None
-
-      ### Step 2 (HITL): Bar
-
-      Goal: Choose and apply the Bar user-facing behavior.
-      Scope: Confirm the behavior with the user, then update Bar prompts and docs.
-      Depends on: Step 1
-
-      ### Step 3 (AFK): EAG Validation
-
-      Goal: Validate the completed change against the Spec's EAG before wrap-up work.
-      Scope: Run the automated end-to-end verification path defined in the Design section, or confirm that the Design explicitly says there is no EAG and use the best available Spec-defined validation.
-      Depends on: Step 2
-
-      ### Step 4 (AFK): Documentation Sync
-
-      Goal: Keep project documentation aligned with the implemented behavior.
-      Scope: If the implementation changes documented behavior, usage, commands, setup, or workflows, update the relevant project docs.
-      Depends on: Step 3
+      Goal: <meaningful outcome>
+      Scope: <bounded implementation and validation scope>
+      Depends on: <Step N or None>
       ```
+
 Add or update `spec.md` → `## Progress` with a thin progress checklist:
    - Add one checkbox per Plan step.
    - Keep each checklist item to the step title only.
    - Preserve the step type marker after the step number, matching the Plan heading form: `Step N (AFK): ...` or `Step N (HITL): ...`.
    - This checklist is for implementation progress tracking, not for describing the plan.
    - Do not include Deferred Follow-Ups (DFU), because DFU is outside the current Spec's Plan.
-   - Format:
+   - Mirror the Plan titles exactly:
       ```markdown
       ## Progress
 
-      - [ ] Step 1 (AFK): Foo
-      - [ ] Step 2 (HITL): Bar
+      - [ ] Step N (AFK|HITL): Title
       ```
+
 ## Status update
 - Update status based on the starting state:
    - If the spec started as `designed`, run `zest-dev update active planned`.
@@ -106,6 +89,3 @@ Add or update `spec.md` → `## Progress` with a thin progress checklist:
    - Report every Plan step's `Type` as `AFK` or `HITL`.
    - For each `HITL` step, tell the user what needs to be discussed, reviewed, judged, or approved in conversation before implementation continues.
    - If all steps are `AFK`, say that no user action is required before implementation.
-
-## Rule
-This is where Design becomes issue-scale spec-local implementation steps. Do not publish issues unless the user explicitly asks for that.
