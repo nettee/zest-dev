@@ -48,8 +48,10 @@ Fill the Design Section:
    - Do not add DFU items on your own initiative.
    - Do not put current-Spec implementation work, Documentation Sync work, or Progress items in DFU.
    - List all design decisions.
-   - Every design decision must cite its fact source inline or immediately adjacent to it.
-   - Reuse sources already captured in `## Research` when possible; gather new factual sources when needed.
+   - For each design decision, cite the factual premises that materially support it inline or immediately adjacent to it.
+   - State the decision's rationale, trade-off, or inference separately; a source supports the factual premise, not the normative choice itself.
+   - Reuse factual sources already captured in `## Research` when possible; gather new evidence when a material premise is unsupported.
+   - Preserve material source conflicts or evidence gaps as explicit constraints or open questions until they are resolved.
    - Valid fact sources include code (`path/to/file:line`), database artifacts (schema/table/migration/query reference), and documentation (doc path, URL, or section).
 
 ## Constraints

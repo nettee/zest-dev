@@ -20,8 +20,11 @@ Fill `design.md` → `## Research` with facts only:
    - Design Inputs
    - Constraints & Dependencies
    - Key References
-   - Every finding must cite its fact source inline or immediately adjacent to it.
+   - Every factual claim must cite its source inline or immediately adjacent to it.
    - Valid fact sources include code (`path/to/file:line`), database artifacts (schema/table/migration/query reference), and documentation (doc path, URL, or section).
+   - Label inference separately from directly supported facts and cite the facts the inference depends on.
+   - State material conflicts between sources instead of silently choosing one.
+   - Record required evidence that is missing or unavailable; do not turn absence of evidence into a factual conclusion.
    - Keep sources compact: cite the smallest useful evidence, usually 1 representative line or short range per finding.
    - Merge same-file citations into ranges or grouped refs: `src/media.ts:770-811,829,855,877-890`.
    - Move long evidence lists to `Key References`; keep inline `Source:` entries short.
@@ -34,7 +37,7 @@ Fill `design.md` → `## Research` with facts only:
 - Keep Research factual; leave choices and recommendations to Design.
 
 ## Stop or block
-- Stop when the Design inputs have representative evidence and any material gaps or conflicts are recorded.
+- Stop when material Design inputs have representative evidence and any gaps, conflicts, or inferences are explicit.
 - If a required repository source cannot be found or read, report the missing evidence instead of filling the gap by assumption.
 - After writing Research, update an eligible `new` spec to `researched`, summarize the findings, and point to Design without starting it.
 
