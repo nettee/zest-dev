@@ -5,18 +5,25 @@ Canonical workflow for designing an active change spec.
 ## When to use
 - Research or direct understanding is sufficient to choose an implementation design
 
-## Workflow
-1. Run `zest-dev status` and verify an active change spec exists.
-2. Run `zest-dev show active`, read the main spec file, and read `design.md`.
-3. Check status gating before proceeding:
+## Outcome
+Choose one reviewable architecture, grounded in the Research and repository evidence, that defines the implementation boundary and how its user- or system-visible behavior will be verified.
+
+## Success means
+- The active spec, current status, main spec, and `design.md` were read.
+- Consequential open questions are resolved before the architecture is finalized.
+- The Design Summary, EAG, Design Detail, Change Scope, edge cases, and verification strategy are mutually consistent.
+- The chosen architecture includes its rationale and matching test strategy.
+- The spec advances to `designed` and Design stops before implementation planning.
+
+## Status gate
+- Run `zest-dev status` and `zest-dev show active` before designing.
+- Check the current status:
    - If the status is `new`, suggest research first unless the task is simple and sufficiently understood.
    - If the status is `researched`, continue.
    - If the status is `designed`, `planned`, or `implemented`, confirm that the user wants to revise the existing design before continuing.
-4. Identify underspecified areas: scope, edge cases, contracts, compatibility, testing, rollout.
-5. Ask the user clarifying questions when needed.
-6. Wait for answers before finalizing the architecture when the open questions are consequential.
-7. Synthesize one recommended architecture by default, including the matching test strategy.
-8. Fill the Design Section:
+
+## Required output
+Fill the Design Section:
    - In `spec.md` → `## Design`, write:
      - `### Design Summary`
      - `### E2E Acceptance Gate (EAG)`
@@ -40,12 +47,21 @@ Canonical workflow for designing an active change spec.
    - Add DFU items only when the user explicitly says they want to handle that work later, or when a clear functional gap is discovered and you confirm with the user before placing it into DFU.
    - Do not add DFU items on your own initiative.
    - Do not put current-Spec implementation work, Documentation Sync work, or Progress items in DFU.
-   - List all design decisions.
-   - Every design decision must cite its fact source inline or immediately adjacent to it.
-   - Reuse sources already captured in `## Research` when possible; gather new factual sources when needed.
+   - Record design decisions that materially affect behavior, contracts, architecture boundaries, compatibility, rollout, or verification.
+   - For each design decision, cite the factual premises that materially support it inline or immediately adjacent to it.
+   - State the decision's rationale, trade-off, or inference separately; a source supports the factual premise, not the normative choice itself.
+   - Reuse factual sources already captured in `## Research` when possible; gather new evidence when a material premise is unsupported.
+   - Preserve material source conflicts or evidence gaps as explicit constraints or open questions until they are resolved.
    - Valid fact sources include code (`path/to/file:line`), database artifacts (schema/table/migration/query reference), and documentation (doc path, URL, or section).
-9. Run `zest-dev update active designed`.
-10. Present the design and stop.
+
+## Constraints
+- Identify underspecified scope, edge cases, contracts, compatibility, testing, and rollout concerns.
+- Ask only questions whose answers can materially change the architecture or implementation boundary.
+- Synthesize one recommended architecture by default.
+
+## Stop or block
+- If a consequential question remains unanswered, stop and name what decision is blocked.
+- Otherwise run `zest-dev update active designed`, present the Design, and stop without creating the Plan.
 
 ## Rule
 This is where decisions, trade-offs, and recommendations belong.

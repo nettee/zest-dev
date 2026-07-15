@@ -41,6 +41,11 @@ function getOptionalGlobalOpenCodeCommandDir() {
   return path.join(homeDir, '.config', 'opencode', 'commands');
 }
 
+function getOptionalHomeDir() {
+  const homeDir = process.env.HOME || process.env.USERPROFILE;
+  return homeDir && path.isAbsolute(homeDir) ? homeDir : null;
+}
+
 function getDeployedCommandDirs() {
   const dirs = [
     path.join(process.cwd(), '.cursor/commands'),
@@ -50,6 +55,25 @@ function getDeployedCommandDirs() {
   const globalOpenCodeCommandDir = getOptionalGlobalOpenCodeCommandDir();
   if (globalOpenCodeCommandDir) {
     dirs.push(globalOpenCodeCommandDir);
+  }
+
+  return dirs;
+}
+
+function getDeployedZestDevSkillDirs() {
+  const dirs = [
+    path.join(process.cwd(), '.opencode/skills/zest-dev'),
+    path.join(process.cwd(), '.agents/skills/zest-dev')
+  ];
+
+  const globalOpenCodeCommandDir = getOptionalGlobalOpenCodeCommandDir();
+  if (globalOpenCodeCommandDir) {
+    dirs.push(path.join(path.dirname(globalOpenCodeCommandDir), 'skills/zest-dev'));
+  }
+
+  const homeDir = getOptionalHomeDir();
+  if (homeDir) {
+    dirs.push(path.join(homeDir, '.agents/skills/zest-dev'));
   }
 
   return dirs;
@@ -124,6 +148,12 @@ function hasDeployedCommandMarkdowns() {
   });
 }
 
+function hasDeployedZestDevSkill() {
+  return getDeployedZestDevSkillDirs().some(dirPath =>
+    fs.existsSync(path.join(dirPath, 'SKILL.md'))
+  );
+}
+
 program
   .name('zest-dev')
   .description('A lightweight, human-interactive development workflow for AI-assisted coding')
@@ -136,9 +166,9 @@ program
   .action(() => {
     try {
       const status = getSpecsStatus();
-      if (hasDeployedCommandMarkdowns()) {
+      if (hasDeployedCommandMarkdowns() || hasDeployedZestDevSkill()) {
         status.agent_hints = [
-          'Run `zest-dev init` to update deployed command markdown files.'
+          'Run `zest-dev init` to update deployed commands and skills.'
         ];
       }
 

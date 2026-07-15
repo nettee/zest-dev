@@ -6,14 +6,19 @@ Canonical workflow for creating a new change spec.
 - No active spec exists yet
 - The user wants to formalize a new requirement
 
-## Workflow
-1. Extract a human-readable name and kebab-case slug.
-2. Run `zest-dev create <slug>`.
-3. Set the created spec active with `zest-dev set-active <spec-id>`.
-4. Read the created spec file.
-5. Fill `## Overview` using only information the user actually provided.
-6. Ask clarifying questions only when the requirement is too vague to produce a useful overview.
-7. Confirm spec id, path, active status, and next step.
+## Outcome
+Create and activate a reviewable change spec whose Overview captures the user's actual requirement without inventing missing detail.
+
+## Success means
+- The spec was created through `zest-dev create <slug>` and activated through `zest-dev set-active <spec-id>`.
+- `## Overview` states the known problem, desired outcome, and material boundaries.
+- Any missing information that prevents a useful Overview is resolved with the smallest targeted question.
+- The user receives the spec id, path, active status, and recommended next phase.
+
+## Constraints
+- Read the created spec before editing it.
+- Derive a human-readable name and kebab-case slug from the request.
+- Use only information the user provided or explicitly confirmed.
 
 ## Overview content may include
 - Problem Statement
@@ -23,3 +28,7 @@ Canonical workflow for creating a new change spec.
 - Success Criteria
 
 Do not invent missing sections.
+
+## Stop or block
+- Stop after presenting the created and activated spec; do not begin Research unless requested.
+- If the request is too vague to state a meaningful problem or outcome, ask for the smallest missing requirement before filling the Overview.

@@ -85,20 +85,29 @@ def test_default_global_init_deploys_expected_artifacts(cli):
         assert "**Step 1:" not in (commands_dir / filename).read_text(encoding="utf-8")
 
     skill_content = (skills_dir / "zest-dev" / "SKILL.md").read_text(encoding="utf-8")
-    assert "This skill defines the workflow for planned feature work" in skill_content
-    assert "always include a dedicated EAG Validation step before the final Documentation Sync step" in skill_content
+    assert "This file owns routing and shared invariants" in skill_content
+    assert "Preserve required facts, decisions, constraints, caveats" in skill_content
     for filename in SKILL_PHASE_FILES:
         assert (skills_dir / "zest-dev" / filename).exists()
+
+    source_root = cli.packaged_cli_root if cli.is_packaged else Path(__file__).resolve().parents[2]
+    source_skill_dir = source_root / "skills" / "zest-dev"
+    for filename in ["SKILL.md", *SKILL_PHASE_FILES]:
+        expected = (source_skill_dir / filename).read_text(encoding="utf-8")
+        assert (skills_dir / "zest-dev" / filename).read_text(encoding="utf-8") == expected
+        assert (codex_skill_dir / filename).read_text(encoding="utf-8") == expected
 
     brainstorming_skill = (skills_dir / "brainstorming" / "SKILL.md").read_text(encoding="utf-8")
     assert "include a dedicated `EAG Validation` step before the final `Documentation Sync` step" in brainstorming_skill
 
     research_phase = (skills_dir / "zest-dev" / "research.md").read_text(encoding="utf-8")
-    assert "Summarize your understanding of the request and confirm it with the user" in research_phase
+    assert "Stop when material Design inputs have representative evidence" in research_phase
+    assert "Label inference separately from directly supported facts" in research_phase
 
     design_phase = (skills_dir / "zest-dev" / "design.md").read_text(encoding="utf-8")
     assert "If the status is `designed`, `planned`, or `implemented`, confirm that the user wants to revise the existing design before continuing." in design_phase
     assert "Fill the Design Section:" in design_phase
+    assert "a source supports the factual premise, not the normative choice itself" in design_phase
     assert "### E2E Acceptance Gate (EAG)" in design_phase
     assert "The EAG is the Design Section's automated end-to-end acceptance gate, not a general test plan." in design_phase
     assert "`### E2E Acceptance Gate (EAG)`" in design_phase
@@ -115,22 +124,25 @@ def test_default_global_init_deploys_expected_artifacts(cli):
     assert "Do not create GitHub issues or external issue-tracker entries unless the user explicitly asks for that." in plan_phase
     assert "Do not use markdown checkboxes in `## Plan`." in plan_phase
     assert "Add or update `spec.md` → `## Progress` with a thin progress checklist:" in plan_phase
-    assert "### Step 3 (AFK): EAG Validation" in plan_phase
-    assert "### Step 4 (AFK): Documentation Sync" in plan_phase
+    assert "Add a dedicated Plan step for EAG Validation" in plan_phase
+    assert "Add a final Plan step for Documentation Sync when the Design is expected to change documented behavior" in plan_phase
     assert "Step N (AFK): ..." in plan_phase
     assert "Report every Plan step's `Type` as `AFK` or `HITL`." in plan_phase
     assert "For each `HITL` step, tell the user what needs to be discussed, reviewed, judged, or approved in conversation before implementation continues." in plan_phase
 
     implement_phase = (skills_dir / "zest-dev" / "implement.md").read_text(encoding="utf-8")
-    assert "try to use the registered `tdd` skill" in implement_phase
-    assert "judge applicability from the spec, plan step, and files being changed" in implement_phase
+    assert "When test-driven development fits the behavior and files being changed" in implement_phase
+    assert "If required evidence, configuration, credentials, or a consequential Design decision is missing" in implement_phase
+    assert "Treat `steps.md` as a selective implementation journal, not required full-context input" in implement_phase
+    assert "Scan its step headings and `Downstream impact` entries" in implement_phase
+    assert "without restating Goal or Scope" in implement_phase
     assert "mark the corresponding `spec.md` → `## Progress` checkbox as `[x]`" in implement_phase
     assert "DFU is fixed during the Design Phase" in implement_phase
     assert "confirm the DFU with the user instead of silently appending it" in implement_phase
     assert "mark the corresponding `## Plan` checkbox" not in implement_phase
 
     codex_skill = (codex_skill_dir / "SKILL.md").read_text(encoding="utf-8")
-    assert "This skill defines the workflow for planned feature work" in codex_skill
+    assert "This file owns routing and shared invariants" in codex_skill
     for subagent in CODEX_SUBAGENTS:
         content = (codex_agents_dir / subagent).read_text(encoding="utf-8")
         assert "name = " in content

@@ -5,28 +5,41 @@ Canonical workflow for researching an active change spec.
 ## When to use
 - An active spec exists and the team needs repository facts, patterns, and options
 
-## Workflow
-1. Run `zest-dev status` and verify an active change spec exists.
-2. Run `zest-dev show active`, read the main spec file, and read `design.md`.
-3. If the status is `new`, continue. If later, confirm whether the user wants to refresh research.
-4. Clarify missing requirement details if needed.
-5. Summarize your understanding of the request and confirm it with the user before deeper exploration when the requirements are still ambiguous.
-6. Explore the codebase and locate relevant files.
-7. Read the identified files.
-8. Fill `design.md` → `## Research` with facts only:
+## Outcome
+Produce a source-backed account of the existing system and the constraints that materially inform Design, without choosing an architecture.
+
+## Success means
+- An active spec and its current status were verified with `zest-dev status` and `zest-dev show active`.
+- The main spec, `design.md`, and relevant repository sources were read.
+- `design.md` → `## Research` contains enough evidence for Design to proceed and makes material evidence gaps visible.
+- A `new` spec advances to `researched`; a later-phase research refresh keeps its existing status.
+
+## Required output
+Fill `design.md` → `## Research` with facts only:
    - Existing System
    - Design Inputs
    - Constraints & Dependencies
    - Key References
-   - Every finding must cite its fact source inline or immediately adjacent to it.
+   - Every factual claim must cite its source inline or immediately adjacent to it.
    - Valid fact sources include code (`path/to/file:line`), database artifacts (schema/table/migration/query reference), and documentation (doc path, URL, or section).
+   - Label inference separately from directly supported facts and cite the facts the inference depends on.
+   - State material conflicts between sources instead of silently choosing one.
+   - Record required evidence that is missing or unavailable; do not turn absence of evidence into a factual conclusion.
    - Keep sources compact: cite the smallest useful evidence, usually 1 representative line or short range per finding.
    - Merge same-file citations into ranges or grouped refs: `src/media.ts:770-811,829,855,877-890`.
    - Move long evidence lists to `Key References`; keep inline `Source:` entries short.
    - Do not list competing options, rank alternatives, or recommend a choice; capture existing patterns, reference code, docs, best practices, and implementation considerations as design raw materials.
-9. If the current status is `new`, run `zest-dev update active researched`.
-10. If this is a refresh for a later-phase spec, keep the current status and do not downgrade it.
-11. Summarize findings and point to the design phase.
+
+## Constraints
+- Clarify missing requirement details only when they materially affect what must be researched.
+- When the request is still ambiguous, summarize the current understanding and confirm it before deep exploration.
+- If the current status is later than `new`, confirm that the user wants to refresh Research before changing it.
+- Keep Research factual; leave choices and recommendations to Design.
+
+## Stop or block
+- Stop when material Design inputs have representative evidence and any gaps, conflicts, or inferences are explicit.
+- If a required repository source cannot be found or read, report the missing evidence instead of filling the gap by assumption.
+- After writing Research, update an eligible `new` spec to `researched`, summarize the findings, and point to Design without starting it.
 
 ## Rule
 Document what exists and what can inform design, not competing options or what should be chosen.
