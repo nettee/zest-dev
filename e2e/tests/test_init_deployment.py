@@ -133,6 +133,9 @@ def test_default_global_init_deploys_expected_artifacts(cli):
     implement_phase = (skills_dir / "zest-dev" / "implement.md").read_text(encoding="utf-8")
     assert "When test-driven development fits the behavior and files being changed" in implement_phase
     assert "If required evidence, configuration, credentials, or a consequential Design decision is missing" in implement_phase
+    assert "Treat `steps.md` as a selective implementation journal, not required full-context input" in implement_phase
+    assert "Scan its step headings and `Downstream impact` entries" in implement_phase
+    assert "without restating Goal or Scope" in implement_phase
     assert "mark the corresponding `spec.md` → `## Progress` checkbox as `[x]`" in implement_phase
     assert "DFU is fixed during the Design Phase" in implement_phase
     assert "confirm the DFU with the user instead of silently appending it" in implement_phase

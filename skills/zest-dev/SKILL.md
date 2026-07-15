@@ -46,7 +46,7 @@ Use this skill when the user:
 - Use pseudocode and flow descriptions instead of production code.
 - Keep Research factual.
 - Keep Design opinionated.
-- In implementation notes, record what changed, how it was verified, and material deviations without repeating the Plan or Design.
+- Treat `steps.md` as a selective implementation journal. Record what changed, how it was verified, and downstream impact without repeating the Plan or Design.
 
 ### Reading discipline
 - Before writing or deciding, read the active spec and the relevant repository files.

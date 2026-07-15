@@ -1,5 +1,17 @@
 # Steps
 
-## Step 1
+<!-- Selective implementation journal. Add one section per completed Plan step; do not repeat Plan Goal/Scope or Design prose. -->
 
-<!-- Implementation and verification notes for the matching Plan step. Add one section per Plan step. -->
+## Step 1: Title
+
+### Changed
+
+<!-- Implemented outcome. -->
+
+### Verified
+
+<!-- Relevant command or check and its result. -->
+
+### Downstream impact
+
+None.

@@ -41,7 +41,7 @@ The `## Design Detail` section in `design.md` that carries lower-review-frequenc
 _Avoid_: design summary, main design
 
 **Steps File**:
-The `steps.md` Spec Supporting File that records implementation and verification by Plan Step. It does not split implementation and verification into separate global sections.
+The `steps.md` Spec Supporting File that acts as a selective implementation journal by completed Plan Step. Each entry records the implemented outcome, verification, and downstream impact without repeating Plan or Design prose; later steps read only relevant history.
 _Avoid_: implementation log, verification log
 
 **Spec Template**:

@@ -52,6 +52,10 @@ def test_create_uses_builtin_split_templates(cli):
     assert "## Design Detail" in design
     assert "## Design\n" not in design
     assert "## Step 1" in steps
+    assert "### Changed" in steps
+    assert "### Verified" in steps
+    assert "### Downstream impact" in steps
+    assert "Selective implementation journal" in steps
     assert "## Implementation" not in steps
     assert "## Verification" not in steps
     assert "Phase 3: Test and verify" not in content
