@@ -6,7 +6,7 @@ Canonical workflow for researching an active change spec.
 - An active spec exists and the team needs repository facts, patterns, and options
 
 ## Outcome
-Produce a concise, source-backed account of the existing system and the constraints that materially inform Design, without choosing an architecture.
+Produce a source-backed account of the existing system and the constraints that materially inform Design, without choosing an architecture.
 
 ## Success means
 - An active spec and its current status were verified with `zest-dev status` and `zest-dev show active`.

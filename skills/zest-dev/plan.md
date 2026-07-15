@@ -11,7 +11,7 @@ Turn the approved Design into a compact sequence of issue-scale implementation s
 ## Success means
 - The active spec, current status, main spec, and `design.md` were read.
 - Every Plan step has a meaningful goal, bounded scope, dependency, and AFK/HITL type.
-- Functional work is followed by EAG Validation and the final documentation check.
+- Functional work is followed by EAG Validation, with a final Documentation Sync step when the Design is expected to affect project documentation.
 - `## Progress` mirrors the Plan step titles exactly.
 - An eligible `designed` spec advances to `planned`; revised later-phase specs keep their status.
 
@@ -38,10 +38,9 @@ Turn the approved Design into a compact sequence of issue-scale implementation s
    - The step should tell the implementer to validate the completed change against the Design section's EAG.
    - When the Design says there is no EAG, the step should explicitly confirm that no dedicated automated end-to-end gate exists and use the best available validation already defined by the Spec.
    - Do not redefine the EAG during planning. Reuse the Design section's acceptance behavior and verification path as written.
-- Add a final Plan step for Documentation Sync:
-   - Always include this as the final Plan step.
-   - The step should tell the implementer to update relevant project documentation if the implemented change makes that necessary.
-   - Do not decide during planning whether documentation must change. Leave that check to implementation, when the final code and behavior are visible.
+- Add a final Plan step for Documentation Sync when the Design is expected to change documented behavior, usage, commands, setup, or workflows:
+   - The step should tell the implementer which documentation areas to re-evaluate after the final code and behavior are visible.
+   - When no documentation impact is expected, make EAG Validation the final step and state that assumption in its Scope.
    - Do not automatically include glossary or ADR work. Treat those as special documentation updates only when the implemented change genuinely calls for them.
 
 ## Required output
@@ -51,7 +50,7 @@ Fill `## Plan` with compact structured steps:
    - Prefer steps that each deliver one meaningful vertical slice and remain easy to review.
    - Good step boundaries usually align with one user-visible workflow, one subsystem integration boundary, one migration or rollout step, or one stabilization milestone.
    - Each step should be issue-scale: large enough to matter, small enough for a coding agent to implement and validate in one focused session.
-   - Keep fields brief. Do not turn each step into a second design document.
+   - Preserve the goal, implementation boundary, validation scope, dependency, and any acceptance detail needed to remove ambiguity; omit repeated Design prose.
    - Include `Goal`, `Scope`, and `Depends on`; the type belongs in the step heading, not as a separate field.
    - Use `Depends on: None` when the step has no dependency.
    - Add acceptance criteria only when they are necessary to remove ambiguity.

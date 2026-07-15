@@ -23,7 +23,7 @@ Use this skill when the user:
 ## Shared Rules
 
 ### Language
-- Always respond in the user's language unless the user asks to switch languages.
+- Use the user's current language for conversation and prose artifacts. Preserve code identifiers, commands, quoted text, and established project terminology in their original form; switch languages when the user requests it.
 
 ### Source of truth
 - Treat this skill as the workflow source for the five core phases.
@@ -40,12 +40,13 @@ Use this skill when the user:
   - `implemented`
 
 ### Spec writing principles
-- Prioritize brevity.
-- Prefer bullets over long prose.
+- Preserve required facts, decisions, constraints, caveats, evidence gaps, open questions, acceptance behavior, and next actions.
+- Remove repetition, generic background, and implementation detail that does not change the contract.
+- Prefer bullets when they make the artifact easier to review; use prose or a diagram when relationships would otherwise be unclear.
 - Use pseudocode and flow descriptions instead of production code.
 - Keep Research factual.
 - Keep Design opinionated.
-- Keep implementation notes concise and implementation-focused.
+- In implementation notes, record what changed, how it was verified, and material deviations without repeating the Plan or Design.
 
 ### Reading discipline
 - Before writing or deciding, read the active spec and the relevant repository files.

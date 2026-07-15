@@ -47,7 +47,7 @@ Fill the Design Section:
    - Add DFU items only when the user explicitly says they want to handle that work later, or when a clear functional gap is discovered and you confirm with the user before placing it into DFU.
    - Do not add DFU items on your own initiative.
    - Do not put current-Spec implementation work, Documentation Sync work, or Progress items in DFU.
-   - List all design decisions.
+   - Record design decisions that materially affect behavior, contracts, architecture boundaries, compatibility, rollout, or verification.
    - For each design decision, cite the factual premises that materially support it inline or immediately adjacent to it.
    - State the decision's rationale, trade-off, or inference separately; a source supports the factual premise, not the normative choice itself.
    - Reuse factual sources already captured in `## Research` when possible; gather new evidence when a material premise is unsupported.
