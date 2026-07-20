@@ -40,9 +40,9 @@ _Avoid_: acceptance gate, unit tests, product runtime
 The `## Design Detail` section in `design.md` that carries lower-review-frequency design reasoning, trade-offs, architecture notes, and verification strategy.
 _Avoid_: design summary, main design
 
-**Steps File**:
-The `steps.md` Spec Supporting File that acts as a selective implementation journal by completed Plan Step. Each entry records the implemented outcome, verification, and downstream impact without repeating Plan or Design prose; later steps read only relevant history.
-_Avoid_: implementation log, verification log
+**Implementation File**:
+The `implementation.md` Spec Supporting File that records material deviations between the Spec and implementation reality, the durable attention points future work must preserve, representative verification, and a brief Spec retrospective. It is organized by information value rather than by mirroring every Plan Step. Legacy Specs may use `steps.md` as the same single source of implementation notes.
+_Avoid_: step log, change log, verification log
 
 **Spec Template**:
 The built-in Markdown skeletons used by the CLI to create a new Spec layout. They define initial sections and required subsections with brief placeholders, not examples or detailed writing guidance.

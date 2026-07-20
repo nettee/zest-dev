@@ -33,7 +33,7 @@ See [design.md](./design.md) for design detail.
 
 ## Implementation
 
-See [steps.md](./steps.md).
+See [implementation.md](./implementation.md).
 
 ## Deferred Follow-Ups (DFU)
 
