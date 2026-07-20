@@ -46,7 +46,7 @@ Use this skill when the user:
 - Use pseudocode and flow descriptions instead of production code.
 - Keep Research factual.
 - Keep Design opinionated.
-- Treat `steps.md` as a selective implementation journal. Record what changed, how it was verified, and downstream impact without repeating the Plan or Design.
+- Treat `implementation.md` as a high-signal record of where implementation reality diverged from the Spec and what future work must preserve. Do not mirror every Plan step or restate the Design.
 
 ### Reading discipline
 - Before writing or deciding, read the active spec and the relevant repository files.
@@ -64,7 +64,7 @@ Infer the intended phase from user intent and the active spec status, then read 
 - `research.md`: gather repository facts in `design.md` → `## Research`; advance to `researched`.
 - `design.md`: resolve consequential questions; write Design, EAG, DFU, and Design Detail; advance to `designed`.
 - `plan.md`: create issue-scale Plan and Progress entries; advance to `planned`.
-- `implement.md`: implement and validate the Plan; update Progress and `steps.md`; advance to `implemented` only when complete.
+- `implement.md`: implement and validate the Plan; update Progress and `implementation.md`; advance to `implemented` only when complete.
 
 ## Guardrails
 

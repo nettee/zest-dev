@@ -115,7 +115,8 @@ Paths are relative to the Spec directory.
 Allowed:
 - `spec.md`
 - `design.md`
-- `steps.md`
+- `implementation.md`
+- `steps.md` (legacy Spec)
 - `notes/review.md`
 
 Rejected:

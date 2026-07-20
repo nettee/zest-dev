@@ -15,14 +15,14 @@ def test_create_uses_builtin_split_templates(cli):
     spec_dir = cli.project_dir / "specs" / "change" / spec_id
     spec_path = spec_dir / "spec.md"
     design_path = spec_dir / "design.md"
-    steps_path = spec_dir / "steps.md"
+    implementation_path = spec_dir / "implementation.md"
     assert spec_path.exists()
     assert design_path.exists()
-    assert steps_path.exists()
+    assert implementation_path.exists()
 
     content = spec_path.read_text(encoding="utf-8")
     design = design_path.read_text(encoding="utf-8")
-    steps = steps_path.read_text(encoding="utf-8")
+    implementation = implementation_path.read_text(encoding="utf-8")
     metadata = frontmatter(content, f"specs/change/{spec_id}/spec.md")
 
     assert re.match(r"^\d{8}-default-template$", metadata["id"])
@@ -40,7 +40,7 @@ def test_create_uses_builtin_split_templates(cli):
     assert "## Plan" in content
     assert "## Progress" in content
     assert "## Implementation" in content
-    assert "See [steps.md](./steps.md)." in content
+    assert "See [implementation.md](./implementation.md)." in content
     assert "## Deferred Follow-Ups (DFU)" in content
     assert "Follow-up items deferred out of this Spec during Design only when the user explicitly wants them handled later or confirms a discovered functional gap, or None." in content
     assert "Optional completion checklist, created during Plan and updated during Implement." not in content
@@ -51,18 +51,19 @@ def test_create_uses_builtin_split_templates(cli):
     assert "## Research" in design
     assert "## Design Detail" in design
     assert "## Design\n" not in design
-    assert "## Step 1" in steps
-    assert "### Changed" in steps
-    assert "### Verified" in steps
-    assert "### Downstream impact" in steps
-    assert "Selective implementation journal" in steps
-    assert "## Implementation" not in steps
-    assert "## Verification" not in steps
+    assert "# Implementation" in implementation
+    assert "## Outcome" in implementation
+    assert "## Deviations" in implementation
+    assert "Current behavior, Deviation, Attention, and Evidence" in implementation
+    assert "## Verification" in implementation
+    assert "## Spec Retrospective" in implementation
+    assert "High-signal implementation notes" in implementation
+    assert "## Step 1" not in implementation
     assert "Phase 3: Test and verify" not in content
     assert "{name}" not in content
     assert "{date}" not in content
     assert "{name}" not in design
-    assert "{date}" not in steps
+    assert "{date}" not in implementation
 
 
 def test_create_ignores_custom_template_override(cli):
@@ -98,7 +99,7 @@ Token: {name}|{date}
     assert "{date}" not in content
     assert "Token: Custom Template|" not in content
     assert (spec_dir / "design.md").exists()
-    assert (spec_dir / "steps.md").exists()
+    assert (spec_dir / "implementation.md").exists()
 
 
 def test_status_active_and_legacy_spec_behavior(cli):
@@ -124,7 +125,7 @@ def test_status_active_and_legacy_spec_behavior(cli):
     }
     assert "agent_hints" not in status
     assert (cli.project_dir / "specs" / "change" / second / "design.md").exists()
-    assert (cli.project_dir / "specs" / "change" / second / "steps.md").exists()
+    assert (cli.project_dir / "specs" / "change" / second / "implementation.md").exists()
 
     legacy_id = "20240101-legacy-spec"
     legacy_dir = cli.project_dir / "specs" / "change" / legacy_id

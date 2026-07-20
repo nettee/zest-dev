@@ -32,7 +32,7 @@ Test spec.
 
 ## Implementation
 
-See [steps.md](./steps.md).
+See [implementation.md](./implementation.md).
 
 """,
     )
@@ -179,7 +179,7 @@ created: '2026-06-04'
 
 ## Implementation
 
-See [steps.md](./steps.md).
+See [implementation.md](./implementation.md).
 
 """,
     )
