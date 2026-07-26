@@ -25,6 +25,8 @@ New-format Specs progress through `new → designed → planned → implemented`
 - Never create Spec files manually or edit frontmatter manually.
 - Valid statuses are `new`, `designed`, `planned`, and `implemented`.
 - Statuses describe content maturity, not which activities have run.
+- Advance status only after its content contract is complete: move to `designed` only after the Designed Contract is satisfied, to `planned` only after the Planned Contract is satisfied, and to `implemented` only after the Implemented Contract is satisfied.
+- Use `zest-dev update active designed|planned|implemented` immediately after completing the corresponding contract so frontmatter matches the finished artifacts.
 - Treat old Specs with unsupported statuses or content structures as invalid input; do not migrate or reinterpret them.
 
 ### Recording discipline

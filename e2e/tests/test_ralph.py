@@ -241,3 +241,25 @@ created: '2026-06-04'
     assert "Unsupported Progress line: - [ ] Ticket 2: Plain mixed into annotated Progress" in failed
     assert not (project / ".ralph").exists()
     assert not (project / "task.md").exists()
+
+
+def test_ralph_rejects_active_specs_that_are_not_planned(cli):
+    create_active_spec_with_body(
+        cli,
+        "ralph-designed-spec",
+        """---
+id: test-ralph-designed-spec
+name: Ralph Designed Spec
+status: designed
+created: '2026-06-04'
+---
+
+## Progress
+
+- [ ] Ticket 1: Should not reach Ralph from designed status
+""",
+    )
+    failed = cli.fail("ralph", env=fake_ralph_env(cli.project_dir))
+    assert 'Active spec must have status "planned" to set up Ralph (found "designed")' in failed
+    assert not (cli.project_dir / ".ralph").exists()
+    assert not (cli.project_dir / "task.md").exists()
