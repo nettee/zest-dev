@@ -16,9 +16,11 @@ Planned Status requires:
 - Prefer thin tracer-bullet vertical slices that are independently meaningful and verifiable.
 - Avoid horizontal splits by schema, backend, UI, docs, or tests unless that layer is genuinely the whole change.
 - Keep each ticket within one focused coding-agent session.
+- Prefer boundaries around a user-visible workflow, subsystem integration boundary, migration or rollout step, or stabilization milestone.
 - Capture genuine blocking dependencies.
 - Use `AFK` when an agent can complete the ticket from the Spec and repository context.
 - Use `HITL` only when continuing requires human judgment, human-only or dangerous execution, or human validation.
+- Do not use `HITL` merely because the output is documentation, a runbook, an operator procedure, or a workflow that people will execute later.
 
 ## Plan Ticket format
 

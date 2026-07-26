@@ -29,6 +29,12 @@ During the discussion:
 - keep unresolved decisions explicit;
 - complete Summary and EAG only after shared understanding.
 
+Before finalizing either approach:
+
+- actively test for underspecified scope, edge cases, contracts, compatibility, testing, and rollout concerns;
+- resolve only choices that materially affect the implementation boundary;
+- synthesize one recommended design by default instead of leaving equivalent alternatives unresolved.
+
 ## Research Findings
 
 Research Findings are the descriptive part of the Design Record. Include only findings that materially inform the design:
@@ -60,6 +66,11 @@ Content may include:
 - Change Scope with Impact Areas and Planned File Changes;
 - Edge Cases;
 - Verification Strategy.
+
+Use Change Scope as two complementary views:
+
+- Impact Areas: affected modules, schema or data, architecture boundaries, API contracts, compatibility constraints, generated artifacts, and rollout impact;
+- Planned File Changes: concrete files or directories expected to change and the purpose of each change.
 
 For each decision:
 

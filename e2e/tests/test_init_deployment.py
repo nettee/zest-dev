@@ -105,6 +105,9 @@ def test_default_global_init_deploys_expected_artifacts(cli):
     assert "Grilling Design Approach" in design_guide
     assert "`grilling`" in design_guide
     assert "`domain-modeling`" in design_guide
+    assert "actively test for underspecified scope" in design_guide
+    assert "synthesize one recommended design by default" in design_guide
+    assert "Use Change Scope as two complementary views" in design_guide
     assert "a source supports the factual premise, not the normative choice itself" in design_guide
     assert "### E2E Acceptance Gate (EAG)" in design_guide
     assert "If no automated end-to-end gate exists, state that there is no EAG." in design_guide
@@ -114,6 +117,8 @@ def test_default_global_init_deploys_expected_artifacts(cli):
     assert "Use the slicing spirit of Matt Pocock's registered `to-tickets` skill as a reference for scale and sequencing." in plan_guide
     assert "Do not create GitHub issues or external issue-tracker entries unless the user explicitly asks for that." in plan_guide
     assert "Do not use markdown checkboxes in `## Plan`." in plan_guide
+    assert "Prefer boundaries around a user-visible workflow" in plan_guide
+    assert "Do not use `HITL` merely because the output is documentation" in plan_guide
     assert "Add or update `spec.md` → `## Progress` with a thin progress checklist:" in plan_guide
     assert "EAG Validation ticket" in plan_guide
 
@@ -123,6 +128,7 @@ def test_default_global_init_deploys_expected_artifacts(cli):
     assert "Use `implementation.md` as the implementation-notes source of truth" in implementation_guide
     assert "information value, not Plan-ticket symmetry" in implementation_guide
     assert "Record a material Deviation when it becomes known" in implementation_guide
+    assert "reconcile every material Deviation with the Design Decisions, Plan, and EAG" in implementation_guide
     assert "`## Progress` checkbox as `[x]`" in implementation_guide
     assert "Design Phase" not in implementation_guide
 

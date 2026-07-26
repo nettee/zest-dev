@@ -40,6 +40,8 @@ Record only material differences between the Spec and implementation reality tha
 
 Record a material Deviation when it becomes known and preserve it after reconciliation. When implementation completes with none, write `None found.`
 
+Before final verification, reconcile every material Deviation with the Design Decisions, Plan, and EAG. Preserve the Deviation as implementation evidence after updating the affected Spec content.
+
 Do not add new DFU items during implementation. A newly discovered deferred boundary requires revising the Design and confirming it with the user.
 
 ### Verification

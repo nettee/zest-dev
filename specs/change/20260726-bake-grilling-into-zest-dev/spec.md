@@ -78,4 +78,4 @@ See [implementation.md](./implementation.md).
 
 ## Deferred Follow-Ups (DFU)
 
-None.
+- Vendor the integrated `grilling`, `domain-modeling`, and `to-tickets` skills into Zest Dev so their composition contracts are versioned together and cannot drift into semantic conflicts.
