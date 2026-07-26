@@ -1,6 +1,6 @@
 # Implementation
 
-<!-- High-signal implementation notes. Focus on material deviations and what future work must preserve; do not mirror every Plan step. -->
+<!-- High-signal implementation notes. Focus on material deviations and what future work must preserve; do not mirror every Plan ticket. -->
 
 ## Outcome
 
@@ -12,7 +12,7 @@
 
 ## Verification
 
-<!-- Record representative final gates and results, not repetitive per-step command history. -->
+<!-- Record representative final gates and results, not repetitive per-ticket command history. -->
 
 ## Spec Retrospective
 

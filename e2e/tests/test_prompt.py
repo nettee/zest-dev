@@ -1,14 +1,13 @@
 def test_prompt_supports_actual_command_set(cli):
-    quick = cli.ok("prompt", "quick-implement", "test feature")
-    assert "complete Zest Dev workflow" in quick
-    assert "test feature" in quick
-    assert "explicit approval before entering Implementation" in quick
-
     plan = cli.ok("prompt", "plan")
     assert plan.strip() == "Follow the Zest Dev workflow to advance the active spec to planned, using this focus if relevant: ."
 
     invalid = cli.fail("prompt", "summarize")
     assert "Invalid command: summarize" in invalid
+
+    for removed in ["quick-implement", "compound"]:
+        invalid = cli.fail("prompt", removed)
+        assert f"Invalid command: {removed}" in invalid
 
 
 def test_prompt_implement_supports_incremental_phases(cli):

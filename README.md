@@ -95,18 +95,6 @@ Work through a feature spec one phase at a time, with human review between each 
 
 Each command routes into the main Zest Dev skill, which advances the spec through `new → researched → designed → planned → implemented`.
 
-### Quick Implementation
-
-Run all stages end-to-end with approval checkpoints. Useful for straightforward tasks.
-
-Start from a description:
-
-```bash
-/zest-dev:quick-implement "My new feature"
-```
-
-`quick-implement` creates a new spec, follows the full Zest Dev workflow, and asks for explicit approval before Implementation.
-
 ## CLI Reference
 
 The `zest-dev` CLI manages spec files. Use it to inspect and update specs outside of Claude.
@@ -143,7 +131,6 @@ codex "$(zest-dev prompt research)"
 codex "$(zest-dev prompt design)"
 codex "$(zest-dev prompt plan)"
 codex "$(zest-dev prompt implement)"
-codex "$(zest-dev prompt quick-implement 'some description')"
 ```
 
 `zest-dev prompt` supports the actual command files in `commands/`.
@@ -180,5 +167,5 @@ project/
 ## References
 
 - [OpenSpec](https://github.com/Fission-AI/OpenSpec/blob/main/docs/concepts.md) - Inspired by its current-spec methodology, where specs act as the source of truth for how a system currently behaves and changes are managed separately until they are merged back.
-- [Matt Pocock Skills: `to-issues`](https://github.com/mattpocock/skills/tree/main/skills/engineering/to-issues) - References its issue-scale vertical-slice planning style for breaking design work into Zest Dev Plan steps.
-- [Matt Pocock Skills: `tdd`](https://github.com/mattpocock/skills/tree/main/skills/engineering/tdd) - References its test-driven implementation methodology for coding work, separate from Plan step slicing.
+- [Matt Pocock Skills: `to-tickets`](https://github.com/mattpocock/skills/tree/main/skills/engineering/to-tickets) - References its tracer-bullet vertical-slice planning style for breaking design work into Zest Dev Plan tickets.
+- [Matt Pocock Skills: `tdd`](https://github.com/mattpocock/skills/tree/main/skills/engineering/tdd) - References its test-driven implementation methodology for coding work, separate from Plan ticket slicing.

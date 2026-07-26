@@ -12,12 +12,10 @@ from helpers.paths import REPO_ROOT
 
 
 EXPECTED_COMMANDS = [
-    "zest-dev-compound.md",
     "zest-dev-design.md",
     "zest-dev-implement.md",
     "zest-dev-new.md",
     "zest-dev-plan.md",
-    "zest-dev-quick-implement.md",
     "zest-dev-research.md",
 ]
 THIN_COMMANDS = [
@@ -26,7 +24,6 @@ THIN_COMMANDS = [
     "zest-dev-design.md",
     "zest-dev-plan.md",
     "zest-dev-implement.md",
-    "zest-dev-quick-implement.md",
 ]
 SKILL_PHASE_FILES = ["new.md", "research.md", "design.md", "plan.md", "implement.md"]
 CODEX_SUBAGENTS = ["code-architect.toml", "code-explorer.toml", "code-reviewer.toml"]

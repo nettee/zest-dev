@@ -32,8 +32,6 @@ All command flows keep responding in the user's language unless the user asks to
 | `/zest-dev:design` | Enter the Design phase via the main Zest Dev skill |
 | `/zest-dev:plan` | Enter the Plan phase via the main Zest Dev skill |
 | `/zest-dev:implement` | Enter the Implement phase via the main Zest Dev skill |
-| `/zest-dev:quick-implement <description>` | Create a spec and run the full workflow with approval before Implementation |
-| `/zest-dev:compound` | Capture durable knowledge from the current session |
 
 ## Skills
 
@@ -65,14 +63,6 @@ Start from a description and work through each phase:
 3. `/zest-dev:design` — thin entry into the Design phase
 4. `/zest-dev:plan` — thin entry into the Plan phase
 5. `/zest-dev:implement` — thin entry into the Implement phase
-
-### Quick implementation
-Start from a new requirement and run the full workflow:
-1. `/zest-dev:quick-implement <description>` — create a spec, plan the work, and ask for approval before Implementation
-
-### Knowledge capture
-Capture durable knowledge from the current session:
-1. `/zest-dev:compound` — write reusable findings, decisions, or lessons into project knowledge
 
 ## Prompt Compatibility
 

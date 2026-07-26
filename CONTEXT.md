@@ -13,7 +13,7 @@ The review-oriented `spec.md` file inside a Spec. It keeps the workflow section 
 _Avoid_: full spec, source of truth file
 
 **Spec Supporting File**:
-A Markdown file inside a Spec directory that carries lower-review-frequency workflow detail, such as design research or step-by-step implementation records.
+A Markdown file inside a Spec directory that carries lower-review-frequency workflow detail, such as design research or implementation records.
 _Avoid_: appendix, attachment
 
 **Issue Spec Representation**:
@@ -41,7 +41,7 @@ The `## Design Detail` section in `design.md` that carries lower-review-frequenc
 _Avoid_: design summary, main design
 
 **Implementation File**:
-The `implementation.md` Spec Supporting File that records material deviations between the Spec and implementation reality, the durable attention points future work must preserve, representative verification, and a brief Spec retrospective. It is organized by information value rather than by mirroring every Plan Step. Legacy Specs may use `steps.md` as the same single source of implementation notes.
+The `implementation.md` Spec Supporting File that records material deviations between the Spec and implementation reality, the durable attention points future work must preserve, representative verification, and a brief Spec retrospective. It is organized by information value rather than by mirroring every Plan Ticket. Legacy Specs may use `steps.md` as the same single source of implementation notes.
 _Avoid_: step log, change log, verification log
 
 **Spec Template**:
@@ -72,20 +72,20 @@ _Avoid_: design step, planning note
 A Spec lifecycle milestone meaning the Spec's Design, Plan, and Progress sections are ready for implementation.
 _Avoid_: designed, ready
 
-**Plan Step**:
-One issue-scale implementation slice inside a Spec's Plan section. A Plan Step has a Type that describes whether the next implementer can proceed independently or needs human input.
-_Avoid_: task, ticket
+**Plan Ticket**:
+One tracer-bullet implementation slice inside a Spec's Plan section, sized for one focused implementation session and linked to its blocking tickets. A Plan Ticket has a Type that describes whether the next implementer can proceed independently or needs human input.
+_Avoid_: task, step, issue
 
 **EAG Validation**:
-The Plan Step that comes after the functional implementation steps and before Documentation Sync. It validates the completed change against the Design section's EAG, or explicitly confirms that the Design says there is no EAG and uses the best available Spec-defined validation.
-_Avoid_: general test plan, documentation step
+The Plan Ticket that comes after the functional implementation tickets and before Documentation Sync. It validates the completed change against the Design section's EAG, or explicitly confirms that the Design says there is no EAG and uses the best available Spec-defined validation.
+_Avoid_: general test plan, documentation ticket
 
 **Documentation Sync**:
-The final Plan Step, after EAG Validation, that checks whether the current implementation changed documented behavior, usage, commands, setup, or workflows, and updates relevant project documentation when needed. It is part of the current Spec's implementation work, not a Deferred Follow-Up.
+The final Plan Ticket, after EAG Validation, that checks whether the current implementation changed documented behavior, usage, commands, setup, or workflows, and updates relevant project documentation when needed. It is part of the current Spec's implementation work, not a Deferred Follow-Up.
 _Avoid_: documentation follow-up
 
 **Progress Checklist**:
-A thin completion checklist in the Main Spec File, with one checkbox per Plan Step. It tracks implementation completion; it is not the implementation plan itself.
+A thin completion checklist in the Main Spec File, with one checkbox per Plan Ticket. It tracks implementation completion; it is not the implementation plan itself.
 _Avoid_: plan, task list, notes
 
 **Deferred Follow-Ups (DFU)**:
@@ -94,15 +94,15 @@ _Avoid_: backlog, future tasks, documentation follow-up
 
 **Ralph Task**:
 A markdown checkbox item consumed by Ralph Tasks Mode from `.ralph/ralph-tasks.md`. It is generated from a Progress Checklist item when Zest Dev hands planned work to Ralph.
-_Avoid_: Plan Step, Progress item
+_Avoid_: Plan Ticket, Progress item
 
-**AFK Plan Step**:
-A Plan Step that an agent can implement independently from the written Spec and repository context.
-_Avoid_: automatic step, background task
+**AFK Plan Ticket**:
+A Plan Ticket that an agent can implement independently from the written Spec and repository context.
+_Avoid_: automatic ticket, background task
 
-**HITL Plan Step**:
-A Plan Step that needs user review, product judgment, or approval before continuing. The Plan Phase completion response should tell the user what needs to be discussed in conversation.
-_Avoid_: manual step, blocked step
+**HITL Plan Ticket**:
+A Plan Ticket that needs user review, product judgment, or approval before continuing. The Plan Phase completion response should tell the user what needs to be discussed in conversation.
+_Avoid_: manual ticket, blocked ticket
 
 **CLI**:
 The `zest-dev` command-line tool that manages Spec lifecycle operations such as creating, showing, activating, and updating Specs.
@@ -124,7 +124,7 @@ Maintainer: "During the Design Phase. It is part of the Design Section, and late
 
 Developer: "Where does that validation show up in the Plan?"
 
-Maintainer: "As its own EAG Validation step after the functional changes and before Documentation Sync."
+Maintainer: "As its own EAG Validation ticket after the functional changes and before Documentation Sync."
 
 Developer: "Where should the short version of the design go?"
 
@@ -138,10 +138,10 @@ Developer: "When is a Spec ready for implementation?"
 
 Maintainer: "When it reaches Planned Status: the Design is decided, and the Plan plus Progress Checklist are ready to execute."
 
-Developer: "Can an agent start Step 2 without me?"
+Developer: "Can an agent start Ticket 2 without me?"
 
-Maintainer: "Only if Step 2 is an AFK Plan Step. If it is a HITL Plan Step, the Plan Phase completion response should tell you what we need to discuss first."
+Maintainer: "Only if Ticket 2 is an AFK Plan Ticket. If it is a HITL Plan Ticket, the Plan Phase completion response should tell you what we need to discuss first."
 
 Developer: "Can we send the Progress Checklist to Ralph?"
 
-Maintainer: "Yes. The Progress Checklist records which Plan Steps are complete; `zest-dev ralph` can convert its unchecked items into Ralph Tasks for Ralph Tasks Mode."
+Maintainer: "Yes. The Progress Checklist records which Plan Tickets are complete; `zest-dev ralph` can convert its unchecked items into Ralph Tasks for Ralph Tasks Mode."
