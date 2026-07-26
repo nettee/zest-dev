@@ -26,9 +26,9 @@ Test spec.
 
 ## Progress
 
-- [ ] Step 1: Parse active Progress into task text
-- [x] Step 2: Already complete
-- [ ] Step 3: Write implement prompt file
+- [ ] Ticket 1: Parse active Progress into task text
+- [x] Ticket 2: Already complete
+- [ ] Ticket 3: Write implement prompt file
 
 ## Implementation
 
@@ -46,8 +46,8 @@ See [implementation.md](./implementation.md).
     assert output["ok"] is True
     assert output["spec"]["id"] == spec_id
     assert tasks == [
-        "Step 1: Parse active Progress into task text",
-        "Step 3: Write implement prompt file",
+        "Ticket 1: Parse active Progress into task text",
+        "Ticket 3: Write implement prompt file",
         DFU_RALPH_TASK,
         FINAL_RALPH_TASK,
     ]
@@ -78,9 +78,9 @@ Legacy spec.
 
 ### Progress
 
-- [ ] Step 1: Preserve legacy Ralph handoff
-- [x] Step 2: Already complete
-- [ ] Step 3: Keep split layout support
+- [ ] Ticket 1: Preserve legacy Ralph handoff
+- [x] Ticket 2: Already complete
+- [ ] Ticket 3: Keep split layout support
 
 ### Decisions
 
@@ -91,8 +91,8 @@ Legacy spec.
     tasks = read_fake_ralph_tasks(cli.project_dir)
     assert output["ok"] is True
     assert tasks == [
-        "Step 1: Preserve legacy Ralph handoff",
-        "Step 3: Keep split layout support",
+        "Ticket 1: Preserve legacy Ralph handoff",
+        "Ticket 3: Keep split layout support",
         DFU_RALPH_TASK,
         FINAL_RALPH_TASK,
     ]
@@ -116,11 +116,11 @@ Test spec.
 
 ## Progress
 
-- [ ] Step 1 (AFK): AMR API Admin Grant
-- [ ] Step 2 (AFK): Admin Grant Workflow
-- [ ] Step 3 (AFK): Wallet Source Copy
-- [ ] Step 4 (HITL): Test/Production Secret Setup
-- [ ] Step 5 (AFK): Should not enter Ralph after HITL
+- [ ] Ticket 1 (AFK): AMR API Admin Grant
+- [ ] Ticket 2 (AFK): Admin Grant Workflow
+- [ ] Ticket 3 (AFK): Wallet Source Copy
+- [ ] Ticket 4 (HITL): Test/Production Secret Setup
+- [ ] Ticket 5 (AFK): Should not enter Ralph after HITL
 
 """,
     )
@@ -128,9 +128,9 @@ Test spec.
     tasks = read_fake_ralph_tasks(cli.project_dir)
 
     assert tasks == [
-        "Step 1 (AFK): AMR API Admin Grant",
-        "Step 2 (AFK): Admin Grant Workflow",
-        "Step 3 (AFK): Wallet Source Copy",
+        "Ticket 1 (AFK): AMR API Admin Grant",
+        "Ticket 2 (AFK): Admin Grant Workflow",
+        "Ticket 3 (AFK): Wallet Source Copy",
         DFU_RALPH_TASK,
         FINAL_RALPH_TASK,
     ]
@@ -150,8 +150,8 @@ created: '2026-06-04'
 
 ## Progress
 
-- [x] Step 1: Done
-- [X] Step 2: Also done
+- [x] Ticket 1: Done
+- [X] Ticket 2: Also done
 """,
     )
     failed = cli.fail("ralph", env=fake_ralph_env(cli.project_dir))
@@ -200,11 +200,31 @@ created: '2026-06-04'
 
 ## Progress
 
-- [/] Step 1: In progress is not supported
+- [/] Ticket 1: In progress is not supported
 """,
     )
     failed = cli.fail("ralph", env=fake_ralph_env(project))
-    assert "Unsupported Progress line: - [/] Step 1: In progress is not supported" in failed
+    assert "Unsupported Progress line: - [/] Ticket 1: In progress is not supported" in failed
+    assert not (project / ".ralph").exists()
+    assert not (project / "task.md").exists()
+
+    create_active_spec_with_body(
+        cli,
+        "ralph-old-step-label",
+        """---
+id: test-ralph-old-step-label
+name: Ralph Old Step Label
+status: planned
+created: '2026-06-04'
+---
+
+## Progress
+
+- [ ] Step 1 (AFK): Old labels are not supported
+""",
+    )
+    failed = cli.fail("ralph", env=fake_ralph_env(project))
+    assert "Unsupported Progress line: - [ ] Step 1 (AFK): Old labels are not supported" in failed
     assert not (project / ".ralph").exists()
     assert not (project / "task.md").exists()
 
@@ -220,11 +240,11 @@ created: '2026-06-04'
 
 ## Progress
 
-- [ ] Step 1 (AFK): Annotated
-- [ ] Step 2: Plain mixed into annotated Progress
+- [ ] Ticket 1 (AFK): Annotated
+- [ ] Ticket 2: Plain mixed into annotated Progress
 """,
     )
     failed = cli.fail("ralph", env=fake_ralph_env(project))
-    assert "Unsupported Progress line: - [ ] Step 2: Plain mixed into annotated Progress" in failed
+    assert "Unsupported Progress line: - [ ] Ticket 2: Plain mixed into annotated Progress" in failed
     assert not (project / ".ralph").exists()
     assert not (project / "task.md").exists()

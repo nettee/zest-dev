@@ -27,7 +27,7 @@ See [design.md](./design.md) for design detail.
 
 ## Plan
 
-<!-- Optional implementation step breakdown, created during Plan. -->
+<!-- Optional implementation ticket breakdown, created during Plan. -->
 
 ## Progress
 

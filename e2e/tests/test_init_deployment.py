@@ -53,6 +53,8 @@ def test_default_global_init_deploys_expected_artifacts(cli):
     assert skills_dir.exists()
     assert codex_skill_dir.exists()
     assert codex_agents_dir.exists()
+    assert not (skills_dir / "brainstorming").exists()
+    assert not (fake_home / ".agents" / "skills" / "brainstorming").exists()
     assert not (cli.project_dir / ".cursor").exists()
     assert not (cli.project_dir / "AGENTS.md").exists()
 
@@ -97,9 +99,6 @@ def test_default_global_init_deploys_expected_artifacts(cli):
         assert (skills_dir / "zest-dev" / filename).read_text(encoding="utf-8") == expected
         assert (codex_skill_dir / filename).read_text(encoding="utf-8") == expected
 
-    brainstorming_skill = (skills_dir / "brainstorming" / "SKILL.md").read_text(encoding="utf-8")
-    assert "include a dedicated `EAG Validation` step before the final `Documentation Sync` step" in brainstorming_skill
-
     research_phase = (skills_dir / "zest-dev" / "research.md").read_text(encoding="utf-8")
     assert "Stop when material Design inputs have representative evidence" in research_phase
     assert "Label inference separately from directly supported facts" in research_phase
@@ -120,22 +119,22 @@ def test_default_global_init_deploys_expected_artifacts(cli):
 
     plan_phase = (skills_dir / "zest-dev" / "plan.md").read_text(encoding="utf-8")
     assert "If the spec started as `designed`, run `zest-dev update active planned`." in plan_phase
-    assert "Use the slicing spirit of Matt Pocock's registered `to-issues` skill as a reference for scale and sequencing." in plan_phase
+    assert "Use the slicing spirit of Matt Pocock's registered `to-tickets` skill as a reference for scale and sequencing." in plan_phase
     assert "Do not create GitHub issues or external issue-tracker entries unless the user explicitly asks for that." in plan_phase
     assert "Do not use markdown checkboxes in `## Plan`." in plan_phase
     assert "Add or update `spec.md` → `## Progress` with a thin progress checklist:" in plan_phase
-    assert "Add a dedicated Plan step for EAG Validation" in plan_phase
-    assert "Add a final Plan step for Documentation Sync when the Design is expected to change documented behavior" in plan_phase
-    assert "Step N (AFK): ..." in plan_phase
-    assert "Report every Plan step's `Type` as `AFK` or `HITL`." in plan_phase
-    assert "For each `HITL` step, tell the user what needs to be discussed, reviewed, judged, or approved in conversation before implementation continues." in plan_phase
+    assert "Add a dedicated Plan ticket for EAG Validation" in plan_phase
+    assert "Add a final Plan ticket for Documentation Sync when the Design is expected to change documented behavior" in plan_phase
+    assert "Ticket N (AFK): ..." in plan_phase
+    assert "Report every Plan ticket's `Type` as `AFK` or `HITL`." in plan_phase
+    assert "For each `HITL` ticket, tell the user what needs to be discussed, reviewed, judged, or approved in conversation before implementation continues." in plan_phase
 
     implement_phase = (skills_dir / "zest-dev" / "implement.md").read_text(encoding="utf-8")
     assert "When test-driven development fits the behavior and files being changed" in implement_phase
     assert "If required evidence, configuration, credentials, or a consequential Design decision is missing" in implement_phase
     assert "Use `implementation.md` as the implementation-notes source of truth" in implement_phase
     assert "For a legacy Spec that has `steps.md` but no `implementation.md`" in implement_phase
-    assert "Keep `implementation.md` organized by information value, not by Plan-step symmetry" in implement_phase
+    assert "Keep `implementation.md` organized by information value, not by Plan-ticket symmetry" in implement_phase
     assert "Current behavior" in implement_phase
     assert "Spec Retrospective" in implement_phase
     assert "Record a material Deviation when it becomes known" in implement_phase
