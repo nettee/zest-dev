@@ -16,9 +16,9 @@ This repository's custom command prompts are designed for **OpenCode / oh-my-ope
 - For user interaction, say **ask the user directly** or **use the question tool** rather than Claude-specific names.
 - For codebase work, describe the goal (read files, search code, inspect references, run shell commands) rather than enumerating a Claude-only tool contract.
 - When referring to a skill in prompts or command docs, refer to it by its registered skill name (for example `Zest Dev`), not by repository or deployed file paths.
-- Keep workflow process, writing rules, and reusable content templates in skills. The main `Zest Dev` skill should describe the overall flow and route to phase files; phase files should carry concrete section-writing guidance, following progressive disclosure.
+- Keep lifecycle invariants, recording rules, and reusable content guidance in skills. The main `Zest Dev` skill should route by requested outcome; Section Guides should define the Overview, Design, Plan, and Implementation content contracts through progressive disclosure.
 - Keep command prompts thin. Commands should provide a simple entry prompt and route intent into the relevant skill workflow; they should not duplicate detailed process, rules, or templates.
-- Keep the CLI-created spec template thin. `lib/template/spec.md` should create top-level sections with brief placeholders only; concrete section-writing guidance belongs in the `Zest Dev` skill phase files.
+- Keep the CLI-created Spec templates thin. They should create the required Main Spec, Design Record, and Implementation File structure with brief placeholders only; concrete writing guidance belongs in the Zest Dev Section Guides.
 
 ### Prompt format constraints
 
@@ -47,10 +47,7 @@ node bin/zest-dev.js update <spec-id> <status>
 
 #### Automated Testing
 
-**Test Architecture:** Tests follow a separation of concerns design:
-- **Test cases** → `test/test-integration.js` (single source of truth)
-- **Environment setup** → `test/setup-package-env.js` (package environment)
-- **GitHub Actions** → Controls environment only, no test logic
+**Test Architecture:** E2E tests exercise the public CLI through Python test cases under `e2e/tests/`. `e2e/tests/conftest.py` owns the shared CLI harness and isolated environments; the local and package runners execute the same suite.
 
 **Running tests:**
 
@@ -64,28 +61,9 @@ pnpm test:package
 
 **Adding new tests:**
 
-1. Edit `test/test-integration.js`:
-   ```javascript
-   function testNewFeature() {
-     console.log('\nTest: New Feature');
-     if (condition) {
-       pass('Feature works');
-     } else {
-       fail('Feature broken');
-     }
-   }
-   ```
-
-2. Call it in `main()`:
-   ```javascript
-   function main() {
-     // ...
-     testNewFeature();  // Add this line
-     // ...
-   }
-   ```
-
-3. Done! Tests automatically run in both local and package environments.
+1. Add or update a behavior-focused test under `e2e/tests/`.
+2. Exercise the CLI through the shared `cli` fixture rather than internal implementation functions.
+3. Run `pnpm test:local`; package verification uses the same test suite through `pnpm test:package`.
 
 **Key principles:**
 - ✅ All test logic in JS files (never in GitHub Actions YAML)
@@ -111,7 +89,9 @@ Specs are stored in `specs/change/`. Managed via `zest-dev` CLI.
 | `zest-dev unset-active`           | Unset active change spec |
 | `zest-dev update <spec-id\|active> <status>` | Update spec status |
 
-Archive is handled through agent/editor workflows (`/zest-dev:archive` or `zest-dev prompt archive`), not a public CLI subcommand.
+Issue-representation archival uses `zest-dev dump`; there is no public `archive` or `prompt` CLI subcommand.
+
+Valid Spec statuses are `new`, `designed`, `planned`, and `implemented`.
 
 ### Spec content rules
 

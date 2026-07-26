@@ -19,7 +19,6 @@ const {
   loadIssueRepresentation
 } = require('../lib/spec-manager');
 const { deployPlugin } = require('../lib/plugin-deployer');
-const { generatePrompt } = require('../lib/prompt-generator');
 const { setupRalphFromActiveSpec } = require('../lib/ralph-setup');
 const packageJson = require('../package.json');
 
@@ -334,22 +333,6 @@ program
     try {
       const result = setupRalphFromActiveSpec(process.cwd());
       console.log(yaml.dump(result));
-    } catch (error) {
-      console.error('Error:', error.message);
-      process.exit(1);
-    }
-  });
-
-// zest-dev prompt <command> [args...]
-program
-  .command('prompt <command> [args...]')
-  .description('Generate prompt for Codex editor (e.g., codex "$(zest-dev prompt new \'task description\')")')
-  .action((command, args) => {
-    try {
-      // Join args array into a single string for commands that take arguments
-      const argsString = args ? args.join(' ') : '';
-      const prompt = generatePrompt(command, argsString);
-      console.log(prompt);
     } catch (error) {
       console.error('Error:', error.message);
       process.exit(1);

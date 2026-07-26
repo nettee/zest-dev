@@ -75,25 +75,30 @@ If publishing fails, inspect the `Publish npm` workflow run on `main` before ret
 
 ## Usage Workflow
 
-Zest Dev uses a **thick skill / thin command** model:
-- the `Zest Dev` skill is the workflow source of truth
-- detailed phase workflows are owned by the `Zest Dev` skill
-- `/zest-dev:*` commands are lightweight entrypoints and compatibility shims
-- `zest-dev` CLI manages spec lifecycle only
+Zest Dev uses a **content-contract skill / approach command** model:
 
-### Step-by-Step
+- the `Zest Dev` skill owns Spec lifecycle and recording contracts
+- Section Guides define Overview, Design, Plan, and Implementation content
+- two thin commands choose how a new Spec reaches Designed Status
+- the `zest-dev` CLI manages Spec files and lifecycle state
 
-Work through a feature spec one phase at a time, with human review between each stage.
+### Design Approaches
+
+Use the lightweight route for straightforward work:
 
 ```bash
-/zest-dev:new "My new feature"   # Create a spec and set it as active
-/zest-dev:research              # Research requirements and explore the codebase
-/zest-dev:design                # Clarify requirements and design the architecture
-/zest-dev:plan                  # Create the implementation plan
-/zest-dev:implement             # Build the feature following the plan
+/zest-dev:lightweight "My new feature"
 ```
 
-Each command routes into the main Zest Dev skill, which advances the spec through `new → researched → designed → planned → implemented`.
+Use grilling when the design needs an intensive, one-question-at-a-time decision process:
+
+```bash
+/zest-dev:grilling "My complex feature"
+```
+
+Both commands create and activate a new Spec, establish its Overview, and reach the same Designed Status. The grilling route composes the registered `grilling` and `domain-modeling` skills. Research is not a separate status or required step; source-backed Research Findings live beside Design Decisions in the Design Record.
+
+New-format Specs progress through `new → designed → planned → implemented`.
 
 ## CLI Reference
 
@@ -112,35 +117,22 @@ The `zest-dev` CLI manages spec files. Use it to inspect and update specs outsid
 | `zest-dev create-branch` | Create a git branch from the active change spec |
 | `zest-dev dump <spec-id\|active> [--dry-run]` | Archive a spec as an issue representation or GitHub issue |
 | `zest-dev load [issue] [--from-file <path>]` | Reconstruct a spec from an issue representation or GitHub issue |
+| `zest-dev ralph` | Convert active Spec Progress items into Ralph tasks |
 
 ### Status Transitions
 
-Valid status values: `new`, `researched`, `designed`, `planned`, `implemented`
+Valid status values: `new`, `designed`, `planned`, `implemented`
 
 - Forward-only transitions (skipping is allowed): e.g. `new → designed` is valid
 - Backward transitions fail: e.g. `implemented → designed`
 - Setting the same status again returns an error
 
-### Generate Prompts for Codex
-
-For editors that don't support project-level commands, use `zest-dev prompt` to generate the equivalent thin-entry prompt text:
-
-```bash
-codex "$(zest-dev prompt new 'some description')"
-codex "$(zest-dev prompt research)"
-codex "$(zest-dev prompt design)"
-codex "$(zest-dev prompt plan)"
-codex "$(zest-dev prompt implement)"
-```
-
-`zest-dev prompt` supports the actual command files in `commands/`.
-
 ### Resource Layout
 
 Zest Dev's editor-facing resources are stored in top-level directories:
 
-- `commands/` - thin command prompts
-- `skills/` - workflow and helper skills
+- `commands/` - the lightweight and grilling Design Approach entrypoints
+- `skills/` - the Zest Dev skill and its Section Guides
 - `agents/` - reusable subagent definitions
 
 The `plugin/` directory is a Claude Code compatibility layer. It keeps plugin metadata under `plugin/.claude-plugin/`, while `plugin/commands`, `plugin/skills`, and `plugin/agents` are symlinks to the top-level source directories.

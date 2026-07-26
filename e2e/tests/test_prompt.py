@@ -1,23 +1,23 @@
-def test_prompt_supports_actual_command_set(cli):
-    plan = cli.ok("prompt", "plan")
-    assert plan.strip() == "Follow the Zest Dev workflow to advance the active spec to planned, using this focus if relevant: ."
-
-    invalid = cli.fail("prompt", "summarize")
-    assert "Invalid command: summarize" in invalid
-
-    for removed in ["quick-implement", "compound"]:
-        invalid = cli.fail("prompt", removed)
-        assert f"Invalid command: {removed}" in invalid
+def test_cli_removes_general_prompt_generation(cli):
+    failed = cli.fail("prompt", "lightweight")
+    assert "unknown command 'prompt'" in failed
 
 
-def test_prompt_implement_supports_incremental_phases(cli):
-    prompt = cli.ok("prompt", "implement")
-    assert prompt.strip() == "Follow the Zest Dev workflow to advance the active spec to implemented, using this focus if relevant: ."
-    assert "**Step 1:" not in prompt
-    assert "Treat this command as a request" not in prompt
-
+def test_init_deploys_design_approach_entrypoints(cli):
     cli.ok("init", "--local")
-    deployed = (cli.project_dir / ".opencode" / "commands" / "zest-dev-implement.md").read_text(encoding="utf-8")
-    assert "Follow the Zest Dev workflow to advance the active spec to implemented, using this focus if relevant: $ARGUMENTS." in deployed
-    assert "**Step 1:" not in deployed
-    assert "Treat this command as a request" not in deployed
+    commands_dir = cli.project_dir / ".opencode" / "commands"
+
+    lightweight = (commands_dir / "zest-dev-lightweight.md").read_text(encoding="utf-8")
+    assert "Lightweight Design Approach" in lightweight
+    assert "Designed Status" in lightweight
+    assert "$ARGUMENTS" in lightweight
+
+    grilling = (commands_dir / "zest-dev-grilling.md").read_text(encoding="utf-8")
+    assert "Grilling Design Approach" in grilling
+    assert "Designed Status" in grilling
+    assert "$ARGUMENTS" in grilling
+
+    assert sorted(path.name for path in commands_dir.glob("zest-dev-*.md")) == [
+        "zest-dev-grilling.md",
+        "zest-dev-lightweight.md",
+    ]

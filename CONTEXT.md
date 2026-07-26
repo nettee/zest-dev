@@ -21,12 +21,12 @@ A forge-neutral representation of a Spec stored in an issue body plus issue comm
 _Avoid_: GitHub dump, issue attachment format
 
 **Design Section**:
-The conceptual Design area of a Spec. It spans the Main Spec File's Design section for high-frequency review content and `design.md` for lower-frequency Design Detail.
-_Avoid_: design file, design-only section
+The high-frequency review area in the Main Spec File that summarizes the chosen design and its E2E Acceptance Gate. Its supporting evidence and reasoning live in the Design Record.
+_Avoid_: Design Record, design file
 
 **Design Summary**:
-A concise, high-frequency review summary inside the Main Spec File's Design section. It captures the chosen approach without replacing Design Detail.
-_Avoid_: full design, design detail
+A concise, high-frequency review summary inside the Main Spec File's Design section. It captures the chosen approach without replacing the Design Record.
+_Avoid_: Design Record, Design Decisions
 
 **E2E Acceptance Gate (EAG)**:
 A small, preferably single, automated end-to-end acceptance gate in the Main Spec File's Design section. It states both the user- or system-visible behavior to accept and the executable verification path; when no automated end-to-end gate exists, the Spec should say there is no EAG.
@@ -36,12 +36,20 @@ _Avoid_: test checklist, unit test plan, acceptance case list, manual acceptance
 The repository's executable end-to-end test harness for verifying real `zest-dev` CLI behavior across local and packaged-install paths. It is broader than a Spec's single E2E Acceptance Gate.
 _Avoid_: acceptance gate, unit tests, product runtime
 
-**Design Detail**:
-The `## Design Detail` section in `design.md` that carries lower-review-frequency design reasoning, trade-offs, architecture notes, and verification strategy.
-_Avoid_: design summary, main design
+**Design Record**:
+The `design.md` Spec Supporting File that records how a Spec reached Designed Status. It contains Research Findings and Design Decisions while the Main Spec File keeps the concise Design Summary and E2E Acceptance Gate.
+_Avoid_: Design Detail, Design Section
+
+**Research Findings**:
+The descriptive part of the Design Record: source-backed facts, constraints, conflicts, evidence gaps, references, and explicitly labelled inferences that inform design.
+_Avoid_: Research Phase, Research Status
+
+**Design Decisions**:
+The normative part of the Design Record: chosen behavior and structure, rationale, trade-offs, boundaries, edge cases, and verification strategy.
+_Avoid_: Research Findings, Design Detail
 
 **Implementation File**:
-The `implementation.md` Spec Supporting File that records material deviations between the Spec and implementation reality, the durable attention points future work must preserve, representative verification, and a brief Spec retrospective. It is organized by information value rather than by mirroring every Plan Ticket. Legacy Specs may use `steps.md` as the same single source of implementation notes.
+The `implementation.md` Spec Supporting File that records material deviations between the Spec and implementation reality, the durable attention points future work must preserve, representative verification, and a brief Spec retrospective. It is organized by information value rather than by mirroring every Plan Ticket.
 _Avoid_: step log, change log, verification log
 
 **Spec Template**:
@@ -49,27 +57,47 @@ The built-in Markdown skeletons used by the CLI to create a new Spec layout. The
 _Avoid_: workflow instructions, writing rules
 
 **Skill**:
-The agent-facing workflow source for Zest Dev. The main Skill defines the overall flow and routes into phase-specific files; it does not carry concrete section templates or phase-specific writing details.
+The agent-facing workflow source for Zest Dev. The main Skill owns lifecycle and shared recording invariants and routes into content-specific Section Guides.
 _Avoid_: command, template
 
-**Phase File**:
-A Skill-owned file for one workflow phase, such as New, Research, Design, or Implement. It carries the concrete instructions for writing that phase's Spec content.
-_Avoid_: command, CLI template
+**Section Guide**:
+A Skill-owned file named after the Spec content it governs, such as Overview, Design, Plan, or Implementation. It defines that content's contract and relevant workflow rules without representing an activity or Spec Status.
+_Avoid_: Phase File, status guide, command
 
 **Command**:
-A user-facing entrypoint that gives a simple prompt and routes intent into the Zest Dev Skill or a related Skill-owned workflow. It does not carry detailed process, rules, or templates.
+A user-facing entrypoint that selects a Design Approach for creating a new Spec and routes the requirement into the Zest Dev Skill. It does not carry detailed process, rules, or templates.
 _Avoid_: workflow source, template, writing guide
 
-**Summarize Command**:
-A post-hoc command that captures an existing chat or pull request into a Spec. It is not part of the core Zest Dev workflow phases.
-_Avoid_: workflow phase, phase file
+**Plan Section**:
+The Main Spec File area that records the implementation ticket breakdown produced from an approved Design. It does not contain Design Decisions.
+_Avoid_: Plan Phase, design step
 
-**Plan Phase**:
-A core workflow phase that turns an approved Design into the Spec's Plan section. It does not produce Design content.
-_Avoid_: design step, planning note
+**Spec Status**:
+A persisted lifecycle milestone that states how far a Spec's required record has matured. It describes artifact readiness, not the activities used to reach it.
+_Avoid_: action, command
+
+**Workflow Activity**:
+An action used to advance or refine a Spec, such as research, grilling, or design synthesis. An activity may contribute to more than one Spec section and does not necessarily have its own Spec Status.
+_Avoid_: status, lifecycle milestone
+
+**Design Approach**:
+The decision-making route used to reach `designed`. A Design Approach may be lightweight or grilling-based, but it must satisfy the same Design Section contract.
+_Avoid_: phase, status
+
+**Lightweight Design Approach**:
+The default Design Approach for work whose consequential choices can be resolved without an intensive interview. It performs only the research and discussion needed to satisfy Designed Status.
+_Avoid_: Research Phase, simple status
+
+**Grilling Design Approach**:
+A user-selected Design Approach that interleaves fact-finding with a one-question-at-a-time decision interview until shared understanding is reached. It produces the same Design Record and Designed Status as the Lightweight Design Approach.
+_Avoid_: Grilling Phase, Grilling Status
+
+**Designed Status**:
+The first substantive Spec readiness milestone. It means the Research Findings, Design Decisions, Design Summary, and E2E Acceptance Gate are complete, regardless of which Design Approach produced them.
+_Avoid_: research complete, discussion complete
 
 **Planned Status**:
-A Spec lifecycle milestone meaning the Spec's Design, Plan, and Progress sections are ready for implementation.
+A Spec lifecycle milestone meaning the Spec's Design, Plan, and Progress sections are complete and ready for implementation.
 _Avoid_: designed, ready
 
 **Plan Ticket**:
@@ -89,7 +117,7 @@ A thin completion checklist in the Main Spec File, with one checkbox per Plan Ti
 _Avoid_: plan, task list, notes
 
 **Deferred Follow-Ups (DFU)**:
-A final Main Spec File section for follow-up items explicitly deferred out of the current Spec during Design because they should be done only after the current Spec is complete. Add DFU only when the user explicitly wants to handle that work later, or when a clear functional gap is discovered and confirmed with the user first. DFU is fixed as part of the Design Phase and is not part of the Plan or Progress Checklist.
+A final Main Spec File section for follow-up items explicitly deferred while completing the Designed Contract because they should be done only after the current Spec is complete. Add DFU only when the user explicitly wants to handle that work later, or when a clear functional gap is discovered and confirmed with the user first. DFU is fixed by Designed Status and is not part of the Plan or Progress Checklist.
 _Avoid_: backlog, future tasks, documentation follow-up
 
 **Ralph Task**:
@@ -101,7 +129,7 @@ A Plan Ticket that an agent can implement independently from the written Spec an
 _Avoid_: automatic ticket, background task
 
 **HITL Plan Ticket**:
-A Plan Ticket that needs user review, product judgment, or approval before continuing. The Plan Phase completion response should tell the user what needs to be discussed in conversation.
+A Plan Ticket that needs user review, product judgment, or approval before it can be completed. Its Scope should make the required human input explicit.
 _Avoid_: manual ticket, blocked ticket
 
 **CLI**:
@@ -112,15 +140,15 @@ _Avoid_: workflow engine, writing guide
 
 Developer: "The Spec Template should only create the empty sections."
 
-Maintainer: "Right. The main Skill routes the workflow, the Phase File explains how to fill the relevant sections, the Command only routes the request, and the CLI creates the Spec layout from the built-in Spec Template."
+Maintainer: "Right. The main Skill owns lifecycle invariants, each Section Guide defines one content contract, a Command selects the Design Approach, and the CLI creates the built-in Spec layout."
 
-Developer: "Should the Design Phase also write the implementation checklist?"
+Developer: "Should the Design Section Guide also write the implementation checklist?"
 
-Maintainer: "No. The Design Phase records decisions and trade-offs; the Plan Phase turns that Design into a checklist."
+Maintainer: "No. The Designed Contract records findings and decisions; the Plan Section turns that Design into a checklist."
 
 Developer: "When should the EAG be chosen?"
 
-Maintainer: "During the Design Phase. It is part of the Design Section, and later Plan or Implement work should use it as the end-to-end validation gate."
+Maintainer: "While completing the Designed Contract. It is part of the Design Section, and later Plan or Implementation work should use it as the end-to-end validation gate."
 
 Developer: "Where does that validation show up in the Plan?"
 
@@ -128,7 +156,7 @@ Maintainer: "As its own EAG Validation ticket after the functional changes and b
 
 Developer: "Where should the short version of the design go?"
 
-Maintainer: "The Design Section spans both files: put Design Summary in the Main Spec File for review, and keep Design Detail in `design.md` for the reasoning and supporting detail."
+Maintainer: "Put the Design Summary in the Main Spec File for review, and keep Research Findings plus Design Decisions in the Design Record."
 
 Developer: "Should the acceptance gate list every test case?"
 
@@ -140,7 +168,7 @@ Maintainer: "When it reaches Planned Status: the Design is decided, and the Plan
 
 Developer: "Can an agent start Ticket 2 without me?"
 
-Maintainer: "Only if Ticket 2 is an AFK Plan Ticket. If it is a HITL Plan Ticket, the Plan Phase completion response should tell you what we need to discuss first."
+Maintainer: "Only if Ticket 2 is an AFK Plan Ticket. A HITL Plan Ticket must state the human input required before it can be completed."
 
 Developer: "Can we send the Progress Checklist to Ralph?"
 

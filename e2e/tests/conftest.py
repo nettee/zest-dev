@@ -12,20 +12,11 @@ from helpers.paths import REPO_ROOT
 
 
 EXPECTED_COMMANDS = [
-    "zest-dev-design.md",
-    "zest-dev-implement.md",
-    "zest-dev-new.md",
-    "zest-dev-plan.md",
-    "zest-dev-research.md",
+    "zest-dev-grilling.md",
+    "zest-dev-lightweight.md",
 ]
-THIN_COMMANDS = [
-    "zest-dev-new.md",
-    "zest-dev-research.md",
-    "zest-dev-design.md",
-    "zest-dev-plan.md",
-    "zest-dev-implement.md",
-]
-SKILL_PHASE_FILES = ["new.md", "research.md", "design.md", "plan.md", "implement.md"]
+THIN_COMMANDS = EXPECTED_COMMANDS
+SKILL_SECTION_FILES = ["overview.md", "design.md", "plan.md", "implementation.md"]
 CODEX_SUBAGENTS = ["code-architect.toml", "code-explorer.toml", "code-reviewer.toml"]
 FINAL_RALPH_TASK = (
     "Make sure all tasks are done in ralph loops, and then create PR. "
@@ -35,6 +26,7 @@ DFU_RALPH_TASK = (
     "If the spec has Deferred Follow-Ups (DFU), create one GitHub issue "
     "for each DFU item and link those issues in the PR."
 )
+RALPH_TASK_PROMPT = "Use the Zest Dev skill to implement the active planned Spec.\n"
 
 
 class Cli:
