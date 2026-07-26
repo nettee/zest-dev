@@ -3,6 +3,7 @@ from pathlib import Path
 from conftest import (
     DFU_RALPH_TASK,
     FINAL_RALPH_TASK,
+    RALPH_TASK_PROMPT,
     create_active_spec_with_body,
     fake_ralph_env,
     read_fake_ralph_tasks,
@@ -54,12 +55,11 @@ See [implementation.md](./implementation.md).
     assert output["tasks_added"] == tasks
     assert "ralph_results" not in output
     assert not stale_file.exists()
-    prompt = cli.ok("prompt", "implement")
-    assert output["task_md"] == {"path": "task.md", "content": prompt}
-    assert (cli.project_dir / "task.md").read_text(encoding="utf-8") == prompt
+    assert output["task_md"] == {"path": "task.md", "content": RALPH_TASK_PROMPT}
+    assert (cli.project_dir / "task.md").read_text(encoding="utf-8") == RALPH_TASK_PROMPT
 
 
-def test_ralph_falls_back_to_legacy_notes_progress(cli):
+def test_ralph_rejects_legacy_notes_progress(cli):
     create_active_spec_with_body(
         cli,
         "ralph-legacy-progress",
@@ -87,16 +87,9 @@ Legacy spec.
 - Use the split spec layout for new specs.
 """,
     )
-    output = cli.yaml("ralph", env=fake_ralph_env(cli.project_dir))
-    tasks = read_fake_ralph_tasks(cli.project_dir)
-    assert output["ok"] is True
-    assert tasks == [
-        "Ticket 1: Preserve legacy Ralph handoff",
-        "Ticket 3: Keep split layout support",
-        DFU_RALPH_TASK,
-        FINAL_RALPH_TASK,
-    ]
-    assert output["tasks_added"] == tasks
+    failed = cli.fail("ralph", env=fake_ralph_env(cli.project_dir))
+    assert "Active spec is missing ## Progress" in failed
+    assert not (cli.project_dir / "task.md").exists()
 
 
 def test_ralph_only_adds_leading_afk_progress_tasks(cli):
@@ -248,3 +241,25 @@ created: '2026-06-04'
     assert "Unsupported Progress line: - [ ] Ticket 2: Plain mixed into annotated Progress" in failed
     assert not (project / ".ralph").exists()
     assert not (project / "task.md").exists()
+
+
+def test_ralph_rejects_active_specs_that_are_not_planned(cli):
+    create_active_spec_with_body(
+        cli,
+        "ralph-designed-spec",
+        """---
+id: test-ralph-designed-spec
+name: Ralph Designed Spec
+status: designed
+created: '2026-06-04'
+---
+
+## Progress
+
+- [ ] Ticket 1: Should not reach Ralph from designed status
+""",
+    )
+    failed = cli.fail("ralph", env=fake_ralph_env(cli.project_dir))
+    assert 'Active spec must have status "planned" to set up Ralph (found "designed")' in failed
+    assert not (cli.project_dir / ".ralph").exists()
+    assert not (cli.project_dir / "task.md").exists()

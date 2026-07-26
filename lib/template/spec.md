@@ -9,17 +9,13 @@ created: "{date}"
 
 <!-- What are we solving? Why now? -->
 
-## Research
-
-See [design.md](./design.md).
-
 ## Design
 
-### Design Summary
+### Summary
 
 <!-- Overall design approach and rationale. -->
 
-See [design.md](./design.md) for design detail.
+See [design.md](./design.md) for the Design Record.
 
 ### E2E Acceptance Gate (EAG)
 
@@ -27,7 +23,7 @@ See [design.md](./design.md) for design detail.
 
 ## Plan
 
-<!-- Optional implementation ticket breakdown, created during Plan. -->
+<!-- Ticket-scale implementation breakdown. -->
 
 ## Progress
 
@@ -37,4 +33,4 @@ See [implementation.md](./implementation.md).
 
 ## Deferred Follow-Ups (DFU)
 
-<!-- Follow-up items deferred out of this Spec during Design only when the user explicitly wants them handled later or confirms a discovered functional gap, or None. -->
+<!-- Follow-up items explicitly deferred out of this Spec, or None. -->

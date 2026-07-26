@@ -30,11 +30,10 @@ def test_create_uses_builtin_split_templates(cli):
     assert metadata["status"] == "new"
     assert isinstance(metadata["created"], str)
     assert "## Overview" in content
-    assert "## Research" in content
-    assert "See [design.md](./design.md)." in content
+    assert "## Research" not in content
     assert "## Design" in content
-    assert "### Design Summary" in content
-    assert "### Design Summary\n\n<!-- Overall design approach and rationale. -->\n\nSee [design.md](./design.md) for design detail." in content
+    assert "### Summary" in content
+    assert "### Summary\n\n<!-- Overall design approach and rationale. -->\n\nSee [design.md](./design.md) for the Design Record." in content
     assert "### E2E Acceptance Gate (EAG)" in content
     assert "Automated end-to-end acceptance behavior and verification path, or state that there is no EAG." in content
     assert "## Plan" in content
@@ -42,15 +41,15 @@ def test_create_uses_builtin_split_templates(cli):
     assert "## Implementation" in content
     assert "See [implementation.md](./implementation.md)." in content
     assert "## Deferred Follow-Ups (DFU)" in content
-    assert "Follow-up items deferred out of this Spec during Design only when the user explicitly wants them handled later or confirms a discovered functional gap, or None." in content
+    assert "Follow-up items explicitly deferred out of this Spec, or None." in content
     assert "Optional completion checklist, created during Plan and updated during Implement." not in content
-    assert "Optional implementation ticket breakdown, created during Plan." in content
+    assert "Ticket-scale implementation breakdown." in content
     assert "Use markdown checkboxes for all step and substep items" not in content
     assert "Substep 1.1 Implement" not in content
     assert "## Notes" not in content
-    assert "## Research" in design
-    assert "## Design Detail" in design
-    assert "## Design\n" not in design
+    assert "# Design Record" in design
+    assert "## Research Findings" in design
+    assert "## Design Decisions" in design
     assert "# Implementation" in implementation
     assert "## Outcome" in implementation
     assert "## Deviations" in implementation
@@ -217,21 +216,22 @@ def test_status_agent_hints(cli):
 def test_update_and_active_alias(cli):
     first = cli.yaml("create", "first-spec")["spec"]["id"]
 
-    result = cli.yaml("update", first, "researched")
+    result = cli.yaml("update", first, "designed")
     assert result["ok"] is True
-    assert result["spec"]["status"] == "researched"
-    assert result["status"] == {"from": "new", "to": "researched", "changed": True}
-    assert cli.yaml("show", first)["status"] == "researched"
+    assert result["spec"]["status"] == "designed"
+    assert result["status"] == {"from": "new", "to": "designed", "changed": True}
+    assert cli.yaml("show", first)["status"] == "designed"
 
     result = cli.yaml("update", first, "implemented")
     assert result["ok"] is True
     assert result["spec"]["status"] == "implemented"
-    assert result["status"]["from"] == "researched"
+    assert result["status"]["from"] == "designed"
     assert result["status"]["to"] == "implemented"
 
     assert 'Status is already "implemented" for spec' in cli.fail("update", first, "implemented")
     assert "Invalid transition implemented -> designed" in cli.fail("update", first, "designed")
-    assert 'Invalid status "ready". Valid: new, researched, designed, planned, implemented' in cli.fail("update", first, "ready")
+    assert 'Invalid status "researched". Valid: new, designed, planned, implemented' in cli.fail("update", first, "researched")
+    assert 'Invalid status "ready". Valid: new, designed, planned, implemented' in cli.fail("update", first, "ready")
 
     alias = cli.yaml("create", "alias-spec")["spec"]["id"]
     cli.ok("set-active", alias)
@@ -262,6 +262,6 @@ def test_spec_commands_accept_path_identifiers(cli):
     cli.ok("set-active", spec_dir)
     assert cli.yaml("show", "active")["id"] == spec_id
 
-    update = cli.yaml("update", spec_file, "researched")
+    update = cli.yaml("update", spec_file, "designed")
     assert update["spec"]["id"] == spec_id
-    assert update["spec"]["status"] == "researched"
+    assert update["spec"]["status"] == "designed"

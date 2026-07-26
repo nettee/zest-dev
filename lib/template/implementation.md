@@ -16,4 +16,4 @@
 
 ## Spec Retrospective
 
-<!-- Record at most one or two specific Research, Design, or Plan weaknesses that should improve a future Spec, or `None.` -->
+<!-- Record at most one or two specific Research Findings, Design Decisions, or Plan weaknesses that should improve a future Spec, or `None.` -->

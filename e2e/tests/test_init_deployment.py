@@ -3,7 +3,7 @@ from pathlib import Path
 from conftest import (
     CODEX_SUBAGENTS,
     EXPECTED_COMMANDS,
-    SKILL_PHASE_FILES,
+    SKILL_SECTION_FILES,
     THIN_COMMANDS,
     assert_plugin_resource_symlink_at,
     frontmatter,
@@ -67,84 +67,73 @@ def test_default_global_init_deploys_expected_artifacts(cli):
     for filename in EXPECTED_COMMANDS:
         assert (commands_dir / filename).read_text(encoding="utf-8").startswith("---\n")
 
-    new_command = commands_dir / "zest-dev-new.md"
-    metadata = frontmatter(new_command.read_text(encoding="utf-8"), "zest-dev-new.md")
+    lightweight_command = commands_dir / "zest-dev-lightweight.md"
+    metadata = frontmatter(lightweight_command.read_text(encoding="utf-8"), "zest-dev-lightweight.md")
     assert metadata.get("description")
     assert "argument-hint" not in metadata
     assert "allowed-tools" not in metadata
     assert list(metadata) == ["description"]
 
-    for filename in [
-        "zest-dev-new.md",
-        "zest-dev-research.md",
-        "zest-dev-design.md",
-        "zest-dev-plan.md",
-        "zest-dev-implement.md",
-    ]:
+    for filename in EXPECTED_COMMANDS:
         assert "$ARGUMENTS" in (commands_dir / filename).read_text(encoding="utf-8")
 
     for filename in THIN_COMMANDS:
         assert "**Step 1:" not in (commands_dir / filename).read_text(encoding="utf-8")
 
     skill_content = (skills_dir / "zest-dev" / "SKILL.md").read_text(encoding="utf-8")
-    assert "This file owns routing and shared invariants" in skill_content
-    assert "Preserve required facts, decisions, constraints, caveats" in skill_content
-    for filename in SKILL_PHASE_FILES:
+    assert "new → designed → planned → implemented" in skill_content
+    assert "Statuses describe content maturity" in skill_content
+    assert "Section Guide routing" in skill_content
+    for filename in SKILL_SECTION_FILES:
         assert (skills_dir / "zest-dev" / filename).exists()
 
     source_root = cli.packaged_cli_root if cli.is_packaged else Path(__file__).resolve().parents[2]
     source_skill_dir = source_root / "skills" / "zest-dev"
-    for filename in ["SKILL.md", *SKILL_PHASE_FILES]:
+    for filename in ["SKILL.md", *SKILL_SECTION_FILES]:
         expected = (source_skill_dir / filename).read_text(encoding="utf-8")
         assert (skills_dir / "zest-dev" / filename).read_text(encoding="utf-8") == expected
         assert (codex_skill_dir / filename).read_text(encoding="utf-8") == expected
 
-    research_phase = (skills_dir / "zest-dev" / "research.md").read_text(encoding="utf-8")
-    assert "Stop when material Design inputs have representative evidence" in research_phase
-    assert "Label inference separately from directly supported facts" in research_phase
+    overview_guide = (skills_dir / "zest-dev" / "overview.md").read_text(encoding="utf-8")
+    assert "Overview content contract" in overview_guide
+    assert "recommended next" not in overview_guide
 
-    design_phase = (skills_dir / "zest-dev" / "design.md").read_text(encoding="utf-8")
-    assert "If the status is `designed`, `planned`, or `implemented`, confirm that the user wants to revise the existing design before continuing." in design_phase
-    assert "Fill the Design Section:" in design_phase
-    assert "a source supports the factual premise, not the normative choice itself" in design_phase
-    assert "### E2E Acceptance Gate (EAG)" in design_phase
-    assert "The EAG is the Design Section's automated end-to-end acceptance gate, not a general test plan." in design_phase
-    assert "`### E2E Acceptance Gate (EAG)`" in design_phase
-    assert "small, preferably single, reviewer-facing handle" in design_phase
-    assert "If no automated end-to-end gate exists, state that there is no EAG." in design_phase
-    assert "## Deferred Follow-Ups (DFU)" in design_phase
-    assert "write `None.` when the Design defers no follow-up work" in design_phase
-    assert "Add DFU items only when the user explicitly says they want to handle that work later" in design_phase
-    assert "Do not add DFU items on your own initiative." in design_phase
+    design_guide = (skills_dir / "zest-dev" / "design.md").read_text(encoding="utf-8")
+    assert "Research Findings" in design_guide
+    assert "Design Decisions" in design_guide
+    assert "Lightweight Design Approach" in design_guide
+    assert "Grilling Design Approach" in design_guide
+    assert "`grilling`" in design_guide
+    assert "`domain-modeling`" in design_guide
+    assert "actively test for underspecified scope" in design_guide
+    assert "synthesize one recommended design by default" in design_guide
+    assert "Use Change Scope as two complementary views" in design_guide
+    assert "a source supports the factual premise, not the normative choice itself" in design_guide
+    assert "### E2E Acceptance Gate (EAG)" in design_guide
+    assert "If no automated end-to-end gate exists, state that there is no EAG." in design_guide
+    assert "## Deferred Follow-Ups (DFU)" in design_guide
 
-    plan_phase = (skills_dir / "zest-dev" / "plan.md").read_text(encoding="utf-8")
-    assert "If the spec started as `designed`, run `zest-dev update active planned`." in plan_phase
-    assert "Use the slicing spirit of Matt Pocock's registered `to-tickets` skill as a reference for scale and sequencing." in plan_phase
-    assert "Do not create GitHub issues or external issue-tracker entries unless the user explicitly asks for that." in plan_phase
-    assert "Do not use markdown checkboxes in `## Plan`." in plan_phase
-    assert "Add or update `spec.md` → `## Progress` with a thin progress checklist:" in plan_phase
-    assert "Add a dedicated Plan ticket for EAG Validation" in plan_phase
-    assert "Add a final Plan ticket for Documentation Sync when the Design is expected to change documented behavior" in plan_phase
-    assert "Ticket N (AFK): ..." in plan_phase
-    assert "Report every Plan ticket's `Type` as `AFK` or `HITL`." in plan_phase
-    assert "For each `HITL` ticket, tell the user what needs to be discussed, reviewed, judged, or approved in conversation before implementation continues." in plan_phase
+    plan_guide = (skills_dir / "zest-dev" / "plan.md").read_text(encoding="utf-8")
+    assert "Use the slicing spirit of Matt Pocock's registered `to-tickets` skill as a reference for scale and sequencing." in plan_guide
+    assert "Do not create GitHub issues or external issue-tracker entries unless the user explicitly asks for that." in plan_guide
+    assert "Do not use markdown checkboxes in `## Plan`." in plan_guide
+    assert "Prefer boundaries around a user-visible workflow" in plan_guide
+    assert "Do not use `HITL` merely because the output is documentation" in plan_guide
+    assert "Add or update `spec.md` → `## Progress` with a thin progress checklist:" in plan_guide
+    assert "EAG Validation ticket" in plan_guide
 
-    implement_phase = (skills_dir / "zest-dev" / "implement.md").read_text(encoding="utf-8")
-    assert "When test-driven development fits the behavior and files being changed" in implement_phase
-    assert "If required evidence, configuration, credentials, or a consequential Design decision is missing" in implement_phase
-    assert "Use `implementation.md` as the implementation-notes source of truth" in implement_phase
-    assert "For a legacy Spec that has `steps.md` but no `implementation.md`" in implement_phase
-    assert "Keep `implementation.md` organized by information value, not by Plan-ticket symmetry" in implement_phase
-    assert "Current behavior" in implement_phase
-    assert "Spec Retrospective" in implement_phase
-    assert "Record a material Deviation when it becomes known" in implement_phase
-    assert "mark the corresponding `spec.md` → `## Progress` checkbox as `[x]`" in implement_phase
-    assert "DFU is fixed during the Design Phase" in implement_phase
-    assert "confirm the DFU with the user instead of silently appending it" in implement_phase
-    assert "mark the corresponding `## Plan` checkbox" not in implement_phase
+    implementation_guide = (skills_dir / "zest-dev" / "implementation.md").read_text(encoding="utf-8")
+    assert "use the registered `tdd` skill" in implementation_guide
+    assert "If required evidence, configuration, credentials, or a consequential Design decision is missing" in implementation_guide
+    assert "Use `implementation.md` as the implementation-notes source of truth" in implementation_guide
+    assert "information value, not Plan-ticket symmetry" in implementation_guide
+    assert "Record a material Deviation when it becomes known" in implementation_guide
+    assert "reconcile every material Deviation with the Design Decisions, Plan, and EAG" in implementation_guide
+    assert "`## Progress` checkbox as `[x]`" in implementation_guide
+    assert "Design Phase" not in implementation_guide
 
     codex_skill = (codex_skill_dir / "SKILL.md").read_text(encoding="utf-8")
-    assert "This file owns routing and shared invariants" in codex_skill
+    assert "new → designed → planned → implemented" in codex_skill
     for subagent in CODEX_SUBAGENTS:
         content = (codex_agents_dir / subagent).read_text(encoding="utf-8")
         assert "name = " in content
@@ -156,10 +145,23 @@ def test_global_init_reruns_clean_only_managed_files(cli):
     cli.yaml("init", env=env)
     global_open_code = Path(env["XDG_CONFIG_HOME"]) / "opencode"
 
+    skill_dirs = [
+        global_open_code / "skills" / "zest-dev",
+        Path(env["HOME"]) / ".agents" / "skills" / "zest-dev",
+    ]
+    for skill_dir in skill_dirs:
+        for legacy_name in ["new.md", "research.md", "implement.md"]:
+            (skill_dir / legacy_name).write_text("# stale section guide", encoding="utf-8")
+        (skill_dir / "my-notes.md").write_text("# user file", encoding="utf-8")
+
     explicit = cli.yaml("init", "--global", env=env)
     assert explicit["scope"] == "global"
     assert explicit["target"] == "all"
     assert sorted(p.name for p in (global_open_code / "commands").iterdir()) == EXPECTED_COMMANDS
+    for skill_dir in skill_dirs:
+        for legacy_name in ["new.md", "research.md", "implement.md"]:
+            assert not (skill_dir / legacy_name).exists()
+        assert (skill_dir / "my-notes.md").exists()
 
     agents_dir = global_open_code / "agents"
     nested_dir = agents_dir / "nested-dir"

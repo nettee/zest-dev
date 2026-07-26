@@ -1,7 +1,7 @@
 {
   "name": "zest-dev",
   "version": "0.1.0",
-  "description": "Human-interactive development workflow: research codebase, design architecture, implement features",
+  "description": "Human-interactive, spec-driven workflow with lightweight and grilling design approaches",
   "author": {
     "name": "nettee",
     "email": "nettee.liu@gmail.com"
