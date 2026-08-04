@@ -37,6 +37,10 @@ New-format Specs progress through `new → designed → planned → implemented`
 - Keep Design Decisions normative, with rationale and trade-offs separated from their factual premises.
 - Before writing or deciding, read the active Spec and the repository files that materially affect the current content.
 
+### Acceptance-gate scope
+
+Treat EAG (E2E Acceptance Gate) as a one-time, Spec-local acceptance step. Keep its harness, command, environment variables, and evidence collection temporary or inside the Spec; do not promote them into repository-wide scripts, CLI commands, product concepts, or general documentation unless the user explicitly requests a reusable capability. After acceptance, remove temporary EAG artifacts while preserving the result in the Spec.
+
 ### Continuation
 
 - Infer the user's requested outcome and continue until its content contract is satisfied.
