@@ -77,7 +77,7 @@ If publishing fails, inspect the `Publish npm` workflow run on `main` before ret
 
 Zest Dev uses a **content-contract skill / approach command** model:
 
-- the `Zest Dev` skill owns Spec lifecycle and recording contracts
+- the `zest-dev` skill owns Spec lifecycle and recording contracts
 - Section Guides define Overview, Design, Plan, and Implementation content
 - two thin commands choose how a new Spec reaches Designed Status
 - the `zest-dev` CLI manages Spec files and lifecycle state

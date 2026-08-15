@@ -4,7 +4,7 @@ A plugin for Zest Dev's spec-driven development workflow.
 
 ## Architecture
 
-- the `Zest Dev` skill owns Spec lifecycle and recording contracts
+- the `zest-dev` skill owns Spec lifecycle and recording contracts
 - Section Guides define Overview, Design, Plan, and Implementation content
 - commands select a Design Approach without duplicating skill rules
 - `plugin/commands`, `plugin/skills`, and `plugin/agents` are symlinks for plugin compatibility
@@ -35,4 +35,4 @@ Both commands preserve the user's language and route into the same Designed Cont
 zest-dev init
 ```
 
-The default global initialization deploys the two OpenCode commands, the Zest Dev skill, and the supported Codex subagents. Target-specific and local initialization remain available through the CLI options.
+The default global initialization deploys the two OpenCode commands, the `zest-dev` skill, and the supported Codex subagents. Target-specific and local initialization remain available through the CLI options.

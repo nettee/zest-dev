@@ -15,8 +15,8 @@ This repository's custom command prompts are designed for **OpenCode / oh-my-ope
 - Do **not** hardcode specific oh-my-opencode-slim agent handles in prompts unless there is a strong reason; let the runtime choose the best matching subagent.
 - For user interaction, say **ask the user directly** or **use the question tool** rather than Claude-specific names.
 - For codebase work, describe the goal (read files, search code, inspect references, run shell commands) rather than enumerating a Claude-only tool contract.
-- When referring to a skill in prompts or command docs, refer to it by its registered skill name (for example `Zest Dev`), not by repository or deployed file paths.
-- Keep lifecycle invariants, recording rules, and reusable content guidance in skills. The main `Zest Dev` skill should route by requested outcome; Section Guides should define the Overview, Design, Plan, and Implementation content contracts through progressive disclosure.
+- When referring to a skill in prompts or command docs, refer to it by its registered skill name (for example `zest-dev`), not by repository or deployed file paths.
+- Keep lifecycle invariants, recording rules, and reusable content guidance in skills. The main `zest-dev` skill should route by requested outcome; Section Guides should define the Overview, Design, Plan, and Implementation content contracts through progressive disclosure.
 - Keep command prompts thin. Commands should provide a simple entry prompt and route intent into the relevant skill workflow; they should not duplicate detailed process, rules, or templates.
 - Keep the CLI-created Spec templates thin. They should create the required Main Spec, Design Record, and Implementation File structure with brief placeholders only; concrete writing guidance belongs in the Zest Dev Section Guides.
 

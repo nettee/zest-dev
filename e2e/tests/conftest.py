@@ -26,7 +26,7 @@ DFU_RALPH_TASK = (
     "If the spec has Deferred Follow-Ups (DFU), create one GitHub issue "
     "for each DFU item and link those issues in the PR."
 )
-RALPH_TASK_PROMPT = "Use the Zest Dev skill to implement the active planned Spec.\n"
+RALPH_TASK_PROMPT = "Use the `zest-dev` skill to implement the active planned Spec.\n"
 
 
 class Cli:
