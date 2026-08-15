@@ -1,5 +1,5 @@
 ---
-name: Zest Dev
+name: zest-dev
 description: Use for creating, designing, planning, implementing, or continuing a Zest Dev Spec, including lightweight and grilling-based design workflows.
 version: 0.1.0
 ---
