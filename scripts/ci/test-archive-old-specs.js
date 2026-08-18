@@ -19,7 +19,7 @@ function noExistingArchiveRunner(calls = []) {
       if ([...dumpedSpecs].some(specId => args[5].includes(specId))) return '[{"number":456}]';
       return '[]';
     }
-    if (cmd === 'zest-dev' && args[0] === 'dump') dumpedSpecs.add(args[1]);
+    if (cmd === 'zest-dev' && args[0] === 'dump' && !args.includes('--dry-run')) dumpedSpecs.add(args[1]);
     return '';
   };
 }
@@ -28,6 +28,12 @@ function makeSpec(specsDir, specId) {
   const dir = path.join(specsDir, specId);
   fs.mkdirSync(dir, { recursive: true });
   fs.writeFileSync(path.join(dir, 'spec.md'), '# Test\n');
+}
+
+function makeInvalidSpecDirectory(specsDir, specId) {
+  const dir = path.join(specsDir, specId);
+  fs.mkdirSync(dir, { recursive: true });
+  fs.writeFileSync(path.join(dir, 'notes.md'), '# Runbook\n');
 }
 
 function fixture() {
@@ -86,20 +92,55 @@ function testDeletesOnlyAfterSuccessfulDump() {
         if (args[5].includes('20260601-ok') && dumpedSpecs.has('20260601-ok')) return '[{"number":456}]';
         return '[]';
       }
-      if (cmd === 'zest-dev' && args[1] === '20260602-fails') {
+      if (cmd === 'zest-dev' && args[1] === '20260602-fails' && !args.includes('--dry-run')) {
         throw new Error('dump failed');
       }
-      if (cmd === 'zest-dev' && args[0] === 'dump') dumpedSpecs.add(args[1]);
+      if (cmd === 'zest-dev' && args[0] === 'dump' && !args.includes('--dry-run')) dumpedSpecs.add(args[1]);
       return '';
     }
   }), /dump failed/);
 
   assert.deepStrictEqual(
     calls.filter(call => call.cmd === 'zest-dev').map(call => call.args),
-    [['dump', '20260601-ok'], ['dump', '20260602-fails']]
+    [
+      ['dump', '20260601-ok', '--dry-run'],
+      ['dump', '20260602-fails', '--dry-run'],
+      ['dump', '20260601-ok'],
+      ['dump', '20260602-fails']
+    ]
   );
   assert.strictEqual(fs.existsSync(path.join(specsDir, '20260601-ok')), false);
   assert.strictEqual(fs.existsSync(path.join(specsDir, '20260602-fails')), true);
+}
+
+function testPreflightRejectsMixedValidAndInvalidBatchWithoutSideEffects() {
+  const { specsDir } = fixture();
+  makeSpec(specsDir, '20260601-valid');
+  makeInvalidSpecDirectory(specsDir, '20260602-runbook');
+  const calls = [];
+
+  assert.throws(() => archiveSpecs({
+    specsDir,
+    now: new Date('2026-07-04T00:00:00Z'),
+    runner: (cmd, args) => {
+      calls.push({ cmd, args });
+      if (cmd === 'zest-dev' && args[1] === '20260602-runbook') {
+        throw new Error('Issue Spec Representation requires spec.md');
+      }
+      if (cmd === 'gh') throw new Error('GitHub must not be touched during preflight');
+      return '';
+    }
+  }), /specs[\\/]change[\\/]20260602-runbook: Issue Spec Representation requires spec\.md/);
+
+  assert.deepStrictEqual(
+    calls.map(call => call.args),
+    [
+      ['dump', '20260601-valid', '--dry-run'],
+      ['dump', '20260602-runbook', '--dry-run']
+    ]
+  );
+  assert.strictEqual(fs.existsSync(path.join(specsDir, '20260601-valid')), true);
+  assert.strictEqual(fs.existsSync(path.join(specsDir, '20260602-runbook')), true);
 }
 
 function testExistingArchiveIssueDeletesWithoutDumpingAgain() {
@@ -115,6 +156,7 @@ function testExistingArchiveIssueDeletesWithoutDumpingAgain() {
       if (cmd === 'gh' && args[0] === 'issue' && args[1] === 'list') {
         return '[{"number":123}]';
       }
+      if (cmd === 'zest-dev' && args[0] === 'dump' && args.includes('--dry-run')) return '';
       throw new Error(`unexpected command: ${cmd} ${args.join(' ')}`);
     }
   });
@@ -124,7 +166,8 @@ function testExistingArchiveIssueDeletesWithoutDumpingAgain() {
     skippedExistingIssue: ['20260601-already-archived'],
     associatedIssues: [{ specId: '20260601-already-archived', issueNumber: 123 }]
   });
-  assert.strictEqual(calls.length, 1);
+  assert.strictEqual(calls.length, 2);
+  assert.deepStrictEqual(calls[0].args, ['dump', '20260601-already-archived', '--dry-run']);
   assert.strictEqual(fs.existsSync(path.join(specsDir, '20260601-already-archived')), false);
 }
 
@@ -159,7 +202,8 @@ function testRetriesIssueLookupAfterDumpUntilSearchCatchesUp() {
       lookups += 1;
       return lookups < 3 ? '[]' : '[{"number":789}]';
     }
-    if (cmd === 'zest-dev' && args[0] === 'dump') { dumped = true; return ''; }
+    if (cmd === 'zest-dev' && args[0] === 'dump' && !args.includes('--dry-run')) { dumped = true; return ''; }
+    if (cmd === 'zest-dev' && args[0] === 'dump' && args.includes('--dry-run')) return '';
     throw new Error(`unexpected command: ${cmd}`);
   } });
   assert.deepStrictEqual(result.associatedIssues, [{ specId: '20260601-delayed-index', issueNumber: 789 }]);
@@ -187,7 +231,7 @@ function testRunsGlobalZestDevDump() {
 
   assert.deepStrictEqual(
     calls.filter(call => call.cmd === 'zest-dev').map(call => call.args),
-    [['dump', '20260601-eligible']]
+    [['dump', '20260601-eligible', '--dry-run'], ['dump', '20260601-eligible']]
   );
 }
 
@@ -195,6 +239,7 @@ function main() {
   testListsEarliestTenAndIgnoresActiveSymlinkEntry();
   testSelectsOnlyMoreThanTenDaysOld();
   testDeletesOnlyAfterSuccessfulDump();
+  testPreflightRejectsMixedValidAndInvalidBatchWithoutSideEffects();
   testExistingArchiveIssueDeletesWithoutDumpingAgain();
   testRecordsIssueCreatedByDump();
   testFailsWhenDumpDoesNotCreateArchiveIssue();

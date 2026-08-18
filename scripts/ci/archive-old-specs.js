@@ -100,8 +100,34 @@ function writeGitHubOutput(result) {
   fs.appendFileSync(process.env.GITHUB_OUTPUT, `archive_issue_lines<<EOF\n${issueLines}\nEOF\n`);
 }
 
+function commandErrorDetails(error) {
+  const details = [error && error.stderr, error && error.stdout, error && error.message]
+    .map(value => {
+      if (Buffer.isBuffer(value)) return value.toString('utf8').trim();
+      return typeof value === 'string' ? value.trim() : '';
+    })
+    .filter(Boolean);
+
+  return details[0] || 'unknown error';
+}
+
+function preflightSpecs(specIds, { specsDir = DEFAULT_SPECS_DIR, runner = execFileSync } = {}) {
+  // Date-named directories are candidates by contract; invalid candidates are
+  // rejected here instead of being silently skipped or partially archived.
+  for (const specId of specIds) {
+    try {
+      runner('zest-dev', ['dump', specId, '--dry-run'], { encoding: 'utf8' });
+    } catch (error) {
+      const candidatePath = path.join(specsDir, specId);
+      throw new Error(`Archive preflight failed for ${candidatePath}: ${commandErrorDetails(error)}`);
+    }
+  }
+}
+
 function archiveSpecs({ specsDir = DEFAULT_SPECS_DIR, now = new Date(), limit = 10, maxAgeDays = 10, runner = execFileSync, postDumpIssueLookupAttempts = POST_DUMP_ISSUE_LOOKUP_ATTEMPTS, postDumpIssueLookupDelayMs = POST_DUMP_ISSUE_LOOKUP_DELAY_MS, sleep = sleepMs } = {}) {
   const specIds = selectSpecsToArchive({ specsDir, now, limit, maxAgeDays });
+  preflightSpecs(specIds, { specsDir, runner });
+
   const archived = [];
   const skippedExistingIssue = [];
   const associatedIssues = [];
@@ -148,11 +174,13 @@ if (require.main === module) {
 module.exports = {
   archiveIssueExists,
   archiveSpecs,
+  commandErrorDetails,
   cutoffTimestamp,
   findArchiveIssue,
   findArchiveIssueWithRetry,
   formatIssueLine,
   listEarliestSpecs,
+  preflightSpecs,
   parseUtcDatePrefix,
   selectSpecsToArchive
 };
