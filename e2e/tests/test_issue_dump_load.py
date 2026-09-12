@@ -3,6 +3,7 @@ import os
 import stat
 from pathlib import Path
 
+import pytest
 import yaml
 
 
@@ -13,7 +14,18 @@ def markdown_files(spec_dir: Path) -> dict[str, str]:
     }
 
 
-def test_dump_dry_run_and_load_from_file_round_trip_markdown_files(cli):
+def protocol_header(text: str) -> dict:
+    assert text.startswith("<!--\n")
+    metadata, _ = text.removeprefix("<!--\n").split("\n-->", 1)
+    return yaml.safe_load(metadata)
+
+
+def protocol_document(metadata: dict, content: str = "") -> str:
+    header = yaml.safe_dump(metadata, sort_keys=False).rstrip()
+    return f"<!--\n{header}\n-->\n{content}"
+
+
+def test_v2_directory_manifest_round_trips_spec_with_main_file(cli):
     created = cli.yaml("create", "dump-load-source")["spec"]
     source_id = created["id"]
     source_dir = cli.project_dir / "specs" / "change" / source_id
@@ -26,7 +38,10 @@ def test_dump_dry_run_and_load_from_file_round_trip_markdown_files(cli):
     issue = dumped["issue"]
     assert issue["title"] == f"[archive] {source_id}"
     assert issue["labels"] == ["spec:change", "archive"]
-    assert issue["body"].startswith("<!--\nzest-dev-issue-spec: 1\n")
+    body_header = protocol_header(issue["body"])
+    assert body_header["zest-dev-issue-spec"] == 2
+    assert body_header["body-path"] == "spec.md"
+    assert body_header["files"] == ["design.md", "implementation.md", "notes/review.md", "spec.md"]
     assert len(issue["comments"]) == 3
 
     source_files = markdown_files(source_dir)
@@ -43,6 +58,62 @@ def test_dump_dry_run_and_load_from_file_round_trip_markdown_files(cli):
     assert loaded["source"]["type"] == "file"
     assert not (cli.project_dir / "specs" / "change" / "active").exists()
     assert markdown_files(cli.project_dir / "specs" / "change" / source_id) == source_files
+
+
+def test_v2_directory_manifest_round_trips_without_main_file_and_loads_v1(cli):
+    source_id = "20260812-legacy-spec"
+    source_dir = cli.project_dir / "specs" / "change" / source_id
+    (source_dir / "notes").mkdir(parents=True)
+    (source_dir / "design.md").write_text("# Historical design\n", encoding="utf-8")
+    (source_dir / "notes" / "empty.md").write_text("", encoding="utf-8")
+
+    dumped = cli.yaml("dump", source_id, "--dry-run")
+    issue = dumped["issue"]
+    body_header = protocol_header(issue["body"])
+    assert body_header == {
+        "zest-dev-issue-spec": 2,
+        "spec-id": source_id,
+        "files": ["design.md", "notes/empty.md"],
+    }
+    assert issue["body"].endswith("-->\n")
+    assert [protocol_header(comment)["path"] for comment in issue["comments"]] == [
+        "design.md",
+        "notes/empty.md",
+    ]
+
+    source_files = markdown_files(source_dir)
+    source_dir.rename(source_dir.with_name(f"{source_id}.source"))
+    dump_path = cli.project_dir / "legacy-v2.yml"
+    dump_path.write_text(yaml.safe_dump(issue, sort_keys=False), encoding="utf-8")
+
+    loaded = cli.yaml("load", "--from-file", str(dump_path))
+    assert loaded["spec"] == {
+        "id": source_id,
+        "path": f"specs/change/{source_id}",
+        "active": False,
+        "status": "new",
+    }
+    assert markdown_files(cli.project_dir / "specs" / "change" / source_id) == source_files
+
+    v1_id = "20240101-v1-archive"
+    v1_path = cli.project_dir / "v1.yml"
+    v1_path.write_text(
+        yaml.safe_dump(
+            {
+                "body": (
+                    "<!--\nzest-dev-issue-spec: 1\n"
+                    f"spec-id: {v1_id}\npath: spec.md\n-->\n# V1 body\n"
+                ),
+                "comments": [],
+            },
+            sort_keys=False,
+        ),
+        encoding="utf-8",
+    )
+    cli.ok("load", "--from-file", str(v1_path))
+    assert markdown_files(cli.project_dir / "specs" / "change" / v1_id) == {
+        "spec.md": "# V1 body\n"
+    }
 
 
 def test_dump_and_load_round_trip_yaml_sensitive_markdown_paths(cli):
@@ -76,9 +147,17 @@ def test_dump_and_load_fail_fast_for_invalid_local_protocol(cli):
     assert dumped["ok"] is True
     assert "asset.txt" not in yaml.safe_dump(dumped["issue"])
 
-    (spec_dir / "asset.txt").unlink()
-    (spec_dir / "spec.md").unlink()
-    assert "Issue Spec Representation requires spec.md" in cli.fail("dump", created["id"], "--dry-run")
+    empty_id = "20240101-empty-directory"
+    (cli.project_dir / "specs" / "change" / empty_id).mkdir()
+    assert "requires at least one Markdown file" in cli.fail("dump", empty_id, "--dry-run")
+
+    invalid_utf8_id = "20240101-invalid-utf8"
+    invalid_utf8_dir = cli.project_dir / "specs" / "change" / invalid_utf8_id
+    invalid_utf8_dir.mkdir()
+    (invalid_utf8_dir / "invalid.md").write_bytes(b"\xff")
+    assert "Invalid UTF-8 Markdown file: invalid.md" in cli.fail(
+        "dump", invalid_utf8_id, "--dry-run"
+    )
 
     cases = {
         "missing-header.yml": {"body": "# Missing\n", "comments": []},
@@ -157,10 +236,96 @@ def test_load_ignores_non_protocol_html_comments(cli):
     }
 
 
-def test_github_transport_uses_gh_and_reports_comment_failure(cli):
+def test_v2_manifest_fails_fast_for_incomplete_or_invalid_representations(cli):
+    spec_id = "20240101-v2-invalid"
+    base_metadata = {
+        "zest-dev-issue-spec": 2,
+        "spec-id": spec_id,
+        "files": ["design.md"],
+    }
+    valid_comment = protocol_document(
+        {"zest-dev-issue-spec": 2, "spec-id": spec_id, "path": "design.md"},
+        "# Design\n",
+    )
+    cases = {
+        "empty-manifest": (
+            {"body": protocol_document({**base_metadata, "files": []}), "comments": []},
+            "manifest requires at least one file",
+        ),
+        "duplicate-manifest": (
+            {
+                "body": protocol_document({**base_metadata, "files": ["design.md", "design.md"]}),
+                "comments": [valid_comment],
+            },
+            "Duplicate Issue Spec manifest path: design.md",
+        ),
+        "body-path-not-listed": (
+            {
+                "body": protocol_document({**base_metadata, "body-path": "spec.md"}, "# Spec\n"),
+                "comments": [valid_comment],
+            },
+            "Issue body path is not present in manifest: spec.md",
+        ),
+        "unexpected-body-content": (
+            {"body": protocol_document(base_metadata, "# Not a represented file\n"), "comments": [valid_comment]},
+            "Unexpected issue body content without body-path",
+        ),
+        "missing-comment": (
+            {"body": protocol_document(base_metadata), "comments": []},
+            "Missing Issue Spec file: design.md",
+        ),
+        "unlisted-comment": (
+            {
+                "body": protocol_document(base_metadata),
+                "comments": [
+                    valid_comment,
+                    protocol_document(
+                        {"zest-dev-issue-spec": 2, "spec-id": spec_id, "path": "extra.md"},
+                        "# Extra\n",
+                    ),
+                ],
+            },
+            "Unlisted Issue Spec path: extra.md",
+        ),
+        "mixed-version": (
+            {
+                "body": protocol_document(base_metadata),
+                "comments": [
+                    protocol_document(
+                        {"zest-dev-issue-spec": 1, "spec-id": spec_id, "path": "design.md"},
+                        "# Design\n",
+                    )
+                ],
+            },
+            "Mismatched Issue Spec protocol version",
+        ),
+        "mismatched-spec-id": (
+            {
+                "body": protocol_document(base_metadata),
+                "comments": [
+                    protocol_document(
+                        {"zest-dev-issue-spec": 2, "spec-id": "20240101-other", "path": "design.md"},
+                        "# Design\n",
+                    )
+                ],
+            },
+            'Mismatched comment spec-id "20240101-other"',
+        ),
+    }
+
+    for name, (representation, expected_error) in cases.items():
+        path = cli.project_dir / f"{name}.yml"
+        path.write_text(yaml.safe_dump(representation, sort_keys=False), encoding="utf-8")
+        assert expected_error in cli.fail("load", "--from-file", str(path))
+
+
+@pytest.mark.parametrize("with_spec_md", [True, False])
+def test_github_transport_uses_gh_and_reports_comment_failure(cli, with_spec_md):
     created = cli.yaml("create", "github-dump-source")["spec"]
     spec_dir = cli.project_dir / "specs" / "change" / created["id"]
     (spec_dir / "notes.md").write_text("# Notes\n", encoding="utf-8")
+    if not with_spec_md:
+        (spec_dir / "spec.md").unlink()
 
     fake_bin = cli.project_dir / "fake-bin"
     fake_bin.mkdir()
