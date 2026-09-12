@@ -4,7 +4,7 @@ This document defines the forge-neutral issue representation used by `zest-dev d
 
 ## Purpose
 
-An Issue Spec Representation stores one complete Zest Dev Spec directory in one forge issue. It is a snapshot format, not a synchronization protocol.
+An Issue Spec Representation stores one complete Markdown file snapshot of a Zest Dev Spec directory in one forge issue. It is a snapshot format, not a synchronization protocol.
 
 The representation is designed for GitHub and Forgejo issue primitives:
 - issue title
@@ -14,40 +14,49 @@ The representation is designed for GitHub and Forgejo issue primitives:
 
 Load correctness depends only on protocol headers and Markdown content in the issue body and protocol comments. The title and labels are archive metadata for people.
 
-## Version
+## Versions
 
-The initial protocol version is `1`.
+`dump` writes protocol version `2`. `load` accepts versions `1` and `2` so existing archives remain loadable.
 
-Every protocol body/comment starts with a leading HTML comment header:
+Every protocol body/comment starts with a leading HTML comment header. A V2 issue body for a normal Spec begins like this:
 
 ```markdown
 <!--
-zest-dev-issue-spec: 1
+zest-dev-issue-spec: 2
 spec-id: 20260627-issue-dump-load
-path: spec.md
+files:
+  - design.md
+  - spec.md
+body-path: spec.md
 -->
 ```
 
-Rules:
+Rules common to V2 body and file comments:
 - The header must start at the beginning of the body or comment.
-- The header is YAML-like line data inside an HTML comment.
-- `zest-dev-issue-spec` is required and must be `1`.
-- `spec-id` is required and identifies the Spec directory.
-- `path` is required and identifies the file path inside the Spec directory.
-- The Markdown file content starts immediately after the header closing line and one newline.
-- The file content is stored as renderable Markdown, not inside a fenced code block.
+- The header is YAML inside an HTML comment.
+- `zest-dev-issue-spec` and `spec-id` are required.
+- The `spec-id` identifies the target Spec directory.
+- File content starts immediately after the header closing line and one newline.
+- File content is stored as renderable Markdown, not inside a fenced code block.
 
-## Issue Mapping
+## V2 Directory Manifest
 
-One issue represents one Spec directory.
+The V2 issue body describes the complete represented directory:
+- `files` is a required, non-empty array containing every represented Markdown path.
+- `body-path` is optional. When present, it identifies which manifested file is stored after the body header.
+- Every manifested path other than `body-path` is stored in exactly one protocol comment.
+- Manifest paths emitted by `dump` are sorted for deterministic output.
 
-The issue body stores `spec.md`:
+When `spec.md` exists, `dump` uses it as `body-path` so the Main Spec File remains readable in the issue body:
 
 ```markdown
 <!--
-zest-dev-issue-spec: 1
+zest-dev-issue-spec: 2
 spec-id: 20260627-issue-dump-load
-path: spec.md
+files:
+  - design.md
+  - spec.md
+body-path: spec.md
 -->
 ---
 id: 20260627-issue-dump-load
@@ -61,22 +70,49 @@ created: '2026-06-27'
 ...
 ```
 
-Each additional Markdown file is stored in one issue comment:
+When `spec.md` does not exist, the body has no `body-path` or file content. All manifested Markdown files are stored in protocol comments:
+
+```markdown
+<!--
+zest-dev-issue-spec: 2
+spec-id: 20260812-legacy-spec
+files:
+  - design.md
+  - notes/test-standard.md
+-->
+```
+
+A V2 file comment carries its path and exact content:
+
+```markdown
+<!--
+zest-dev-issue-spec: 2
+spec-id: 20260812-legacy-spec
+path: design.md
+-->
+# Historical design
+
+...
+```
+
+Comment order is not meaningful. Comments without a leading protocol header are ordinary issue discussion and are ignored by `load`.
+
+Before writing any files, `load` verifies that the body payload and protocol comments match the manifest exactly. Missing, duplicate, or unlisted represented paths fail instead of producing a partial directory.
+
+## V1 Load Compatibility
+
+V1 archives do not contain a directory manifest. Their issue body header has `path: spec.md`, and the body payload is required to contain the Main Spec File:
 
 ```markdown
 <!--
 zest-dev-issue-spec: 1
 spec-id: 20260627-issue-dump-load
-path: design.md
+path: spec.md
 -->
-# Design
-
-...
+# Existing V1 Spec
 ```
 
-Comment order is not meaningful. `load` matches supporting files by `path`.
-
-Comments without a leading protocol header are ordinary issue discussion and are ignored by `load`.
+Every V1 supporting Markdown file remains stored in one protocol comment with the same version, `spec-id`, and its own `path`. V1 keeps its original validation behavior during load. New dumps never emit V1.
 
 ## Title And Labels
 
@@ -93,20 +129,17 @@ spec:change
 archive
 ```
 
-`load` must not use title or labels as authoritative Spec data.
+`load` does not use title or labels as authoritative Spec data.
 
-## File Set
+## Represented File Set
 
-`dump` walks the Spec directory and includes every Markdown file:
-- `spec.md` is written to the issue body.
-- Every other Markdown file is written to one protocol comment.
+`dump` recursively includes every Markdown file under the Spec directory. A directory does not need a Main Spec File, but it must contain at least one Markdown file.
 
-`dump` fails when:
-- `spec.md` is missing.
-- The Spec directory contains any non-Markdown file.
-- A discovered Markdown path is invalid.
+Ordinary non-Markdown files are outside the Issue Spec Representation and are ignored. Unsupported filesystem entry types, including symlinks, fail visibly because they cannot be represented safely.
 
-Legacy `README.md` main files are not supported by this protocol.
+Empty Markdown files are valid and retain their empty content through V2.
+
+Markdown files must contain valid UTF-8. Invalid byte sequences fail rather than being replaced during decoding.
 
 ## Path Rules
 
@@ -125,15 +158,14 @@ Rejected:
 - paths containing parent-directory traversal
 - non-Markdown paths
 - duplicate paths
+- paths whose directory segments end in `.md`
 - path separators that cannot be normalized safely for the current platform
 
-`load` always writes issue body content to `spec.md`. The body header path must be `spec.md`.
+In V2, `body-path` must be one of the manifested paths. It describes storage location only and does not designate or create a Main Spec File.
 
-## Spec Identity
+## Spec Identity And Local Write
 
 The loaded Spec identity comes from the protocol header `spec-id`, not from `spec.md` frontmatter, title, labels, issue number, or URL.
-
-`load` fails when the body protocol header is missing `spec-id` or contains an invalid `spec-id`.
 
 The `spec-id` must be a valid Spec directory name:
 
@@ -147,54 +179,53 @@ YYYYMMDD-<slug>
 specs/change/<spec-id>/
 ```
 
-Protocol comments must repeat the same `spec-id`. If a protocol comment omits `spec-id` or includes a different `spec-id`, `load` fails.
+Every protocol comment must use the same version and `spec-id` as the issue body. If the target Spec directory already exists, `load` fails. Files are written to a temporary directory and renamed into place only after validation and successful writes.
 
-If the target Spec directory already exists, `load` fails.
-
-`load` does not change `specs/change/active`.
+`load` does not change `specs/change/active`. For a directory without `spec.md`, successful output reports the Spec directory path rather than a nonexistent Main Spec File path.
 
 ## Local Representation Mode
 
-The same body/comment mapping can be represented locally for dry-run and tests:
+The same body/comment mapping can be represented locally as YAML:
 
 ```yaml
-title: "[archive] 20260627-issue-dump-load"
+title: "[archive] 20260812-legacy-spec"
 labels:
   - spec:change
   - archive
 body: |
   <!--
-  zest-dev-issue-spec: 1
-  spec-id: 20260627-issue-dump-load
-  path: spec.md
+  zest-dev-issue-spec: 2
+  spec-id: 20260812-legacy-spec
+  files:
+    - design.md
   -->
-  ...
 comments:
   - |
     <!--
-    zest-dev-issue-spec: 1
-    spec-id: 20260627-issue-dump-load
+    zest-dev-issue-spec: 2
+    spec-id: 20260812-legacy-spec
     path: design.md
     -->
-    ...
+    # Historical design
 ```
 
-`dump --dry-run` emits this local representation without creating a remote issue.
-
-`load --from-file <path>` loads from this local representation without reading a remote issue.
+`dump --dry-run` emits this local representation without creating a remote issue. `load --from-file <path>` loads it without reading a remote issue.
 
 ## Failure Rules
 
 The protocol is fail-fast:
-- unsupported protocol version fails
-- missing body protocol header fails
-- malformed protocol header fails
-- missing or invalid body `spec-id` fails
-- mismatched comment `spec-id` fails
-- missing `spec.md` content fails
-- invalid or duplicate file paths fail
-- existing target Spec directory fails
-- unsupported forge transport fails
+- unsupported or mismatched protocol versions fail
+- missing or malformed body protocol headers fail
+- missing or invalid `spec-id` values fail
+- V2 missing, empty, invalid, or duplicate manifest paths fail
+- V2 body mappings outside the manifest fail
+- V2 missing, duplicate, or unlisted represented files fail
+- unexpected V2 body content without `body-path` fails
+- V1 body paths other than `spec.md` or empty `spec.md` content fail
+- invalid file paths fail
+- invalid UTF-8 Markdown content fails
+- existing target Spec directories fail
+- unsupported forge transports fail
 - failed remote issue or comment operations fail
 
-Remote `dump` is not transactional. If issue creation succeeds and a later comment creation fails, the command fails and reports the created issue URL. It does not silently close, delete, or repair the issue.
+Remote `dump` is not transactional. If issue creation succeeds and a later comment creation or issue close fails, the command fails and reports the created issue URL. It does not silently close, delete, or repair the issue.
