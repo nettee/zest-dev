@@ -84,6 +84,7 @@ def test_default_global_init_deploys_expected_artifacts(cli):
     assert "new → designed → planned → implemented" in skill_content
     assert "Statuses describe content maturity" in skill_content
     assert "Section Guide routing" in skill_content
+    assert "Do not stop at an intermediate status" in skill_content
     for filename in SKILL_SECTION_FILES:
         assert (skills_dir / "zest-dev" / filename).exists()
 
@@ -105,30 +106,33 @@ def test_default_global_init_deploys_expected_artifacts(cli):
     assert "Grilling Design Approach" in design_guide
     assert "`grilling`" in design_guide
     assert "`domain-modeling`" in design_guide
-    assert "actively test for underspecified scope" in design_guide
-    assert "synthesize one recommended design by default" in design_guide
-    assert "Use Change Scope as two complementary views" in design_guide
-    assert "a source supports the factual premise, not the normative choice itself" in design_guide
+    assert "resolve ambiguities that materially affect" in design_guide
+    assert "one recommended design" in design_guide
+    assert "Impact Areas:" in design_guide
+    assert "Planned File Changes:" in design_guide
+    assert "A source supports a premise" in design_guide
     assert "### E2E Acceptance Gate (EAG)" in design_guide
-    assert "If no automated end-to-end gate exists, state that there is no EAG." in design_guide
+    assert "state that there is no EAG" in design_guide
+    assert "one-time, Spec-local acceptance step" in design_guide
     assert "## Deferred Follow-Ups (DFU)" in design_guide
 
     plan_guide = (skills_dir / "zest-dev" / "plan.md").read_text(encoding="utf-8")
-    assert "Use the slicing spirit of Matt Pocock's registered `to-tickets` skill as a reference for scale and sequencing." in plan_guide
+    assert "`to-tickets`" in plan_guide
     assert "Do not create GitHub issues or external issue-tracker entries unless the user explicitly asks for that." in plan_guide
     assert "Do not use markdown checkboxes in `## Plan`." in plan_guide
-    assert "Prefer boundaries around a user-visible workflow" in plan_guide
-    assert "Do not use `HITL` merely because the output is documentation" in plan_guide
+    assert "tracer-bullet slices" in plan_guide
+    assert "documentation alone is not HITL" in plan_guide
     assert "Add or update `spec.md` → `## Progress` with a thin progress checklist:" in plan_guide
     assert "EAG Validation ticket" in plan_guide
 
     implementation_guide = (skills_dir / "zest-dev" / "implementation.md").read_text(encoding="utf-8")
-    assert "use the registered `tdd` skill" in implementation_guide
+    assert "`tdd`" not in implementation_guide
+    assert "tests relevant to changed behavior" in implementation_guide
     assert "If required evidence, configuration, credentials, or a consequential Design decision is missing" in implementation_guide
     assert "Use `implementation.md` as the implementation-notes source of truth" in implementation_guide
-    assert "information value, not Plan-ticket symmetry" in implementation_guide
+    assert "information value rather than Plan-ticket symmetry" in implementation_guide
     assert "Record a material Deviation when it becomes known" in implementation_guide
-    assert "reconcile every material Deviation with the Design Decisions, Plan, and EAG" in implementation_guide
+    assert "reconcile it with the Design Decisions, Plan, and EAG" in implementation_guide
     assert "`## Progress` checkbox as `[x]`" in implementation_guide
     assert "Design Phase" not in implementation_guide
 

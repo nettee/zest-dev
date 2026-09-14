@@ -13,24 +13,22 @@ Implemented Status requires:
 ## Plan Ticket execution
 
 - Use `spec.md` → `## Progress` to identify the first incomplete ticket, then read that ticket, its dependencies, and the relevant Design contract.
-- Read only the Research Findings and repository sources that materially affect current work.
-- Implement against the Plan, Design Decisions, and repository conventions.
-- Write or update tests with the implementation.
-- When test-driven development fits, use the registered `tdd` skill and its red-green-refactor loop.
+- Read only the Research Findings and repository sources material to the ticket, then implement against the Plan, Design Decisions, and repository conventions.
+- Run the Spec-defined EAG and tests relevant to changed behavior. Broaden verification only when failures, risk, or unresolved evidence justify it.
 - Mark the corresponding `spec.md` → `## Progress` checkbox as `[x]` only when the ticket and its relevant tests are complete.
 - If required evidence, configuration, credentials, or a consequential Design decision is missing, fail observably instead of guessing or marking partial work successful.
 
 ## Implementation File
 
-Use `implementation.md` as the implementation-notes source of truth. Organize it by information value, not Plan-ticket symmetry.
+Use `implementation.md` as the implementation-notes source of truth. Organize it by information value rather than Plan-ticket symmetry.
 
 ### Outcome
 
-Summarize the final implementation state in one to three concise bullets without repeating the Plan.
+Summarize the final state in one to three concise bullets without repeating the Plan.
 
 ### Deviations
 
-Record only material differences between the Spec and implementation reality that create a durable invariant, risk, decision, or attention point. Use:
+Record only differences that create a durable invariant, risk, decision, or attention point. Use:
 
 - Title: the rule or watch point future work must preserve.
 - `Current behavior`: the implemented resolution.
@@ -38,15 +36,13 @@ Record only material differences between the Spec and implementation reality tha
 - `Attention`: where future work must take care.
 - `Evidence`: representative code, test, or runtime evidence.
 
-Record a material Deviation when it becomes known and preserve it after reconciliation. When implementation completes with none, write `None found.`
-
-Before final verification, reconcile every material Deviation with the Design Decisions, Plan, and EAG. Preserve the Deviation as implementation evidence after updating the affected Spec content.
+Record a material Deviation when it becomes known. Before final verification, reconcile it with the Design Decisions, Plan, and EAG, then preserve it as implementation evidence. When none exist, write `None found.`
 
 Do not add new DFU items during implementation. A newly discovered deferred boundary requires revising the Design and confirming it with the user.
 
 ### Verification
 
-Record representative final gates and results, not repetitive per-ticket command history.
+Record representative final gates and results, not per-ticket command history. Remove temporary EAG artifacts after acceptance while preserving the result here.
 
 ### Spec Retrospective
 

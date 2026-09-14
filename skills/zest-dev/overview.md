@@ -2,9 +2,7 @@
 
 ## Overview content contract
 
-The Main Spec File's `## Overview` makes the requested change reviewable without inventing missing detail.
-
-It captures the known:
+The Main Spec File's `## Overview` makes the requested change reviewable without inventing missing detail. Capture the known:
 
 - problem and motivation;
 - desired outcome;
@@ -12,14 +10,12 @@ It captures the known:
 - constraints;
 - success criteria.
 
-Include only sections that add information.
+Include only content that adds information.
 
 ## New Spec requirements
 
-- Create the Spec with `zest-dev create <slug>` and activate it with `zest-dev set-active <spec-id>`.
-- Derive a concise human-readable name and kebab-case slug from the requirement.
-- Read the generated Spec before editing it.
-- Use only information provided by the user or explicitly confirmed.
+- Derive a concise human-readable name and kebab-case slug, then run `zest-dev create <slug>` and `zest-dev set-active <spec-id>`.
+- Read the generated Spec and use only provided, discovered, or explicitly confirmed information.
 - Resolve only missing information that prevents a meaningful Overview.
 
 New Status means the Overview exists but the complete Designed Contract has not yet been satisfied.
