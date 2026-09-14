@@ -38,22 +38,58 @@ function cutoffTimestamp(now = new Date(), maxAgeDays = 10) {
   return Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()) - maxAgeDays * DAY_MS;
 }
 
+function archiveSpecId(specIdentifier) {
+  return specIdentifier.endsWith('.md') ? specIdentifier.slice(0, -3) : specIdentifier;
+}
+
+function archiveSourcePath(specsDir, specIdentifier) {
+  return path.join(specsDir, specIdentifier);
+}
+
+function dumpIdentifier(specsDir, specIdentifier) {
+  return specIdentifier.endsWith('.md')
+    ? archiveSourcePath(specsDir, specIdentifier)
+    : specIdentifier;
+}
+
+function removeArchivedSource(sourcePath) {
+  const stat = fs.lstatSync(sourcePath);
+  if (stat.isDirectory()) {
+    fs.rmSync(sourcePath, { recursive: true, force: false });
+    return;
+  }
+  fs.unlinkSync(sourcePath);
+}
+
 function listEarliestSpecs({ specsDir = DEFAULT_SPECS_DIR, limit = 10 } = {}) {
   if (!fs.existsSync(specsDir)) {
     throw new Error(`Specs directory not found: ${specsDir}`);
   }
 
-  return fs.readdirSync(specsDir, { withFileTypes: true })
-    .filter(entry => entry.isDirectory() && SPEC_ID_PATTERN.test(entry.name))
+  const candidates = fs.readdirSync(specsDir, { withFileTypes: true })
+    .filter(entry => (
+      (entry.isDirectory() && SPEC_ID_PATTERN.test(entry.name)) ||
+      (entry.isFile() && entry.name.endsWith('.md') && SPEC_ID_PATTERN.test(archiveSpecId(entry.name)))
+    ))
     .map(entry => entry.name)
-    .sort()
-    .slice(0, limit);
+    .sort((left, right) => archiveSpecId(left).localeCompare(archiveSpecId(right)));
+
+  const seenIds = new Set();
+  for (const candidate of candidates) {
+    const specId = archiveSpecId(candidate);
+    if (seenIds.has(specId)) {
+      throw new Error(`Ambiguous archive Spec ID: both ${specId} and ${specId}.md exist in ${specsDir}`);
+    }
+    seenIds.add(specId);
+  }
+
+  return candidates.slice(0, limit);
 }
 
 function selectSpecsToArchive({ specsDir = DEFAULT_SPECS_DIR, now = new Date(), limit = 10, maxAgeDays = 10 } = {}) {
   const cutoff = cutoffTimestamp(now, maxAgeDays);
   return listEarliestSpecs({ specsDir, limit })
-    .filter(specId => parseUtcDatePrefix(specId) < cutoff);
+    .filter(specIdentifier => parseUtcDatePrefix(archiveSpecId(specIdentifier)) < cutoff);
 }
 
 function findArchiveIssue(specId, { runner = execFileSync } = {}) {
@@ -111,40 +147,42 @@ function commandErrorDetails(error) {
   return details[0] || 'unknown error';
 }
 
-function preflightSpecs(specIds, { specsDir = DEFAULT_SPECS_DIR, runner = execFileSync } = {}) {
-  // Date-named directories are candidates by contract; invalid candidates are
+function preflightSpecs(specIdentifiers, { specsDir = DEFAULT_SPECS_DIR, runner = execFileSync } = {}) {
+  // Date-named directories and standalone Markdown files are candidates by contract; invalid candidates are
   // rejected here instead of being silently skipped or partially archived.
-  for (const specId of specIds) {
+  for (const specIdentifier of specIdentifiers) {
     try {
-      runner('zest-dev', ['dump', specId, '--dry-run'], { encoding: 'utf8' });
+      runner('zest-dev', ['dump', dumpIdentifier(specsDir, specIdentifier), '--dry-run'], { encoding: 'utf8' });
     } catch (error) {
-      const candidatePath = path.join(specsDir, specId);
+      const candidatePath = archiveSourcePath(specsDir, specIdentifier);
       throw new Error(`Archive preflight failed for ${candidatePath}: ${commandErrorDetails(error)}`);
     }
   }
 }
 
 function archiveSpecs({ specsDir = DEFAULT_SPECS_DIR, now = new Date(), limit = 10, maxAgeDays = 10, runner = execFileSync, postDumpIssueLookupAttempts = POST_DUMP_ISSUE_LOOKUP_ATTEMPTS, postDumpIssueLookupDelayMs = POST_DUMP_ISSUE_LOOKUP_DELAY_MS, sleep = sleepMs } = {}) {
-  const specIds = selectSpecsToArchive({ specsDir, now, limit, maxAgeDays });
-  preflightSpecs(specIds, { specsDir, runner });
+  const specIdentifiers = selectSpecsToArchive({ specsDir, now, limit, maxAgeDays });
+  preflightSpecs(specIdentifiers, { specsDir, runner });
 
   const archived = [];
   const skippedExistingIssue = [];
   const associatedIssues = [];
 
-  for (const specId of specIds) {
+  for (const specIdentifier of specIdentifiers) {
+    const specId = archiveSpecId(specIdentifier);
+    const sourcePath = archiveSourcePath(specsDir, specIdentifier);
     const existingIssue = findArchiveIssue(specId, { runner });
     if (existingIssue) {
-      fs.rmSync(path.join(specsDir, specId), { recursive: true, force: false });
+      removeArchivedSource(sourcePath);
       skippedExistingIssue.push(specId);
       associatedIssues.push({ specId, issueNumber: existingIssue.number });
       continue;
     }
 
-    runner('zest-dev', ['dump', specId], { stdio: 'inherit' });
+    runner('zest-dev', ['dump', dumpIdentifier(specsDir, specIdentifier)], { stdio: 'inherit' });
     const archiveIssue = findArchiveIssueWithRetry(specId, { runner, attempts: postDumpIssueLookupAttempts, delayMs: postDumpIssueLookupDelayMs, sleep });
     if (!archiveIssue) throw new Error(`Archive issue was not created for ${specId}`);
-    fs.rmSync(path.join(specsDir, specId), { recursive: true, force: false });
+    removeArchivedSource(sourcePath);
     archived.push(specId);
     associatedIssues.push({ specId, issueNumber: archiveIssue.number });
   }
