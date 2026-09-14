@@ -1,5 +1,6 @@
 import json
 import os
+import shutil
 import stat
 from pathlib import Path
 
@@ -114,6 +115,145 @@ def test_v2_directory_manifest_round_trips_without_main_file_and_loads_v1(cli):
     assert markdown_files(cli.project_dir / "specs" / "change" / v1_id) == {
         "spec.md": "# V1 body\n"
     }
+
+
+def test_v3_standalone_file_round_trips_by_path_and_unambiguous_id(cli):
+    spec_id = "20260101-legacy-record"
+    filename = f"{spec_id}.md"
+    source_path = cli.project_dir / "specs" / "change" / filename
+    source_path.parent.mkdir(parents=True)
+    source_bytes = "# Historical change record\n\n你好，世界。\n".encode()
+    source_path.write_bytes(source_bytes)
+
+    by_path = cli.yaml("dump", str(source_path), "--dry-run")
+    by_id = cli.yaml("dump", spec_id, "--dry-run")
+    assert by_path == by_id
+    issue = by_path["issue"]
+    assert protocol_header(issue["body"]) == {
+        "zest-dev-issue-spec": 3,
+        "kind": "standalone-file",
+        "spec-id": spec_id,
+        "filename": filename,
+    }
+    assert issue["body"].endswith(source_bytes.decode())
+    assert issue["comments"] == []
+
+    source_path.rename(source_path.with_suffix(".source"))
+    dump_path = cli.project_dir / "standalone-v3.yml"
+    load_issue = {**issue, "comments": ["Archive discussion without protocol metadata."]}
+    dump_path.write_text(yaml.safe_dump(load_issue, sort_keys=False), encoding="utf-8")
+    loaded = cli.yaml("load", "--from-file", str(dump_path))
+
+    assert loaded["spec"] == {
+        "id": spec_id,
+        "path": f"specs/change/{filename}",
+        "active": False,
+        "status": "new",
+    }
+    assert source_path.read_bytes() == source_bytes
+
+
+def test_v3_standalone_file_fails_fast_for_ambiguity_collisions_and_corruption(cli):
+    spec_id = "20260102-ambiguous-record"
+    filename = f"{spec_id}.md"
+    specs_dir = cli.project_dir / "specs" / "change"
+    standalone_path = specs_dir / filename
+    directory_path = specs_dir / spec_id
+    directory_path.mkdir(parents=True)
+    (directory_path / "notes.md").write_text("# Directory\n", encoding="utf-8")
+    standalone_path.write_text("# Standalone\n", encoding="utf-8")
+
+    assert "Ambiguous Spec identifier" in cli.fail("dump", spec_id, "--dry-run")
+    assert cli.yaml("dump", str(standalone_path), "--dry-run")["ok"] is True
+    assert cli.yaml("dump", str(directory_path), "--dry-run")["ok"] is True
+
+    shutil.rmtree(directory_path)
+    dumped = cli.yaml("dump", spec_id, "--dry-run")["issue"]
+    dump_path = cli.project_dir / "standalone-collision.yml"
+    dump_path.write_text(yaml.safe_dump(dumped, sort_keys=False), encoding="utf-8")
+    assert "Target standalone Spec file already exists" in cli.fail(
+        "load", "--from-file", str(dump_path)
+    )
+
+    standalone_path.unlink()
+    directory_path.mkdir()
+    assert "Conflicting target Spec directory already exists" in cli.fail(
+        "load", "--from-file", str(dump_path)
+    )
+
+    shutil.rmtree(directory_path)
+    invalid_cases = {
+        "wrong-kind": protocol_document(
+            {
+                "zest-dev-issue-spec": 3,
+                "kind": "directory",
+                "spec-id": spec_id,
+                "filename": filename,
+            },
+            "# Body\n",
+        ),
+        "wrong-filename": protocol_document(
+            {
+                "zest-dev-issue-spec": 3,
+                "kind": "standalone-file",
+                "spec-id": spec_id,
+                "filename": "20260102-other.md",
+            },
+            "# Body\n",
+        ),
+        "extra-metadata": protocol_document(
+            {
+                "zest-dev-issue-spec": 3,
+                "kind": "standalone-file",
+                "spec-id": spec_id,
+                "filename": filename,
+                "files": [filename],
+            },
+            "# Body\n",
+        ),
+    }
+    for name, body in invalid_cases.items():
+        invalid_path = cli.project_dir / f"{name}.yml"
+        invalid_path.write_text(
+            yaml.safe_dump({"body": body, "comments": []}, sort_keys=False),
+            encoding="utf-8",
+        )
+        assert cli.run("load", "--from-file", str(invalid_path)).returncode != 0
+
+    protocol_comment_path = cli.project_dir / "protocol-comment.yml"
+    protocol_comment_path.write_text(
+        yaml.safe_dump(
+            {
+                "body": protocol_document(
+                    {
+                        "zest-dev-issue-spec": 3,
+                        "kind": "standalone-file",
+                        "spec-id": spec_id,
+                        "filename": filename,
+                    },
+                    "# Body\n",
+                ),
+                "comments": [
+                    protocol_document(
+                        {"zest-dev-issue-spec": 3, "spec-id": spec_id},
+                        "# Unexpected protocol payload\n",
+                    )
+                ],
+            },
+            sort_keys=False,
+        ),
+        encoding="utf-8",
+    )
+    assert "must not contain protocol comments" in cli.fail(
+        "load", "--from-file", str(protocol_comment_path)
+    )
+
+
+def test_dump_rejects_invalid_utf8_standalone_file(cli):
+    path = cli.project_dir / "specs" / "change" / "20260103-invalid-utf8.md"
+    path.parent.mkdir(parents=True)
+    path.write_bytes(b"\xff")
+    assert "Invalid UTF-8 Markdown file" in cli.fail("dump", str(path), "--dry-run")
 
 
 def test_dump_and_load_round_trip_yaml_sensitive_markdown_paths(cli):
@@ -319,13 +459,19 @@ def test_v2_manifest_fails_fast_for_incomplete_or_invalid_representations(cli):
         assert expected_error in cli.fail("load", "--from-file", str(path))
 
 
-@pytest.mark.parametrize("with_spec_md", [True, False])
-def test_github_transport_uses_gh_and_reports_comment_failure(cli, with_spec_md):
+@pytest.mark.parametrize("source_shape", ["directory-with-main", "directory-without-main", "standalone"])
+def test_github_transport_uses_gh_and_reports_comment_failure(cli, source_shape):
     created = cli.yaml("create", "github-dump-source")["spec"]
     spec_dir = cli.project_dir / "specs" / "change" / created["id"]
     (spec_dir / "notes.md").write_text("# Notes\n", encoding="utf-8")
-    if not with_spec_md:
+    spec_identifier = created["id"]
+    standalone_path = cli.project_dir / "specs" / "change" / f"{created['id']}.md"
+    if source_shape == "directory-without-main":
         (spec_dir / "spec.md").unlink()
+    elif source_shape == "standalone":
+        shutil.rmtree(spec_dir)
+        standalone_path.write_text("# Standalone archive\n", encoding="utf-8")
+        spec_identifier = str(standalone_path)
 
     fake_bin = cli.project_dir / "fake-bin"
     fake_bin.mkdir()
@@ -373,35 +519,44 @@ raise SystemExit(2)
     fake_gh.chmod(fake_gh.stat().st_mode | stat.S_IXUSR)
     env = {"PATH": f"{fake_bin}{os.pathsep}{os.environ['PATH']}", "GH_LOG": str(log_path)}
 
-    dumped = cli.yaml("dump", created["id"], env=env)
+    dumped = cli.yaml("dump", spec_identifier, env=env)
     assert dumped["ok"] is True
     assert dumped["issue"]["url"] == "https://github.com/nettee/zest-dev/issues/123"
     assert dumped["issue"]["closed"] is True
     log_entries = [yaml.safe_load(line) for line in log_path.read_text(encoding="utf-8").splitlines()]
     assert log_entries[1]["args"][:2] == ["issue", "create"]
     assert "--label" in log_entries[1]["args"]
-    assert log_entries[2]["args"][:2] == ["issue", "comment"]
+    if source_shape != "standalone":
+        assert log_entries[2]["args"][:2] == ["issue", "comment"]
     assert log_entries[-1]["args"] == ["issue", "close", "https://github.com/nettee/zest-dev/issues/123"]
 
     fail_env = {**env, "FAIL_COMMENT": "1"}
-    assert "created issue before failure: https://github.com/nettee/zest-dev/issues/123" in cli.fail(
-        "dump", created["id"], env=fail_env
-    )
+    if source_shape != "standalone":
+        assert "created issue before failure: https://github.com/nettee/zest-dev/issues/123" in cli.fail(
+            "dump", spec_identifier, env=fail_env
+        )
 
     close_fail_env = {**env, "FAIL_CLOSE": "1"}
     assert "created issue before failure: https://github.com/nettee/zest-dev/issues/123" in cli.fail(
-        "dump", created["id"], env=close_fail_env
+        "dump", spec_identifier, env=close_fail_env
     )
 
-    dry_run = cli.yaml("dump", created["id"], "--dry-run")
+    dry_run = cli.yaml("dump", spec_identifier, "--dry-run")
     body_path = cli.project_dir / "issue-body.md"
     comments_path = cli.project_dir / "issue-comments.yml"
     body_path.write_text(dry_run["issue"]["body"], encoding="utf-8")
     comments_path.write_text(json.dumps(dry_run["issue"]["comments"]), encoding="utf-8")
     load_env = {**env, "ISSUE_BODY": str(body_path), "ISSUE_COMMENTS": str(comments_path)}
-    source_files = markdown_files(spec_dir)
-    spec_dir.rename(spec_dir.with_name(f"{created['id']}.source"))
+    if source_shape == "standalone":
+        source_bytes = standalone_path.read_bytes()
+        standalone_path.rename(standalone_path.with_suffix(".source"))
+    else:
+        source_files = markdown_files(spec_dir)
+        spec_dir.rename(spec_dir.with_name(f"{created['id']}.source"))
     loaded = cli.yaml("load", "123", env=load_env)
     assert loaded["ok"] is True
     assert loaded["source"] == {"type": "github", "issue": "123"}
-    assert markdown_files(cli.project_dir / "specs" / "change" / created["id"]) == source_files
+    if source_shape == "standalone":
+        assert standalone_path.read_bytes() == source_bytes
+    else:
+        assert markdown_files(cli.project_dir / "specs" / "change" / created["id"]) == source_files

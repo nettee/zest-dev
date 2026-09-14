@@ -115,9 +115,23 @@ The `zest-dev` CLI manages spec files. Use it to inspect and update specs outsid
 | `zest-dev unset-active` | Unset active change spec |
 | `zest-dev update <spec-id\|active> <status>` | Update spec status |
 | `zest-dev create-branch` | Create a git branch from the active change spec |
-| `zest-dev dump <spec-id\|active> [--dry-run]` | Archive a spec as an issue representation or GitHub issue |
+| `zest-dev dump <spec-id\|path\|active> [--dry-run]` | Archive a directory Spec or standalone dated Markdown record as an issue representation or GitHub issue |
 | `zest-dev load [issue] [--from-file <path>]` | Reconstruct a spec from an issue representation or GitHub issue |
 | `zest-dev ralph` | Convert active Spec Progress items into Ralph tasks |
+
+### Issue Spec Representation Compatibility
+
+Issue Spec Representation evolves without making existing archives unreadable:
+
+| Protocol | Represented source | `dump` behavior | `load` compatibility | Restored shape |
+|----------|--------------------|-----------------|----------------------|----------------|
+| V1 | Directory with `spec.md` | No longer emitted | Supported | `specs/change/<spec-id>/` |
+| V2 | Directory with one or more Markdown files; `spec.md` is optional | Emitted for directory Specs | Supported | `specs/change/<spec-id>/` |
+| V3 | Standalone `YYYYMMDD-slug.md` record | Emitted for standalone files | Supported | `specs/change/<spec-id>.md` |
+
+For directory Specs, `dump` accepts the existing Spec ID, directory/Main Spec path, or `active`. For standalone files, it accepts the direct path, filename, or an unambiguous ID without `.md`. If both `specs/change/<id>/` and `specs/change/<id>.md` exist, the bare ID is ambiguous and fails; pass an explicit path to select one. `load` validates the protocol and refuses to overwrite either the target shape or a conflicting directory/file with the same logical ID.
+
+See [Issue Spec Representation](docs/issue-spec-representation.md) for the body/comment protocol and validation rules.
 
 ### Status Transitions
 

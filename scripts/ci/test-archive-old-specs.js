@@ -30,6 +30,12 @@ function makeSpec(specsDir, specId) {
   fs.writeFileSync(path.join(dir, 'spec.md'), '# Test\n');
 }
 
+function makeStandaloneSpec(specsDir, specId) {
+  const filePath = path.join(specsDir, `${specId}.md`);
+  fs.writeFileSync(filePath, '# Historical record\n');
+  return filePath;
+}
+
 function makeInvalidSpecDirectory(specsDir, specId) {
   const dir = path.join(specsDir, specId);
   fs.mkdirSync(dir, { recursive: true });
@@ -73,6 +79,51 @@ function testSelectsOnlyMoreThanTenDaysOld() {
   assert.deepStrictEqual(
     selectSpecsToArchive({ specsDir, now: new Date('2026-07-04T12:00:00Z') }),
     ['20260620-old']
+  );
+}
+
+function testListsAndArchivesStandaloneSpecsByExactPath() {
+  const { specsDir } = fixture();
+  const specId = '20260601-standalone';
+  const sourcePath = makeStandaloneSpec(specsDir, specId);
+  const calls = [];
+  let dumped = false;
+
+  assert.deepStrictEqual(listEarliestSpecs({ specsDir }), [`${specId}.md`]);
+  const result = archiveSpecs({
+    specsDir,
+    now: new Date('2026-07-04T00:00:00Z'),
+    runner: (cmd, args) => {
+      calls.push({ cmd, args });
+      if (cmd === 'zest-dev' && args[0] === 'dump') {
+        assert.strictEqual(args[1], sourcePath);
+        if (!args.includes('--dry-run')) dumped = true;
+        return '';
+      }
+      if (cmd === 'gh' && args[0] === 'issue' && args[1] === 'list') {
+        return dumped ? '[{"number":456}]' : '[]';
+      }
+      throw new Error(`unexpected command: ${cmd} ${args.join(' ')}`);
+    }
+  });
+
+  assert.deepStrictEqual(result, {
+    archived: [specId],
+    skippedExistingIssue: [],
+    associatedIssues: [{ specId, issueNumber: 456 }]
+  });
+  assert.strictEqual(fs.existsSync(sourcePath), false);
+  assert.strictEqual(calls.filter(call => call.cmd === 'zest-dev').length, 2);
+}
+
+function testRejectsAmbiguousDirectoryAndStandaloneId() {
+  const { specsDir } = fixture();
+  const specId = '20260601-ambiguous';
+  makeSpec(specsDir, specId);
+  makeStandaloneSpec(specsDir, specId);
+  assert.throws(
+    () => listEarliestSpecs({ specsDir }),
+    /Ambiguous archive Spec ID/
   );
 }
 
@@ -238,6 +289,8 @@ function testRunsGlobalZestDevDump() {
 function main() {
   testListsEarliestTenAndIgnoresActiveSymlinkEntry();
   testSelectsOnlyMoreThanTenDaysOld();
+  testListsAndArchivesStandaloneSpecsByExactPath();
+  testRejectsAmbiguousDirectoryAndStandaloneId();
   testDeletesOnlyAfterSuccessfulDump();
   testPreflightRejectsMixedValidAndInvalidBatchWithoutSideEffects();
   testExistingArchiveIssueDeletesWithoutDumpingAgain();

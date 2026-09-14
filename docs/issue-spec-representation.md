@@ -4,7 +4,7 @@ This document defines the forge-neutral issue representation used by `zest-dev d
 
 ## Purpose
 
-An Issue Spec Representation stores one complete Markdown file snapshot of a Zest Dev Spec directory in one forge issue. It is a snapshot format, not a synchronization protocol.
+An Issue Spec Representation stores either one complete Markdown snapshot of a Zest Dev Spec directory or one standalone dated Markdown record in one forge issue. It is a snapshot format, not a synchronization protocol.
 
 The representation is designed for GitHub and Forgejo issue primitives:
 - issue title
@@ -16,7 +16,7 @@ Load correctness depends only on protocol headers and Markdown content in the is
 
 ## Versions
 
-`dump` writes protocol version `2`. `load` accepts versions `1` and `2` so existing archives remain loadable.
+`dump` writes protocol version `2` for Spec directories and version `3` for standalone Markdown files. `load` accepts versions `1`, `2`, and `3` so existing archives remain loadable. V1 and V2 always reconstruct directories; V3 always reconstructs a standalone file.
 
 Every protocol body/comment starts with a leading HTML comment header. A V2 issue body for a normal Spec begins like this:
 
@@ -99,6 +99,31 @@ Comment order is not meaningful. Comments without a leading protocol header are 
 
 Before writing any files, `load` verifies that the body payload and protocol comments match the manifest exactly. Missing, duplicate, or unlisted represented paths fail instead of producing a partial directory.
 
+## V3 Standalone File
+
+V3 represents exactly one dated Markdown file that is a direct child of `specs/change`:
+
+```markdown
+<!--
+zest-dev-issue-spec: 3
+kind: standalone-file
+spec-id: 20260101-legacy-record
+filename: 20260101-legacy-record.md
+-->
+# Historical change record
+```
+
+The V3 body header has exactly four fields:
+
+- `zest-dev-issue-spec` must be `3`.
+- `kind` must be `standalone-file`.
+- `spec-id` must be a valid dated Spec ID without `.md`.
+- `filename` must be exactly `<spec-id>.md`.
+
+The complete file content starts after the header separator and may be empty. V3 has no protocol file comments because its one file is wholly represented in the issue body. Ordinary non-protocol issue comments are ignored during load.
+
+`dump` accepts the standalone path, its filename, or its ID without `.md`. A bare ID is accepted only when exactly one of `specs/change/<id>/` and `specs/change/<id>.md` exists. When both exist, the ID is ambiguous and fails; an explicit path selects the intended source.
+
 ## V1 Load Compatibility
 
 V1 archives do not contain a directory manifest. Their issue body header has `path: spec.md`, and the body payload is required to contain the Main Spec File:
@@ -165,7 +190,7 @@ In V2, `body-path` must be one of the manifested paths. It describes storage loc
 
 ## Spec Identity And Local Write
 
-The loaded Spec identity comes from the protocol header `spec-id`, not from `spec.md` frontmatter, title, labels, issue number, or URL.
+The loaded Spec identity comes from the protocol header `spec-id`, not from `spec.md` frontmatter, title, labels, issue number, or URL. For V3, `filename` must agree with that identity.
 
 The `spec-id` must be a valid Spec directory name:
 
@@ -173,7 +198,7 @@ The `spec-id` must be a valid Spec directory name:
 YYYYMMDD-<slug>
 ```
 
-`load` creates:
+V1 and V2 `load` create:
 
 ```text
 specs/change/<spec-id>/
@@ -182,6 +207,14 @@ specs/change/<spec-id>/
 Every protocol comment must use the same version and `spec-id` as the issue body. If the target Spec directory already exists, `load` fails. Files are written to a temporary directory and renamed into place only after validation and successful writes.
 
 `load` does not change `specs/change/active`. For a directory without `spec.md`, successful output reports the Spec directory path rather than a nonexistent Main Spec File path.
+
+V3 `load` creates the exact standalone target:
+
+```text
+specs/change/<spec-id>.md
+```
+
+It fails if that target file or a same-ID target directory already exists. The file is written to a temporary sibling and renamed into place only after validation and a successful write. A loaded standalone historical record is never made active.
 
 ## Local Representation Mode
 
@@ -222,9 +255,10 @@ The protocol is fail-fast:
 - V2 missing, duplicate, or unlisted represented files fail
 - unexpected V2 body content without `body-path` fails
 - V1 body paths other than `spec.md` or empty `spec.md` content fail
+- V3 kinds other than `standalone-file`, mismatched filenames, extra metadata fields, or protocol comments fail
 - invalid file paths fail
 - invalid UTF-8 Markdown content fails
-- existing target Spec directories fail
+- existing target shapes or conflicting same-ID directory/file shapes fail
 - unsupported forge transports fail
 - failed remote issue or comment operations fail
 
