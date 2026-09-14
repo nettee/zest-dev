@@ -11,16 +11,11 @@ Planned Status requires:
 
 ## Ticket slicing
 
-- Use the slicing spirit of Matt Pocock's registered `to-tickets` skill as a reference for scale and sequencing.
+- When available, use the registered `to-tickets` skill as the reference for scale and sequencing.
 - Write Spec-local Plan Tickets. Do not create GitHub issues or external issue-tracker entries unless the user explicitly asks for that.
-- Prefer thin tracer-bullet vertical slices that are independently meaningful and verifiable.
-- Avoid horizontal splits by schema, backend, UI, docs, or tests unless that layer is genuinely the whole change.
-- Keep each ticket within one focused coding-agent session.
-- Prefer boundaries around a user-visible workflow, subsystem integration boundary, migration or rollout step, or stabilization milestone.
-- Capture genuine blocking dependencies.
-- Use `AFK` when an agent can complete the ticket from the Spec and repository context.
-- Use `HITL` only when continuing requires human judgment, human-only or dangerous execution, or human validation.
-- Do not use `HITL` merely because the output is documentation, a runbook, an operator procedure, or a workflow that people will execute later.
+- Prefer independently meaningful, verifiable tracer-bullet slices that fit one focused agent session. Split around visible workflows, integration boundaries, migrations, rollout, or stabilization instead of technical layers unless one layer is the entire change.
+- Record genuine blocking dependencies.
+- Use `AFK` when the Spec and repository provide enough context. Use `HITL` only for required human judgment, human-only or dangerous execution, or human validation; documentation alone is not HITL.
 
 ## Plan Ticket format
 
@@ -34,19 +29,15 @@ Scope: <bounded implementation and validation scope>
 Depends on: <Ticket N or None>
 ```
 
-Add acceptance criteria only when needed to remove ambiguity.
+Add acceptance criteria only to remove material ambiguity.
 
 ## EAG Validation
 
-- Place this ticket after functional work and before Documentation Sync.
-- Reuse the Design Section's acceptance behavior and verification path without redefining them.
-- When the Design says there is no EAG, confirm that fact and use the best Spec-defined validation.
+Place this ticket after functional work and before Documentation Sync. Reuse the Design Section's acceptance behavior and verification path; if there is no EAG, confirm that fact and use the best Spec-defined validation.
 
 ## Documentation Sync
 
-- Include this final ticket when implementation may affect documented behavior or workflows.
-- Name the documentation areas to re-evaluate after behavior is final.
-- Do not automatically add glossary or ADR work unless the change genuinely requires it.
+Include this final ticket when implementation may affect documented behavior or workflows. Name the areas to re-evaluate after behavior is final; add glossary or ADR work only when the change requires it.
 
 ## Progress Checklist
 
@@ -56,6 +47,4 @@ Add or update `spec.md` → `## Progress` with a thin progress checklist:
 - [ ] Ticket N (AFK|HITL): Title
 ```
 
-- Mirror Plan Ticket titles exactly.
-- Keep each item to the title only.
-- Exclude DFU items.
+Mirror Plan Ticket titles exactly, keep each item to the title, and exclude DFU items.

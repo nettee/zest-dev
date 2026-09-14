@@ -10,75 +10,45 @@ Designed Status requires mutually consistent content across:
 - `design.md` → `## Design Decisions`;
 - `spec.md` → `## Deferred Follow-Ups (DFU)`.
 
-The contract defines one reviewable implementation boundary and how its user- or system-visible behavior will be verified.
+Together these define one reviewable implementation boundary and how its visible behavior will be verified.
 
 ## Design Approaches
 
 ### Lightweight Design Approach
 
-Use this approach by default. Gather only the evidence needed for material premises, resolve only consequential choices, and synthesize the complete Designed Contract without an intensive interview.
+Use this by default. Gather evidence for material premises and resolve consequential choices without an intensive interview.
 
 ### Grilling Design Approach
 
-Use the registered `grilling` and `domain-modeling` skills directly. Their rules own the one-question-at-a-time interview, shared-understanding gate, terminology refinement, scenarios, and selective ADR capture.
+Use the registered `grilling` and `domain-modeling` skills for the interview, shared-understanding gate, terminology, scenarios, and selective ADR capture. Record confirmed findings and decisions as they emerge; complete Summary and EAG after shared understanding.
 
-During the discussion:
-
-- look up discoverable facts instead of asking the user;
-- write confirmed Research Findings and Design Decisions incrementally;
-- keep unresolved decisions explicit;
-- complete Summary and EAG only after shared understanding.
-
-Before finalizing either approach:
-
-- actively test for underspecified scope, edge cases, contracts, compatibility, testing, and rollout concerns;
-- resolve only choices that materially affect the implementation boundary;
-- synthesize one recommended design by default instead of leaving equivalent alternatives unresolved.
+Before marking either approach designed, resolve ambiguities that materially affect scope, contracts, compatibility, verification, or rollout, and synthesize one recommended design unless the user asks to preserve alternatives.
 
 ## Research Findings
 
-Research Findings are the descriptive part of the Design Record. Include only findings that materially inform the design:
+Research Findings are the descriptive part of the Design Record. Include only material facts about:
 
 - Existing System;
 - Design Inputs;
 - Constraints & Dependencies;
-- source conflicts, evidence gaps, and labelled inferences;
-- Key References when inline citations would become noisy.
+- conflicts, evidence gaps, and labelled inferences.
 
-Rules:
-
-- Cite every factual claim inline or immediately adjacent to it.
-- Valid sources include code (`path/to/file:line`), database artifacts, documentation paths or sections, and URLs.
-- Label inference separately and cite the facts it depends on.
-- State source conflicts and missing evidence instead of silently choosing or assuming.
-- Use the smallest representative citations and group same-file references.
-- Do not rank alternatives or recommend choices in Research Findings.
+Cite factual claims with representative code locations, artifacts, documentation, or URLs. Label inferences and their supporting facts. Keep recommendations and alternative ranking out of Research Findings.
 
 ## Design Decisions
 
-Design Decisions are the normative part of the Design Record. Record decisions that materially affect behavior, contracts, architecture boundaries, compatibility, rollout, or verification.
+Design Decisions are the normative part of the Design Record. Record material choices about:
 
-Content may include:
-
-- decisions with rationale and trade-offs;
-- System Structure or Procedure;
-- Interfaces / APIs;
-- Change Scope with Impact Areas and Planned File Changes;
-- Edge Cases;
-- Verification Strategy.
+- system structure or procedure;
+- interfaces and APIs;
+- change scope, edge cases, rollout, and verification.
 
 Use Change Scope as two complementary views:
 
 - Impact Areas: affected modules, schema or data, architecture boundaries, API contracts, compatibility constraints, generated artifacts, and rollout impact;
 - Planned File Changes: concrete files or directories expected to change and the purpose of each change.
 
-For each decision:
-
-- cite the factual premises that materially support it;
-- distinguish sourced premises from the normative choice: a source supports the factual premise, not the normative choice itself;
-- preserve unresolved evidence gaps or source conflicts;
-- prefer Mermaid when structured relationships need a diagram;
-- keep execution sequencing in the Plan.
+Give each decision its rationale and trade-offs, citing the factual premises that support it. A source supports a premise, not the normative choice itself. Preserve unresolved evidence gaps or conflicts, and keep execution sequencing in the Plan.
 
 ## Main Spec review content
 
@@ -88,13 +58,10 @@ Summarize the chosen approach, boundary, and rationale without reproducing the D
 
 ### E2E Acceptance Gate (EAG)
 
-Write:
+State the end-to-end user- or system-visible acceptance behavior and the command, workflow, or automated check that proves it. Prefer one small reviewer-facing automated gate; do not substitute unit tests, a manual checklist, or a broad case list. If no automated end-to-end gate exists, state that there is no EAG.
 
-- Acceptance behavior: the end-to-end user- or system-visible behavior that must be true.
-- Verification path: the command, workflow, or automated check that proves it.
-
-Use a small, preferably single, reviewer-facing automated gate. Do not substitute unit tests, a manual checklist, or a broad case list. If no automated end-to-end gate exists, state that there is no EAG.
+EAG is a one-time, Spec-local acceptance step. Keep its harness, configuration, and evidence temporary or inside the Spec unless the user requests a reusable capability.
 
 ### Deferred Follow-Ups (DFU)
 
-Write concise deferred items or `None.` Add an item only when the user explicitly defers it or confirms a discovered functional gap. Do not place current-Spec work, Documentation Sync, or Progress items in DFU.
+Write concise deferred items or `None.` Add an item only when the user explicitly defers it or confirms a discovered functional gap. Exclude current-Spec work, Documentation Sync, and Progress items.
