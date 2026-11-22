@@ -22,10 +22,9 @@ This repository's custom command prompts are designed for **OpenCode / oh-my-ope
 
 ### Prompt format constraints
 
-- Do **not** rely on `allowed-tools` frontmatter for deployed OpenCode commands. Our deploy step strips non-OpenCode frontmatter and keeps only `description`.
-- `argument-hint` may exist in source command files for authoring convenience, but it is not preserved in deployed `.opencode/commands/` files.
 - Avoid prompt text that assumes Claude Code-only primitives such as `AskUserQuestion` or Claude-specific plugin agent names.
-- When describing delegation, prefer generic subagent language over implementation-specific names so the same prompt remains portable across OpenCode setups.
+- When describing delegation, prefer generic subagent language over implementation-specific names so the same prompt remains portable across setups.
+- `zest-dev init` installs packaged skills only to `~/.agents/skills/<name>/`; it does not deploy editor-specific command or agent paths.
 
 ## Development
 

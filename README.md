@@ -4,7 +4,7 @@ A lightweight, human-interactive development workflow for AI-assisted coding.
 
 ## Quick Start
 
-Install the CLI from npm, then initialize the editor-facing commands and skills in your project:
+Install the CLI from npm, then install the packaged skills into `~/.agents/skills/`:
 
 ```bash
 npm install -g zest-dev
@@ -24,13 +24,9 @@ zest-dev --version
 zest-dev --help
 ```
 
-### Initialize a Project
+### Install Skills
 
-From the project where you want to use Zest Dev, run:
-
-```bash
-zest-dev init
-```
+`zest-dev init` copies every packaged skill under `skills/<name>/` to `~/.agents/skills/<name>/`.
 
 ### Local Development Setup
 
@@ -75,28 +71,14 @@ If publishing fails, inspect the `Publish npm` workflow run on `main` before ret
 
 ## Usage Workflow
 
-Zest Dev uses a **content-contract skill / approach command** model:
+Zest Dev uses a **content-contract skill** model:
 
 - the `zest-dev` skill owns Spec lifecycle and recording contracts
 - Section Guides define Overview, Design, Plan, and Implementation content
-- two thin commands choose how a new Spec reaches Designed Status
+- Design Approaches (lightweight or grilling) are chosen inside the skill workflow
 - the `zest-dev` CLI manages Spec files and lifecycle state
 
-### Design Approaches
-
-Use the lightweight route for straightforward work:
-
-```bash
-/zest-dev:lightweight "My new feature"
-```
-
-Use grilling when the design needs an intensive, one-question-at-a-time decision process:
-
-```bash
-/zest-dev:grilling "My complex feature"
-```
-
-Both commands create and activate a new Spec, establish its Overview, and reach the same Designed Status. The grilling route composes the registered `grilling` and `domain-modeling` skills. Research is not a separate status or required step; source-backed Research Findings live beside Design Decisions in the Design Record.
+Research is not a separate status or required step; source-backed Research Findings live beside Design Decisions in the Design Record.
 
 New-format Specs progress through `new → designed → planned → implemented`.
 
@@ -108,6 +90,7 @@ The `zest-dev` CLI manages spec files. Use it to inspect and update specs outsid
 
 | Command | Purpose |
 |---------|---------|
+| `zest-dev init` | Install packaged skills to `~/.agents/skills/` |
 | `zest-dev status` | View project status |
 | `zest-dev show <spec-id\|active>` | View spec content |
 | `zest-dev create <slug>` | Create new spec |
@@ -143,13 +126,7 @@ Valid status values: `new`, `designed`, `planned`, `implemented`
 
 ### Resource Layout
 
-Zest Dev's editor-facing resources are stored in top-level directories:
-
-- `commands/` - the lightweight and grilling Design Approach entrypoints
-- `skills/` - the Zest Dev skill and its Section Guides
-- `agents/` - reusable subagent definitions
-
-The `plugin/` directory is a Claude Code compatibility layer. It keeps plugin metadata under `plugin/.claude-plugin/`, while `plugin/commands`, `plugin/skills`, and `plugin/agents` are symlinks to the top-level source directories.
+Packaged agent skills live under `skills/` and are installed by `zest-dev init` into `~/.agents/skills/<name>/`.
 
 ### Project Structure
 

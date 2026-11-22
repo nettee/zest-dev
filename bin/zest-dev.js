@@ -18,64 +18,29 @@ const {
   dumpSpec,
   loadIssueRepresentation
 } = require('../lib/spec-manager');
-const { deployPlugin } = require('../lib/plugin-deployer');
+const { installSkills, getGlobalSkillsDir } = require('../lib/skill-installer');
 const { setupRalphFromActiveSpec } = require('../lib/ralph-setup');
 const packageJson = require('../package.json');
 
 const program = new Command();
 
-function getOptionalGlobalOpenCodeCommandDir() {
-  const xdgConfigHome = process.env.XDG_CONFIG_HOME;
-  if (xdgConfigHome) {
-    return path.isAbsolute(xdgConfigHome)
-      ? path.join(xdgConfigHome, 'opencode', 'commands')
-      : null;
-  }
-
-  const homeDir = process.env.HOME || process.env.USERPROFILE;
-  if (!homeDir || !path.isAbsolute(homeDir)) {
+function getOptionalGlobalSkillsDir() {
+  try {
+    return getGlobalSkillsDir();
+  } catch {
     return null;
   }
-
-  return path.join(homeDir, '.config', 'opencode', 'commands');
 }
 
-function getOptionalHomeDir() {
-  const homeDir = process.env.HOME || process.env.USERPROFILE;
-  return homeDir && path.isAbsolute(homeDir) ? homeDir : null;
-}
-
-function getDeployedCommandDirs() {
-  const dirs = [
-    path.join(process.cwd(), '.cursor/commands'),
-    path.join(process.cwd(), '.opencode/commands')
-  ];
-
-  const globalOpenCodeCommandDir = getOptionalGlobalOpenCodeCommandDir();
-  if (globalOpenCodeCommandDir) {
-    dirs.push(globalOpenCodeCommandDir);
+function hasDeployedSkills() {
+  const skillsDir = getOptionalGlobalSkillsDir();
+  if (!skillsDir || !fs.existsSync(skillsDir)) {
+    return false;
   }
 
-  return dirs;
-}
-
-function getDeployedZestDevSkillDirs() {
-  const dirs = [
-    path.join(process.cwd(), '.opencode/skills/zest-dev'),
-    path.join(process.cwd(), '.agents/skills/zest-dev')
-  ];
-
-  const globalOpenCodeCommandDir = getOptionalGlobalOpenCodeCommandDir();
-  if (globalOpenCodeCommandDir) {
-    dirs.push(path.join(path.dirname(globalOpenCodeCommandDir), 'skills/zest-dev'));
-  }
-
-  const homeDir = getOptionalHomeDir();
-  if (homeDir) {
-    dirs.push(path.join(homeDir, '.agents/skills/zest-dev'));
-  }
-
-  return dirs;
+  return fs.readdirSync(skillsDir, { withFileTypes: true }).some(entry =>
+    entry.isDirectory() && fs.existsSync(path.join(skillsDir, entry.name, 'SKILL.md'))
+  );
 }
 
 function isFzfAvailable() {
@@ -136,23 +101,6 @@ async function selectSpecInteractively(specs) {
   });
 }
 
-function hasDeployedCommandMarkdowns() {
-  return getDeployedCommandDirs().some(dirPath => {
-    if (!fs.existsSync(dirPath)) {
-      return false;
-    }
-
-    const files = fs.readdirSync(dirPath);
-    return files.some(file => /^zest-dev-.*\.md$/.test(file));
-  });
-}
-
-function hasDeployedZestDevSkill() {
-  return getDeployedZestDevSkillDirs().some(dirPath =>
-    fs.existsSync(path.join(dirPath, 'SKILL.md'))
-  );
-}
-
 program
   .name('zest-dev')
   .description('A lightweight, human-interactive development workflow for AI-assisted coding')
@@ -165,9 +113,9 @@ program
   .action(() => {
     try {
       const status = getSpecsStatus();
-      if (hasDeployedCommandMarkdowns() || hasDeployedZestDevSkill()) {
+      if (hasDeployedSkills()) {
         status.agent_hints = [
-          'Run `zest-dev init` to update deployed commands and skills.'
+          'Run `zest-dev init` to update deployed skills.'
         ];
       }
 
@@ -305,19 +253,10 @@ program
 // zest-dev init
 program
   .command('init')
-  .description('Initialize plugin deployment for OpenCode and/or Codex')
-  .option('--global', 'Deploy to global user locations (default)')
-  .option('--local', 'Deploy to the current project directory')
-  .option('-t, --target <target>', 'Deployment target (all|opencode|codex)')
-  .action((options) => {
+  .description('Install packaged skills to ~/.agents/skills')
+  .action(() => {
     try {
-      if (options.global && options.local) {
-        throw new Error('Cannot specify both --global and --local');
-      }
-
-      const scope = options.local ? 'local' : 'global';
-      const target = options.target || (scope === 'local' ? 'opencode' : 'all');
-      const result = deployPlugin({ scope, target });
+      const result = installSkills();
       console.log(yaml.dump(result));
     } catch (error) {
       console.error('Error:', error.message);

@@ -185,32 +185,20 @@ def test_status_agent_hints(cli):
     cli.ok("create", "first-spec")
     cli.ok("create", "second-spec")
 
-    cursor_commands = cli.project_dir / ".cursor" / "commands"
-    cursor_commands.mkdir(parents=True)
-    (cursor_commands / "zest-dev-new.md").write_text("# test", encoding="utf-8")
-    update_hint = "Run `zest-dev init` to update deployed commands and skills."
-    assert cli.yaml("status", env=status_env)["agent_hints"] == [update_hint]
-
-    global_env = isolated_global_env(cli.project_dir / "global-hint-env")
-    (cursor_commands / "zest-dev-new.md").unlink()
-    global_commands = Path(global_env["XDG_CONFIG_HOME"]) / "opencode" / "commands"
-    global_commands.mkdir(parents=True)
-    (global_commands / "zest-dev-new.md").write_text("# test", encoding="utf-8")
-    assert cli.yaml("status", env=global_env)["agent_hints"] == [update_hint]
-
-    status = cli.yaml("status", env={"HOME": "", "XDG_CONFIG_HOME": "relative-config"})
-    assert status["specs_count"] == 2
-
-    other_commands = cli.project_dir / ".opencode" / "commands"
-    other_commands.mkdir(parents=True)
-    (other_commands / "pr.md").write_text("# unrelated", encoding="utf-8")
-    (global_commands / "zest-dev-new.md").unlink()
+    update_hint = "Run `zest-dev init` to update deployed skills."
     assert "agent_hints" not in cli.yaml("status", env=status_env)
 
-    local_codex_skill = cli.project_dir / ".agents" / "skills" / "zest-dev"
-    local_codex_skill.mkdir(parents=True)
-    (local_codex_skill / "SKILL.md").write_text("# deployed skill", encoding="utf-8")
+    skills_dir = Path(status_env["HOME"]) / ".agents" / "skills" / "zest-dev"
+    skills_dir.mkdir(parents=True)
+    (skills_dir / "SKILL.md").write_text("# deployed skill", encoding="utf-8")
     assert cli.yaml("status", env=status_env)["agent_hints"] == [update_hint]
+
+    status = cli.yaml("status", env={"HOME": "", "USERPROFILE": "", "XDG_CONFIG_HOME": "relative-config"})
+    assert status["specs_count"] == 2
+    assert "agent_hints" not in status
+
+    (skills_dir / "SKILL.md").unlink()
+    assert "agent_hints" not in cli.yaml("status", env=status_env)
 
 
 def test_update_and_active_alias(cli):
