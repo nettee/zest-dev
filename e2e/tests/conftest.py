@@ -11,13 +11,11 @@ import yaml
 from helpers.paths import REPO_ROOT
 
 
-EXPECTED_COMMANDS = [
-    "zest-dev-grilling.md",
-    "zest-dev-lightweight.md",
+EXPECTED_SKILLS = [
+    "t3-task",
+    "zest-dev",
 ]
-THIN_COMMANDS = EXPECTED_COMMANDS
 SKILL_SECTION_FILES = ["overview.md", "design.md", "plan.md", "implementation.md"]
-CODEX_SUBAGENTS = ["code-architect.toml", "code-explorer.toml", "code-reviewer.toml"]
 FINAL_RALPH_TASK = (
     "Make sure all tasks are done in ralph loops, and then create PR. "
     "If there is a related issue, make sure to link it in the PR."
@@ -104,13 +102,6 @@ def frontmatter(content: str, filename: str) -> dict:
     parsed = yaml.safe_load(metadata)
     assert isinstance(parsed, dict), f"{filename} frontmatter should be an object"
     return parsed
-
-
-def assert_plugin_resource_symlink_at(root_dir: Path, name: str) -> None:
-    plugin_path = root_dir / "plugin" / name
-    top_level_path = root_dir / name
-    assert plugin_path.is_symlink(), f"plugin/{name} should be a symlink"
-    assert plugin_path.resolve() == top_level_path.resolve()
 
 
 def create_dangling_active_symlink(project_dir: Path, target_id: str) -> None:

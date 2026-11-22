@@ -1,6 +1,6 @@
 {
   "name": "zest-dev",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "description": "A lightweight, human-interactive development workflow for AI-assisted coding",
   "author": {
     "name": "nettee",
@@ -24,18 +24,14 @@
   },
   "files": [
     "bin/",
-    "commands/",
     "skills/",
-    "agents/",
     "lib/",
     "scripts/",
-    "plugin/",
     "index.js",
     "README.md",
     "LICENSE"
   ],
   "scripts": {
-    "postinstall": "node scripts/ensure-plugin-symlinks.js",
     "test": "pnpm test:local",
     "test:ci-version-freshness": "node scripts/ci/test-check-version-freshness.js",
     "test:ci-pr-bump": "node scripts/ci/test-should-bump-pr-version.js",
