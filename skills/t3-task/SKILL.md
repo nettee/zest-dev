@@ -21,7 +21,8 @@ below.
 - If a custom T3 data directory is in use, pass the same `--base-dir` on every
   command.
 - Do not switch provider or model unless the user explicitly asks; keep the
-  project default.
+  project default. When specifying an effort requires explicit provider/model
+  flags, use the resolved default selection unless a change was requested.
 - Long prompts: pass message `-` and feed the body on stdin.
 
 ## 1. Resolve the project
@@ -66,6 +67,44 @@ Inspect state / recent messages:
 ```bash
 t3 thread show "<thread-id>" --json
 ```
+
+### Specify reasoning effort (Codex)
+
+When the user requests a reasoning effort, set it on `thread start` with the
+case-sensitive option id `reasoningEffort`:
+
+```bash
+t3 thread start "<repo-path>" "<full task brief>" \
+  --provider "<provider-instance-id>" --model "<model-slug>" \
+  --option reasoningEffort=medium --wait --json
+```
+
+- `--option` requires both `--provider` and `--model`. Resolve the intended
+  provider instance and model first; do not guess or silently switch them.
+- Use an effort supported by the selected model. For example, `medium` and
+  `high` were verified with Codex `gpt-6.1-sol` on T3 CLI v0.1.11.
+- Check `t3 thread start --help` for installed-version support. On v0.1.11,
+  the help example `--option effort=high` is misleading: `effort` is accepted
+  and stored, but does not reach Codex. Use `reasoningEffort=high` instead.
+- `thread send` has no model-option flags in that version. Set the desired
+  effort when creating the thread; do not assume a follow-up prompt changes it.
+- Without an explicit option, the resolved defaults determine the setting.
+  Do not assume it is `low`, `medium`, or inherited from the orchestrator.
+
+When asked to confirm the actual effort, inspect the matching run's provider
+log or Codex rollout rather than relying on the model's self-report:
+
+- `thread show` on v0.1.11 does not expose reasoning effort. A saved option or
+  CLI exit code `0` alone does not prove that Codex received it.
+- Match the T3 thread/run to its provider log under
+  `<base-dir>/userdata/logs/provider/` (default base: `~/.t3`). Inspect the
+  Codex `thread/settings/updated` event's `threadSettings.effort` and
+  `threadSettings.collaborationMode.settings.reasoning_effort`.
+- Follow the rollout path reported by Codex and check the matching turn's
+  `turn_context` record, `payload.effort`. Report the evidence and its scope.
+  Missing or `null` effort means no explicit value is recorded; it does not
+  establish the backend's effective default. If logs are unavailable, say the
+  actual effort could not be verified.
 
 ## 3. Interpret `--wait` results
 
