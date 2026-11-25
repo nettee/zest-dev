@@ -12,6 +12,7 @@ from helpers.paths import REPO_ROOT
 
 
 EXPECTED_SKILLS = [
+    "cli-code-workers",
     "t3-task",
     "zest-dev",
 ]
