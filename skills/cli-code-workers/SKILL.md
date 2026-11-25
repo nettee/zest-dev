@@ -20,26 +20,16 @@ Use `set -o pipefail` and `jq` when parsing structured output.
 
 ## Default model and reasoning effort
 
-Unless the user overrides them, resolve defaults from the live catalogs (do not
-hard-code a generation number in prompts or scripts):
+Unless the user overrides them:
 
 | Worker | Default | How to resolve |
 | --- | --- | --- |
-| Codex | **GPT × Sol Medium** | Latest Sol slug from `codex debug models`, plus `model_reasoning_effort="medium"` |
-| AntiGravity | **Gemini × Neon High** | Matching Neon High slug from `agy models` (effort embedded in the slug; do not also pass a conflicting `--effort`) |
+| Codex | **GPT × Sol Medium** | Current Sol slug from `codex debug models`, plus `model_reasoning_effort="medium"` |
+| AntiGravity | **Gemini × Neon High** | Current Neon High slug from `agy models` (effort is in the slug; do not also pass a conflicting `--effort`) |
 
-```bash
-# Codex: pick the Sol slug available on this machine, then pin Medium effort
-SOL_MODEL=$(codex debug models | jq -r '
-  [.models[].slug | select(test("sol$"))] | last
-')
-
-# Antigravity: pick a Neon High slug available on this machine
-NEON_HIGH_MODEL=$(agy models | awk '/neon-high/ {print $1; exit}')
-```
-
-If either lookup fails, inspect the catalog output and choose the closest Sol /
-Neon High entry the CLI lists.
+Resolve the live catalog at run time. Command samples below include illustrative
+slug *shapes* so the flag form is obvious — replace them with whatever Sol /
+Neon High entry your catalog lists today.
 
 ## Cheat sheet
 
@@ -47,7 +37,7 @@ Neon High entry the CLI lists.
 | --- | --- | --- |
 | Start task | `codex exec '…'` (alias `codex e`) | `agy -p '…'` (`--print` / `--prompt`) |
 | Choose model | `-m` / `--model`; catalog: `codex debug models` | `--model`; catalog: `agy models` |
-| Reasoning effort | `-c 'model_reasoning_effort="…"'` (default `medium`) | Prefer `…-neon-high` slug; or family slug + `--effort` |
+| Reasoning effort | `-c 'model_reasoning_effort="…"'` (default `medium`) | Prefer a `…-neon-high` slug; or family slug + `--effort` |
 | Capture / resume | stdout / `-o` / `--json` → `thread_id` | stdout / `--output-format json\|stream-json` → `conversation_id` |
 | YOLO | `--yolo` | `--dangerously-skip-permissions` (no `--yolo`) |
 
@@ -74,7 +64,7 @@ Resume: `codex exec resume "$thread_id" 'Follow-up' </dev/null`
 
 ```bash
 codex debug models                    # raw catalog (optional: --bundled)
-codex exec -m "$SOL_MODEL" '…' </dev/null
+codex exec -m gpt-6.2-sol '…' </dev/null
 ```
 
 ### 3. Choose reasoning effort
@@ -82,7 +72,7 @@ codex exec -m "$SOL_MODEL" '…' </dev/null
 There is no dedicated `--effort` flag; override config:
 
 ```bash
-codex exec -m "$SOL_MODEL" \
+codex exec -m gpt-6.2-sol \
   -c 'model_reasoning_effort="medium"' \
   '…' </dev/null
 
@@ -133,7 +123,7 @@ Do not use the removed `--full-auto` flag.
 
 ```bash
 codex exec -C "$WORKDIR" \
-  -m "$SOL_MODEL" \
+  -m gpt-6.2-sol \
   -c 'model_reasoning_effort="medium"' \
   --sandbox workspace-write \
   -c 'approval_policy="never"' \
@@ -160,7 +150,7 @@ Without credentials and without a TTY, headless exits with authentication requir
 
 ```bash
 agy models
-agy --model "$NEON_HIGH_MODEL" -p '…'
+agy --model gemini-4-neon-high -p '…'
 ```
 
 Unknown models exit non-zero; JSON output reports `ERROR`.
@@ -171,10 +161,10 @@ Default: a **Neon High** slug (effort is already in the name):
 
 ```bash
 agy -p '/effort' --output-format json          # read-only: current / available tiers
-agy --model "$NEON_HIGH_MODEL" -p '…'
+agy --model gemini-4-neon-high -p '…'
 
 # Equivalent: family slug + explicit effort (no effort suffix on the slug)
-agy --model "$NEON_FAMILY_MODEL" --effort high -p '…'
+agy --model gemini-4-neon --effort high -p '…'
 ```
 
 `--effort`: `low` | `medium` | `high` | `xhigh` | `max`.
@@ -221,7 +211,7 @@ mode's terminal sandboxing.
 
 ```bash
 agy -p "$(cat "$RUN/prompt.md")" \
-  --model "$NEON_HIGH_MODEL" \
+  --model gemini-4-neon-high \
   --mode auto \
   --sandbox \
   --output-format json \
