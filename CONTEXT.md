@@ -21,23 +21,19 @@ A forge-neutral representation of a Spec stored in an issue body plus issue comm
 _Avoid_: GitHub dump, issue attachment format
 
 **Design Section**:
-The high-frequency review area in the Main Spec File that summarizes the chosen design and its E2E Acceptance Gate. Its supporting evidence and reasoning live in the Design Record.
+The high-frequency review area in the Main Spec File that summarizes the chosen design. Its supporting evidence and reasoning live in the Design Record.
 _Avoid_: Design Record, design file
 
 **Design Summary**:
 A concise, high-frequency review summary inside the Main Spec File's Design section. It captures the chosen approach without replacing the Design Record.
 _Avoid_: Design Record, Design Decisions
 
-**E2E Acceptance Gate (EAG)**:
-A small, preferably single, automated end-to-end acceptance gate in the Main Spec File's Design section. It states both the user- or system-visible behavior to accept and the executable verification path; when no automated end-to-end gate exists, the Spec should say there is no EAG.
-_Avoid_: test checklist, unit test plan, acceptance case list, manual acceptance step
-
 **E2E Test Suite**:
-The repository's executable end-to-end test harness for verifying real `zest-dev` CLI behavior across local and packaged-install paths. It is broader than a Spec's single E2E Acceptance Gate.
-_Avoid_: acceptance gate, unit tests, product runtime
+The repository's executable end-to-end test harness for verifying real `zest-dev` CLI behavior across local and packaged-install paths.
+_Avoid_: unit tests, product runtime
 
 **Design Record**:
-The `design.md` Spec Supporting File that records how a Spec reached Designed Status. It contains Research Findings and Design Decisions while the Main Spec File keeps the concise Design Summary and E2E Acceptance Gate.
+The `design.md` Spec Supporting File that records how a Spec reached Designed Status. It contains Research Findings and Design Decisions while the Main Spec File keeps the concise Design Summary.
 _Avoid_: Design Detail, Design Section
 
 **Research Findings**:
@@ -93,7 +89,7 @@ A user-selected Design Approach that interleaves fact-finding with a one-questio
 _Avoid_: Grilling Phase, Grilling Status
 
 **Designed Status**:
-The first substantive Spec readiness milestone. It means the Research Findings, Design Decisions, Design Summary, and E2E Acceptance Gate are complete, regardless of which Design Approach produced them.
+The first substantive Spec readiness milestone. It means the Research Findings, Design Decisions, and Design Summary are complete, regardless of which Design Approach produced them.
 _Avoid_: research complete, discussion complete
 
 **Planned Status**:
@@ -104,12 +100,8 @@ _Avoid_: designed, ready
 One tracer-bullet implementation slice inside a Spec's Plan section, sized for one focused implementation session and linked to its blocking tickets. A Plan Ticket has a Type that describes whether the next implementer can proceed independently or needs human input.
 _Avoid_: task, step, issue
 
-**EAG Validation**:
-The Plan Ticket that comes after the functional implementation tickets and before Documentation Sync. It validates the completed change against the Design section's EAG, or explicitly confirms that the Design says there is no EAG and uses the best available Spec-defined validation.
-_Avoid_: general test plan, documentation ticket
-
 **Documentation Sync**:
-The final Plan Ticket, after EAG Validation, that checks whether the current implementation changed documented behavior, usage, commands, setup, or workflows, and updates relevant project documentation when needed. It is part of the current Spec's implementation work, not a Deferred Follow-Up.
+The final Plan Ticket that checks whether the current implementation changed documented behavior, usage, commands, setup, or workflows, and updates relevant project documentation when needed. It is part of the current Spec's implementation work, not a Deferred Follow-Up.
 _Avoid_: documentation follow-up
 
 **Progress Checklist**:
@@ -146,21 +138,13 @@ Developer: "Should the Design Section Guide also write the implementation checkl
 
 Maintainer: "No. The Designed Contract records findings and decisions; the Plan Section turns that Design into a checklist."
 
-Developer: "When should the EAG be chosen?"
-
-Maintainer: "While completing the Designed Contract. It is part of the Design Section, and later Plan or Implementation work should use it as the end-to-end validation gate."
-
-Developer: "Where does that validation show up in the Plan?"
-
-Maintainer: "As its own EAG Validation ticket after the functional changes and before Documentation Sync."
-
 Developer: "Where should the short version of the design go?"
 
 Maintainer: "Put the Design Summary in the Main Spec File for review, and keep Research Findings plus Design Decisions in the Design Record."
 
-Developer: "Should the acceptance gate list every test case?"
+Developer: "Where should end-to-end verification results go?"
 
-Maintainer: "No. The EAG should be one small automated end-to-end gate whenever possible: the visible behavior to accept plus the command or path that verifies it. If no automated end-to-end gate exists, say there is no EAG."
+Maintainer: "After running checks, write text proof in the Implementation File's Verification section: commands or suites run and their outcomes. Prefer reusing existing project end-to-end capability; do not invent Spec-local acceptance harnesses."
 
 Developer: "When is a Spec ready for implementation?"
 

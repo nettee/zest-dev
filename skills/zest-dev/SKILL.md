@@ -13,7 +13,7 @@ Zest Dev is a lightweight, human-interactive workflow for spec-driven developmen
 - Use the `zest-dev` CLI to create, activate, and update Specs. Never create Spec files or edit frontmatter manually.
 - Statuses describe content maturity. After completing a Section Guide's contract, immediately run `zest-dev update active designed|planned|implemented` as appropriate.
 - Treat Specs with unsupported statuses or content structures as invalid input; do not migrate or reinterpret them.
-- Keep the Spec as the concise, durable record of material facts, decisions, constraints, evidence gaps, acceptance behavior, Plan Tickets, deviations, and representative verification.
+- Keep the Spec as the concise, durable record of material facts, decisions, constraints, evidence gaps, Plan Tickets, deviations, and representative verification results.
 - Before changing Spec content, read the active Spec and the repository sources material to that content.
 - Infer the requested outcome and continue until its content contract is satisfied. Do not stop at an intermediate status unless it fulfills that outcome; ask only about consequential choices that available facts cannot resolve.
 

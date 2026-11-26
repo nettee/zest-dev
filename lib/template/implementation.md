@@ -12,7 +12,7 @@
 
 ## Verification
 
-<!-- Record representative final gates and results, not repetitive per-ticket command history. -->
+<!-- After end-to-end or other final checks, record text proof here: commands/checks run and their outcomes. No screenshots or images. Prefer representative results, not per-ticket command history. -->
 
 ## Spec Retrospective
 

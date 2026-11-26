@@ -6,7 +6,6 @@ Planned Status requires:
 
 - a `## Plan` containing a compact sequence of ticket-scale implementation slices;
 - a `## Progress` checklist whose titles exactly mirror the Plan Tickets;
-- an EAG Validation ticket after functional implementation;
 - a final Documentation Sync ticket when documented behavior, usage, setup, commands, or workflows may change.
 
 ## Ticket slicing
@@ -30,10 +29,6 @@ Depends on: <Ticket N or None>
 ```
 
 Add acceptance criteria only to remove material ambiguity.
-
-## EAG Validation
-
-Place this ticket after functional work and before Documentation Sync. Reuse the Design Section's acceptance behavior and verification path; if there is no EAG, confirm that fact and use the best Spec-defined validation.
 
 ## Documentation Sync
 

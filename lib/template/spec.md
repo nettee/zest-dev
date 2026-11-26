@@ -17,10 +17,6 @@ created: "{date}"
 
 See [design.md](./design.md) for the Design Record.
 
-### E2E Acceptance Gate (EAG)
-
-<!-- Automated end-to-end acceptance behavior and verification path, or state that there is no EAG. -->
-
 ## Plan
 
 <!-- Ticket-scale implementation breakdown. -->

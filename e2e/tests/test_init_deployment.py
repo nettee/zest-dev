@@ -66,9 +66,8 @@ def test_default_global_init_installs_all_packaged_skills(cli):
     assert "Impact Areas:" in design_guide
     assert "Planned File Changes:" in design_guide
     assert "A source supports a premise" in design_guide
-    assert "### E2E Acceptance Gate (EAG)" in design_guide
-    assert "state that there is no EAG" in design_guide
-    assert "one-time, Spec-local acceptance step" in design_guide
+    assert "### E2E Acceptance Gate (EAG)" not in design_guide
+    assert "EAG" not in design_guide
     assert "## Deferred Follow-Ups (DFU)" in design_guide
 
     plan_guide = (zest_dev_dir / "plan.md").read_text(encoding="utf-8")
@@ -78,18 +77,22 @@ def test_default_global_init_installs_all_packaged_skills(cli):
     assert "tracer-bullet slices" in plan_guide
     assert "documentation alone is not HITL" in plan_guide
     assert "Add or update `spec.md` → `## Progress` with a thin progress checklist:" in plan_guide
-    assert "EAG Validation ticket" in plan_guide
+    assert "EAG Validation" not in plan_guide
+    assert "Documentation Sync" in plan_guide
 
     implementation_guide = (zest_dev_dir / "implementation.md").read_text(encoding="utf-8")
     assert "`tdd`" not in implementation_guide
     assert "tests relevant to changed behavior" in implementation_guide
+    assert "end-to-end check" in implementation_guide
     assert "If required evidence, configuration, credentials, or a consequential Design decision is missing" in implementation_guide
     assert "Use `implementation.md` as the implementation-notes source of truth" in implementation_guide
     assert "information value rather than Plan-ticket symmetry" in implementation_guide
     assert "Record a material Deviation when it becomes known" in implementation_guide
-    assert "reconcile it with the Design Decisions, Plan, and EAG" in implementation_guide
+    assert "reconcile it with the Design Decisions and Plan" in implementation_guide
+    assert "text proof" in implementation_guide
     assert "`## Progress` checkbox as `[x]`" in implementation_guide
     assert "Design Phase" not in implementation_guide
+    assert "EAG" not in implementation_guide
 
     assert (skills_dir / "t3-task" / "SKILL.md").exists()
 

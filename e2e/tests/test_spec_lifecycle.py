@@ -34,8 +34,7 @@ def test_create_uses_builtin_split_templates(cli):
     assert "## Design" in content
     assert "### Summary" in content
     assert "### Summary\n\n<!-- Overall design approach and rationale. -->\n\nSee [design.md](./design.md) for the Design Record." in content
-    assert "### E2E Acceptance Gate (EAG)" in content
-    assert "Automated end-to-end acceptance behavior and verification path, or state that there is no EAG." in content
+    assert "### E2E Acceptance Gate (EAG)" not in content
     assert "## Plan" in content
     assert "## Progress" in content
     assert "## Implementation" in content
@@ -55,6 +54,7 @@ def test_create_uses_builtin_split_templates(cli):
     assert "## Deviations" in implementation
     assert "Current behavior, Deviation, Attention, and Evidence" in implementation
     assert "## Verification" in implementation
+    assert "text proof" in implementation
     assert "## Spec Retrospective" in implementation
     assert "High-signal implementation notes" in implementation
     assert "## Step 1" not in implementation
