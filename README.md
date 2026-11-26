@@ -74,11 +74,11 @@ If publishing fails, inspect the `Publish npm` workflow run on `main` before ret
 Zest Dev uses a **content-contract skill** model:
 
 - the `zest-dev` skill owns Spec lifecycle and recording contracts
-- Section Guides define Overview, Design, Plan, and Implementation content
-- Design Approaches (lightweight or grilling) are chosen inside the skill workflow
+- Section Guides define Overview, Requirements, Design, Plan, and Implementation content
+- the Spec focuses on requirement semantics and scope; Design stays short; implementation notes stay minimal with text verification proof
 - the `zest-dev` CLI manages Spec files and lifecycle state
 
-Research is not a separate status or required step; source-backed Research Findings live beside Design Decisions in the Design Record.
+There is one skill plus the CLI. There are no editor command entrypoints or Design Approach routes.
 
 New-format Specs progress through `new → designed → planned → implemented`.
 
@@ -100,7 +100,6 @@ The `zest-dev` CLI manages spec files. Use it to inspect and update specs outsid
 | `zest-dev create-branch` | Create a git branch from the active change spec |
 | `zest-dev dump <spec-id\|path\|active> [--dry-run]` | Archive a directory Spec or standalone dated Markdown record as an issue representation or GitHub issue |
 | `zest-dev load [issue] [--from-file <path>]` | Reconstruct a spec from an issue representation or GitHub issue |
-| `zest-dev ralph` | Convert active Spec Progress items into Ralph tasks |
 
 ### Issue Spec Representation Compatibility
 
@@ -133,18 +132,14 @@ Packaged agent skills live under `skills/` and are installed by `zest-dev init` 
 ```
 project/
 ├── specs/
-│   ├── change/
+│   └── change/
 │       ├── 20260224-init-project/
 │       │   ├── spec.md
-│       │   ├── design.md
 │       │   └── implementation.md
 │       ├── 20260225-feature-name/
 │       │   ├── spec.md
-│       │   ├── design.md
 │       │   └── implementation.md
 │       └── active -> 20260225-feature-name (symlink)
-│   └── current/
-│       └── implementation.md
 ```
 
 ## References

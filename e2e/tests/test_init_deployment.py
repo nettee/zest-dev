@@ -48,51 +48,43 @@ def test_default_global_init_installs_all_packaged_skills(cli):
     assert "new → designed → planned → implemented" in skill_content
     assert "Statuses describe content maturity" in skill_content
     assert "Section Guide routing" in skill_content
-    assert "Do not stop at an intermediate status" in skill_content
+    assert "Do not stop at an intermediate status" not in skill_content
+    assert "Make reasonable reversible assumptions" in skill_content
+    assert "grilling" not in skill_content
+    assert "Lightweight Design Approach" not in skill_content
 
     overview_guide = (zest_dev_dir / "overview.md").read_text(encoding="utf-8")
     assert "Overview content contract" in overview_guide
+    assert "Requirements content contract" in overview_guide
     assert "recommended next" not in overview_guide
 
     design_guide = (zest_dev_dir / "design.md").read_text(encoding="utf-8")
-    assert "Research Findings" in design_guide
-    assert "Design Decisions" in design_guide
-    assert "Lightweight Design Approach" in design_guide
-    assert "Grilling Design Approach" in design_guide
-    assert "`grilling`" in design_guide
-    assert "`domain-modeling`" in design_guide
-    assert "resolve ambiguities that materially affect" in design_guide
-    assert "one recommended design" in design_guide
-    assert "Impact Areas:" in design_guide
-    assert "Planned File Changes:" in design_guide
-    assert "A source supports a premise" in design_guide
-    assert "### E2E Acceptance Gate (EAG)" not in design_guide
+    assert "short Design" in design_guide or "Keep the Design section short" in design_guide
+    assert "Do not create a separate `design.md` Design Record" in design_guide
+    assert "Research Findings" not in design_guide
+    assert "Design Decisions" not in design_guide
+    assert "grilling" not in design_guide
+    assert "Lightweight Design Approach" not in design_guide
+    assert "## Deferred Follow-Ups (DFU)" not in design_guide
     assert "EAG" not in design_guide
-    assert "## Deferred Follow-Ups (DFU)" in design_guide
 
     plan_guide = (zest_dev_dir / "plan.md").read_text(encoding="utf-8")
     assert "`to-tickets`" in plan_guide
     assert "Do not create GitHub issues or external issue-tracker entries unless the user explicitly asks for that." in plan_guide
-    assert "Do not use markdown checkboxes in `## Plan`." in plan_guide
-    assert "tracer-bullet slices" in plan_guide
-    assert "documentation alone is not HITL" in plan_guide
-    assert "Add or update `spec.md` → `## Progress` with a thin progress checklist:" in plan_guide
-    assert "EAG Validation" not in plan_guide
+    assert "Ticket format is flexible" in plan_guide
+    assert "AFK/HITL" in plan_guide
     assert "Documentation Sync" in plan_guide
+    assert "Strongly include" in plan_guide
+    assert "EAG Validation" not in plan_guide
 
     implementation_guide = (zest_dev_dir / "implementation.md").read_text(encoding="utf-8")
     assert "`tdd`" not in implementation_guide
-    assert "tests relevant to changed behavior" in implementation_guide
     assert "end-to-end check" in implementation_guide
-    assert "If required evidence, configuration, credentials, or a consequential Design decision is missing" in implementation_guide
-    assert "Use `implementation.md` as the implementation-notes source of truth" in implementation_guide
-    assert "information value rather than Plan-ticket symmetry" in implementation_guide
-    assert "Record a material Deviation when it becomes known" in implementation_guide
-    assert "reconcile it with the Design Decisions and Plan" in implementation_guide
     assert "text proof" in implementation_guide
-    assert "`## Progress` checkbox as `[x]`" in implementation_guide
-    assert "Design Phase" not in implementation_guide
+    assert "## Verification" in implementation_guide
+    assert "Keep `implementation.md` minimal" in implementation_guide
     assert "EAG" not in implementation_guide
+    assert "Design Phase" not in implementation_guide
 
     assert (skills_dir / "t3-task" / "SKILL.md").exists()
 

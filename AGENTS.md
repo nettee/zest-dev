@@ -4,26 +4,11 @@
 
 Zest Dev: A lightweight, human-interactive development workflow for AI-assisted coding.
 
-## Command Prompt Environment
+## Agent Skill Environment
 
-This repository's custom command prompts are designed for **OpenCode / oh-my-opencode-slim**, not Claude Code.
-
-### Prompt writing guidance
-
-- Write prompts in terms of **capabilities and roles**, not Claude-specific tool names or fixed implementations.
-- Prefer flexible role names such as **explorer subagent**, **architect subagent**, and **reviewer subagent**.
-- Do **not** hardcode specific oh-my-opencode-slim agent handles in prompts unless there is a strong reason; let the runtime choose the best matching subagent.
-- For user interaction, say **ask the user directly** or **use the question tool** rather than Claude-specific names.
-- For codebase work, describe the goal (read files, search code, inspect references, run shell commands) rather than enumerating a Claude-only tool contract.
-- When referring to a skill in prompts or command docs, refer to it by its registered skill name (for example `zest-dev`), not by repository or deployed file paths.
-- Keep lifecycle invariants, recording rules, and reusable content guidance in skills. The main `zest-dev` skill should route by requested outcome; Section Guides should define the Overview, Design, Plan, and Implementation content contracts through progressive disclosure.
-- Keep command prompts thin. Commands should provide a simple entry prompt and route intent into the relevant skill workflow; they should not duplicate detailed process, rules, or templates.
-- Keep the CLI-created Spec templates thin. They should create the required Main Spec, Design Record, and Implementation File structure with brief placeholders only; concrete writing guidance belongs in the Zest Dev Section Guides.
-
-### Prompt format constraints
-
-- Avoid prompt text that assumes Claude Code-only primitives such as `AskUserQuestion` or Claude-specific plugin agent names.
-- When describing delegation, prefer generic subagent language over implementation-specific names so the same prompt remains portable across setups.
+- Keep lifecycle invariants, recording rules, and reusable content guidance in the `zest-dev` skill. The skill should route by requested outcome; Section Guides should define the Overview, Requirements, Design, Plan, and Implementation content contracts through progressive disclosure.
+- Refer to the skill by its registered name (`zest-dev`), not by repository or deployed file paths.
+- Keep the CLI-created Spec templates thin. New Specs include `spec.md` plus `implementation.md` with brief placeholders only; concrete writing guidance belongs in the Section Guides.
 - `zest-dev init` installs packaged skills only to `~/.agents/skills/<name>/`; it does not deploy editor-specific command or agent paths.
 
 ## Development
@@ -88,7 +73,7 @@ Specs are stored in `specs/change/`. Managed via `zest-dev` CLI.
 | `zest-dev unset-active`           | Unset active change spec |
 | `zest-dev update <spec-id\|active> <status>` | Update spec status |
 
-Issue-representation archival uses `zest-dev dump`; there is no public `archive` or `prompt` CLI subcommand.
+Issue-representation archival uses `zest-dev dump`; there is no public `archive`, `prompt`, or `ralph` CLI subcommand.
 
 Valid Spec statuses are `new`, `designed`, `planned`, and `implemented`.
 
