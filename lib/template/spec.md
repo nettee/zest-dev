@@ -7,30 +7,22 @@ created: "{date}"
 
 ## Overview
 
-<!-- What are we solving? Why now? -->
+<!-- Functional boundary: in scope, out of scope, and constraints. -->
+
+## Requirements
+
+<!-- Requirement semantics: what must be true, key behaviors, and success criteria. -->
 
 ## Design
 
-### Summary
-
-<!-- Overall design approach and rationale. -->
-
-See [design.md](./design.md) for the Design Record.
-
-### E2E Acceptance Gate (EAG)
-
-<!-- Automated end-to-end acceptance behavior and verification path, or state that there is no EAG. -->
+<!-- Short implementation approach. -->
 
 ## Plan
 
-<!-- Ticket-scale implementation breakdown. -->
+<!-- Ticket-scale implementation slices. Format is flexible. Strongly include Documentation Sync when docs may change. -->
 
 ## Progress
 
 ## Implementation
 
 See [implementation.md](./implementation.md).
-
-## Deferred Follow-Ups (DFU)
-
-<!-- Follow-up items explicitly deferred out of this Spec, or None. -->

@@ -34,8 +34,7 @@ The Python suite preserves the behavior coverage from the former JavaScript E2E 
 
 - Spec creation, status, active spec handling, and status transitions
 - Init deployment layouts and failure behavior
-- Prompt generation
-- Ralph task handoff
+- Removal of obsolete prompt/ralph CLI entrypoints
 - Local and packaged CLI execution paths
 
 ## Failure Policy

@@ -14,14 +14,12 @@ def test_create_uses_builtin_split_templates(cli):
 
     spec_dir = cli.project_dir / "specs" / "change" / spec_id
     spec_path = spec_dir / "spec.md"
-    design_path = spec_dir / "design.md"
     implementation_path = spec_dir / "implementation.md"
     assert spec_path.exists()
-    assert design_path.exists()
     assert implementation_path.exists()
+    assert not (spec_dir / "design.md").exists()
 
     content = spec_path.read_text(encoding="utf-8")
-    design = design_path.read_text(encoding="utf-8")
     implementation = implementation_path.read_text(encoding="utf-8")
     metadata = frontmatter(content, f"specs/change/{spec_id}/spec.md")
 
@@ -30,38 +28,29 @@ def test_create_uses_builtin_split_templates(cli):
     assert metadata["status"] == "new"
     assert isinstance(metadata["created"], str)
     assert "## Overview" in content
+    assert "## Requirements" in content
     assert "## Research" not in content
     assert "## Design" in content
-    assert "### Summary" in content
-    assert "### Summary\n\n<!-- Overall design approach and rationale. -->\n\nSee [design.md](./design.md) for the Design Record." in content
-    assert "### E2E Acceptance Gate (EAG)" in content
-    assert "Automated end-to-end acceptance behavior and verification path, or state that there is no EAG." in content
+    assert "### Summary" not in content
+    assert "design.md" not in content
+    assert "### E2E Acceptance Gate (EAG)" not in content
     assert "## Plan" in content
     assert "## Progress" in content
     assert "## Implementation" in content
     assert "See [implementation.md](./implementation.md)." in content
-    assert "## Deferred Follow-Ups (DFU)" in content
-    assert "Follow-up items explicitly deferred out of this Spec, or None." in content
-    assert "Optional completion checklist, created during Plan and updated during Implement." not in content
-    assert "Ticket-scale implementation breakdown." in content
-    assert "Use markdown checkboxes for all step and substep items" not in content
-    assert "Substep 1.1 Implement" not in content
+    assert "## Deferred Follow-Ups (DFU)" not in content
+    assert "Ticket-scale implementation slices." in content
+    assert "Documentation Sync" in content
     assert "## Notes" not in content
-    assert "# Design Record" in design
-    assert "## Research Findings" in design
-    assert "## Design Decisions" in design
     assert "# Implementation" in implementation
-    assert "## Outcome" in implementation
-    assert "## Deviations" in implementation
-    assert "Current behavior, Deviation, Attention, and Evidence" in implementation
     assert "## Verification" in implementation
-    assert "## Spec Retrospective" in implementation
-    assert "High-signal implementation notes" in implementation
-    assert "## Step 1" not in implementation
-    assert "Phase 3: Test and verify" not in content
+    assert "text proof" in implementation
+    assert "## Outcome" not in implementation
+    assert "## Deviations" not in implementation
+    assert "## Spec Retrospective" not in implementation
     assert "{name}" not in content
     assert "{date}" not in content
-    assert "{name}" not in design
+    assert "{name}" not in implementation
     assert "{date}" not in implementation
 
 
@@ -94,10 +83,11 @@ Token: {name}|{date}
     assert metadata["status"] == "new"
     assert "# Custom Spec" not in content
     assert "## Overview" in content
+    assert "## Requirements" in content
     assert "{name}" not in content
     assert "{date}" not in content
     assert "Token: Custom Template|" not in content
-    assert (spec_dir / "design.md").exists()
+    assert not (spec_dir / "design.md").exists()
     assert (spec_dir / "implementation.md").exists()
 
 
@@ -123,7 +113,7 @@ def test_status_active_and_legacy_spec_behavior(cli):
         "status": "new",
     }
     assert "agent_hints" not in status
-    assert (cli.project_dir / "specs" / "change" / second / "design.md").exists()
+    assert not (cli.project_dir / "specs" / "change" / second / "design.md").exists()
     assert (cli.project_dir / "specs" / "change" / second / "implementation.md").exists()
 
     legacy_id = "20240101-legacy-spec"

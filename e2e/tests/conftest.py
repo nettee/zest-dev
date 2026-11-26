@@ -1,7 +1,5 @@
-import json
 import os
 import shutil
-import stat
 import subprocess
 from pathlib import Path
 
@@ -17,15 +15,6 @@ EXPECTED_SKILLS = [
     "zest-dev",
 ]
 SKILL_SECTION_FILES = ["overview.md", "design.md", "plan.md", "implementation.md"]
-FINAL_RALPH_TASK = (
-    "Make sure all tasks are done in ralph loops, and then create PR. "
-    "If there is a related issue, make sure to link it in the PR."
-)
-DFU_RALPH_TASK = (
-    "If the spec has Deferred Follow-Ups (DFU), create one GitHub issue "
-    "for each DFU item and link those issues in the PR."
-)
-RALPH_TASK_PROMPT = "Use the `zest-dev` skill to implement the active planned Spec.\n"
 
 
 class Cli:
@@ -120,41 +109,6 @@ def create_active_spec_with_body(cli: Cli, slug: str, body: str) -> tuple[str, P
     spec_path.write_text(body, encoding="utf-8")
     cli.ok("set-active", result["spec"]["id"])
     return result["spec"]["id"], spec_path
-
-
-def fake_ralph_env(project_dir: Path) -> dict[str, str]:
-    fake_bin = project_dir / "fake-bin"
-    log_path = project_dir / "ralph-args.log"
-    fake_bin.mkdir(parents=True, exist_ok=True)
-    fake_ralph = fake_bin / "ralph"
-    fake_ralph.write_text(
-        """#!/usr/bin/env python3
-import json
-import os
-import pathlib
-import sys
-
-if sys.argv[1:] == ["--add-task"] or len(sys.argv) != 3 or sys.argv[1] != "--add-task":
-    print("unexpected ralph args: " + " ".join(sys.argv[1:]), file=sys.stderr)
-    raise SystemExit(2)
-
-pathlib.Path(os.environ["RALPH_LOG_PATH"]).open("a", encoding="utf-8").write(json.dumps(sys.argv[2]) + "\\n")
-pathlib.Path(".ralph").mkdir(exist_ok=True)
-pathlib.Path(".ralph/ralph-tasks.md").open("a", encoding="utf-8").write("- [ ] " + sys.argv[2] + "\\n")
-print("Added task: " + sys.argv[2])
-""",
-        encoding="utf-8",
-    )
-    fake_ralph.chmod(fake_ralph.stat().st_mode | stat.S_IXUSR)
-    return {
-        "PATH": f"{fake_bin}{os.pathsep}{os.environ['PATH']}",
-        "RALPH_LOG_PATH": str(log_path),
-    }
-
-
-def read_fake_ralph_tasks(project_dir: Path) -> list[str]:
-    log_path = project_dir / "ralph-args.log"
-    return [json.loads(line) for line in log_path.read_text(encoding="utf-8").splitlines() if line]
 
 
 def remove_if_exists(path: Path) -> None:

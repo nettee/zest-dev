@@ -19,7 +19,6 @@ const {
   loadIssueRepresentation
 } = require('../lib/spec-manager');
 const { installSkills, getGlobalSkillsDir } = require('../lib/skill-installer');
-const { setupRalphFromActiveSpec } = require('../lib/ralph-setup');
 const packageJson = require('../package.json');
 
 const program = new Command();
@@ -257,20 +256,6 @@ program
   .action(() => {
     try {
       const result = installSkills();
-      console.log(yaml.dump(result));
-    } catch (error) {
-      console.error('Error:', error.message);
-      process.exit(1);
-    }
-  });
-
-// zest-dev ralph
-program
-  .command('ralph')
-  .description('Convert active spec Progress items into Ralph tasks')
-  .action(() => {
-    try {
-      const result = setupRalphFromActiveSpec(process.cwd());
       console.log(yaml.dump(result));
     } catch (error) {
       console.error('Error:', error.message);

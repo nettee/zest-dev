@@ -42,8 +42,8 @@ def test_v2_directory_manifest_round_trips_spec_with_main_file(cli):
     body_header = protocol_header(issue["body"])
     assert body_header["zest-dev-issue-spec"] == 2
     assert body_header["body-path"] == "spec.md"
-    assert body_header["files"] == ["design.md", "implementation.md", "notes/review.md", "spec.md"]
-    assert len(issue["comments"]) == 3
+    assert body_header["files"] == ["implementation.md", "notes/review.md", "spec.md"]
+    assert len(issue["comments"]) == 2
 
     source_files = markdown_files(source_dir)
     source_dir.rename(source_dir.with_name(f"{source_id}.source"))
