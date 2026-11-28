@@ -137,9 +137,24 @@ codex exec -C "$WORKDIR" \
 
 ### 1. Start a task
 
+**Run in the foreground until the turn finishes.** Do not background `agy`
+with shell `&`, or hand it to a harness job that detaches / times out early.
+Those runs commonly end within seconds as:
+
+```json
+{"status":"ERROR","error":"interrupted","finished_reason":"interrupted"}
+```
+
+A short foreground smoke test (`agy -p 'Reply with exactly: OK' --model …`)
+succeeding while a backgrounded full task returns `interrupted` means the CLI
+and auth are fine — the process was killed, not a model failure.
+
 ```bash
 agy -p 'Task description'
-agy --print-timeout 10m --print 'Task description'   # 0s = wait until done
+# 0s = wait until the turn completes (preferred for long editing jobs)
+agy --print-timeout 0s --print 'Task description'
+# Optional hard ceiling when you must bound wall time
+agy --print-timeout 10m --print 'Task description'
 ```
 
 Resume: `agy --conversation "$conversation_id" -p 'Follow-up'`
@@ -190,8 +205,9 @@ conversation_id=$(jq -er '.conversation_id' "$RUN/result.json")
 ```
 
 **Success check:** do not trust exit 0 alone. Require `status == "SUCCESS"` and
-verify artifacts. Tools that need approval they cannot get may be **soft-denied
-while still exiting 0** (see stderr).
+verify artifacts. Also reject `finished_reason == "interrupted"` / `error ==
+"interrupted"` even when a `conversation_id` exists. Tools that need approval
+they cannot get may be **soft-denied while still exiting 0** (see stderr).
 
 ### 5. YOLO / no-prompt modes
 
@@ -200,24 +216,31 @@ There is no `--yolo` alias.
 | Mode | Flags |
 | --- | --- |
 | Allow-list (one run) | `--settings '{"permissions":{"allow":["command(git status)"]}}'` |
-| Auto where available | `--mode auto` (headless often defaults here when supported) |
+| Auto where available | `--mode auto` (optional; **not every account supports it**) |
 | Auto-approve edits only | `--mode accept-edits` |
 | Full YOLO | `--dangerously-skip-permissions` |
+
+If `--mode auto` is unsupported, stderr warns and the run continues in the
+default mode — pair unattended edits with `--dangerously-skip-permissions`
+instead of relying on `auto`.
 
 `--sandbox` is a separate flag (off by default). Do not confuse it with `auto`
 mode's terminal sandboxing.
 
-**Editing-worker template:**
+**Editing-worker template** (foreground; wait for the full turn):
 
 ```bash
+# Keep this process attached until agy exits. Do not `&` / detach it.
 agy -p "$(cat "$RUN/prompt.md")" \
   --model gemini-4-neon-high \
-  --mode auto \
-  --sandbox \
+  --dangerously-skip-permissions \
   --output-format json \
-  --print-timeout 10m \
+  --print-timeout 0s \
   >"$RUN/result.json" 2>"$RUN/stderr.log"
-# Add --dangerously-skip-permissions when every tool must auto-approve
+# Optional: add --mode auto when the account supports it; --sandbox when you
+# want terminal restrictions in addition to permission skips.
+jq -er '.status == "SUCCESS"' "$RUN/result.json" >/dev/null
+test "$(jq -r '.error // empty' "$RUN/result.json")" != "interrupted"
 ```
 
 ---
@@ -230,8 +253,14 @@ agy -p "$(cat "$RUN/prompt.md")" \
   and artifact checks.
 - **agy:** soft-deny can still exit 0; never combine a tiered model slug with a
   conflicting `--effort`.
+- **agy foreground only:** backgrounding or early harness kill yields
+  `status=ERROR` / `interrupted` with empty `response`. Smoke-test foreground
+  first if that happens; then rerun the real task attached until completion
+  (`--print-timeout 0s`).
+- **agy `--mode auto`:** may be account-gated; treat it as optional. For
+  unattended file edits prefer `--dangerously-skip-permissions`.
 - Reserve YOLO for trusted tasks in isolated environments; prefer
-  sandbox / `never` / `auto` / allow-lists day to day.
+  sandbox / `never` / allow-lists day to day when interactive approval is OK.
 
 ## References
 
